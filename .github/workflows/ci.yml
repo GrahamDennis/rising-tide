@@ -16,4 +16,4 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run `ci:check`
-        run: nix develop --command ci:check
+        run: nix develop --command task ci:check
