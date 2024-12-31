@@ -9,7 +9,7 @@
     root = ./.;
     lib = nixpkgs.lib;
     risingTideLib = import (root + "/lib.nix") {inherit lib;};
-
+    inherit (risingTideLib.mkInjector { inherit root lib risingTideLib; }) inject injectModule;
   in {
     lib = risingTideLib;
   };
