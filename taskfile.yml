@@ -1,0 +1,19 @@
+version: "3"
+output: prefixed
+
+tasks:
+  check:
+    deps:
+      - check:flake
+      - check:nix-unit
+
+  check:flake:
+    cmds:
+      - nix flake check
+  
+  check:nix-unit:
+    cmds:
+      - nix-unit --flake .#tests
+  
+  ci:check:
+    deps: [check]
