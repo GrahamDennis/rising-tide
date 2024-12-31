@@ -10,22 +10,27 @@
   outputs = inputs @ { self, nixpkgs, flake-parts, ... }: let
     root = ./.;
     lib = nixpkgs.lib;
-    risingTideLib = import (root + "/lib.nix") {inherit lib;};
-    inherit (risingTideLib.mkInjector { inherit root lib risingTideLib inputs; }) inject injectModule;
+    risingTideLib = import (root + "/lib") {inherit lib;};
+    injector = risingTideLib.mkInjector { args = { inherit root lib risingTideLib inputs;}; };
   in     flake-parts.lib.mkFlake {
       inherit inputs;
       specialArgs = {
-        inherit root risingTideLib inject injectModule;
+        inherit root risingTideLib injector;
       };
   } ({self, ...}: let in {
     systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
-    perSystem = { pkgs, ...}: {
+    perSystem = { pkgs, system, ...}: let
+      injector' = injector.mkChildInjector { args = { inherit pkgs system; }; injectorArgName = "injector'"; };
+    in {
       # FIXME: temporary
       packages.default = pkgs.emptyFile;
+
+      devShells.default = injector'.inject ./devShell.nix;
     };
     flake = {
       inherit self;
       lib = risingTideLib;
+      tests.lib = injector.inject ./lib/tests.nix;
     };
   })
 ;
