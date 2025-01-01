@@ -64,4 +64,23 @@ in {
         systems = ["x86_64-linux"];
       };
     };
+
+  "test subproject systems can be overridden" =
+    expectRenderedConfig {
+      name = "root";
+      relativePaths.toRoot = ".";
+      systems = ["x86_64-linux"];
+      subprojects.subproject = {
+        name = "subproject";
+        systems = ["aarch64-linux"];
+      };
+    }
+    {
+      name = "root";
+      systems = ["x86_64-linux"];
+      subprojects.subproject = {
+        name = "subproject";
+        systems = ["aarch64-linux"];
+      };
+    };
 }
