@@ -30,14 +30,7 @@
       devShells.default = pkgs.mkShell {
         name = "go-task-integration-test";
         nativeBuildInputs =
-          project.tools.${system}.nativeCheckInputs
-          ++ [
-            (pkgs.bats.withLibraries (p: [
-              p.bats-support
-              p.bats-assert
-              p.bats-file
-            ]))
-          ];
+          project.tools.${system}.nativeCheckInputs;
       };
     });
 }
