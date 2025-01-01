@@ -7,21 +7,37 @@
     nixpkgs.follows = "rising-tide/nixpkgs";
   };
 
-  outputs = { self, flake-utils, rising-tide, nixpkgs, ... }:
-  let
+  outputs = {
+    self,
+    flake-utils,
+    rising-tide,
+    nixpkgs,
+    ...
+  }: let
     project = rising-tide.lib.mkProject {
       name = "go-task-integration-test";
       relativePaths.toRoot = "./.";
       systems = flake-utils.lib.defaultSystems;
       perSystem.tools.go-task = {
         enable = true;
+        taskfile.tasks.hello.cmds = ["echo 'Hello, World!'"];
       };
     };
   in
-    flake-utils.lib.eachDefaultSystem (system: let pkgs = nixpkgs.legacyPackages.${system}; in {
+    flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
       devShells.default = pkgs.mkShell {
         name = "go-task-integration-test";
-        nativeBuildInputs = project.tools.${system}.nativeCheckInputs;
+        nativeBuildInputs =
+          project.tools.${system}.nativeCheckInputs
+          ++ [
+            (pkgs.bats.withLibraries (p: [
+              p.bats-support
+              p.bats-assert
+              p.bats-file
+            ]))
+          ];
       };
     });
 }

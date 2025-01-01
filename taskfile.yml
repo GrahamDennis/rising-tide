@@ -6,6 +6,7 @@ tasks:
     deps:
       - check:flake
       - check:nix-unit
+      - check:integration-tests
 
   check:flake:
     cmds:
@@ -14,6 +15,13 @@ tasks:
   check:nix-unit:
     cmds:
       - nix-unit --flake .#tests {{.CLI_ARGS}}
+  
+  check:integration-tests:
+    sources:
+      - integration-tests/**/flake.nix
+    cmds:
+      - for: sources
+        cmd: cd $(dirname {{.ITEM}}); git clean -fdx .; nix develop --no-write-lock-file --command ./test.sh
   
   ci:check:
     deps: [check]
