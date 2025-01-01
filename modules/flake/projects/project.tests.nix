@@ -4,12 +4,11 @@
   self,
   ...
 }: let
-  projectModule = self.flakeModules.project;
+  projectModule = self.modules.flake.project;
   expectRenderedConfig = module: expected: let
     expr =
       (lib.evalModules {
         modules = [projectModule module];
-        class = "projectConfig";
       })
       .config;
   in {
@@ -25,16 +24,19 @@ in {
       relativePaths.toRoot = "./.";
       relativePaths.parentProjectToRoot = null;
       relativePaths.toParentProject = null;
+      subprojects = {};
     };
   "test child project evaluation" =
     expectRenderedConfig {
       name = "my-awesome-project";
       relativePaths.parentProjectToRoot = ".";
       relativePaths.toParentProject = "my-awesome-project";
+      subprojects = {};
     } {
       name = "my-awesome-project";
       relativePaths.toRoot = "./my-awesome-project";
       relativePaths.parentProjectToRoot = "./.";
       relativePaths.toParentProject = "./my-awesome-project";
+      subprojects = {};
     };
 }

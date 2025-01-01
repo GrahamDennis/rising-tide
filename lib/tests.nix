@@ -1,56 +1,77 @@
-{lib, risingTideLib, ...}: let
+{
+  lib,
+  risingTideLib,
+  ...
+}: let
   inherit (risingTideLib) mkInjector;
 in {
-  mkInjector = {"test inject" = let
-    injector = mkInjector {
-      args = {
-        foo = 1;
-        bar = 2;
+  mkInjector = {
+    "test inject" = let
+      injector = mkInjector {
+        args = {
+          foo = 1;
+          bar = 2;
+        };
       };
+      fn = {
+        foo,
+        bar,
+        injector,
+      }:
+        foo + bar;
+    in {
+      expr = injector.inject fn;
+      expected = 3;
     };
-    fn = {
-      foo,
-      bar,
-      injector,
-    }:
-      foo + bar;
-  in {
-    expr = injector.inject fn;
-    expected = 3;
-  };
 
-  "test inject with a custom injector argument name" = let
-    injector = mkInjector {
-      args = {
-        foo = 1;
-        bar = 2;
+    "test inject with a custom injector argument name" = let
+      injector = mkInjector {
+        args = {
+          foo = 1;
+          bar = 2;
+        };
+        name = "inj";
       };
-      name = "inj";
+      fn = {
+        foo,
+        bar,
+        inj,
+      }:
+        foo + bar;
+    in {
+      expr = injector.inject fn;
+      expected = 3;
     };
-    fn = {
-      foo,
-      bar,
-      inj,
-    }:
-      foo + bar;
-  in {
-    expr = injector.inject fn;
-    expected = 3;
-  };
 
-  "test mkChildInjector" = let
-    injector = mkInjector { args = {foo = 1; bar = 2; }; };
-    injector' = injector.mkChildInjector { args = {foo = 3; baz = 3; }; name = "injector'";};
-    fn = { bar, ... }: { foo, baz, ...}: foo + bar + baz;
-  in {
-    expr = injector'.inject fn;
-    expected = 8;
-  };
+    "test mkChildInjector" = let
+      injector = mkInjector {
+        args = {
+          foo = 1;
+          bar = 2;
+        };
+      };
+      injector' = injector.mkChildInjector {
+        args = {
+          foo = 3;
+          baz = 3;
+        };
+        name = "injector'";
+      };
+      fn = {bar, ...}: {
+        foo,
+        baz,
+        ...
+      }:
+        foo + bar + baz;
+    in {
+      expr = injector'.inject fn;
+      expected = 8;
+    };
   };
 
   mkProject = {
     "test defaults" = {
-      expr = risingTideLib.mkProject { name = "example-project"; };
+      expr = risingTideLib.mkProject {name = "example-project";};
       expected = {
         name = "example-project";
         relativePaths = {
@@ -58,16 +79,24 @@ in {
           toParentProject = null;
           parentProjectToRoot = null;
         };
+        subprojects = {};
       };
     };
   };
 
-  types.subpath = let evalSubpath = value: (lib.evalModules {
-    modules = [ {
-      options.subpath = lib.mkOption { type = risingTideLib.types.subpath; };
-      config.subpath = value;
-    }];
-  }).config.subpath; in {
+  types.subpath = let
+    evalSubpath = value:
+      (lib.evalModules {
+        modules = [
+          {
+            options.subpath = lib.mkOption {type = risingTideLib.types.subpath;};
+            config.subpath = value;
+          }
+        ];
+      })
+      .config
+      .subpath;
+  in {
     "test normalises path ." = {
       expr = evalSubpath ".";
       expected = "./.";

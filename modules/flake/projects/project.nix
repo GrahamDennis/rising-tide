@@ -1,9 +1,10 @@
 # rising-tide flake context
-{ lib, risingTideLib, ... }: let
+{ injector, lib, risingTideLib, ... }: let
   inherit (lib) types;
 in
 # user flake context
 { config, ... }: {
+  imports = [ (injector.inject ./subprojects.nix) ];
   options = {
     name = lib.mkOption {
       type = types.str;
