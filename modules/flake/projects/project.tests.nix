@@ -8,9 +8,9 @@
   projectModule = self.modules.flake.project;
   defaults = {
     name = lib.mkDefault "default-project-name";
-    systems = lib.mkDefault ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+    systems = lib.mkDefault ["example-system"];
   };
-  expectRenderedConfig = risingTideLib.tests.mkExpectRenderedConfig { modules = [projectModule defaults]; };
+  expectRenderedConfig = risingTideLib.tests.mkExpectRenderedConfig {modules = [projectModule defaults];};
 in {
   "test simple evaluation" =
     expectRenderedConfig {
@@ -29,18 +29,39 @@ in {
       relativePaths.parentProjectToRoot = "./.";
       relativePaths.toParentProject = "./my-awesome-project";
     };
-  
-  "test single subproject" = expectRenderedConfig { name = "root"; relativePaths.toRoot = "."; subprojects.subproject.relativePaths.toParentProject="./subproject"; }
-  {
-    name = "root";
-    relativePaths.toRoot = "./.";
-    subprojects.subproject = {
+
+  "test single subproject" =
+    expectRenderedConfig {
+      name = "root";
+      relativePaths.toRoot = ".";
+      subprojects.subproject.relativePaths.toParentProject = "./subproject";
+    }
+    {
+      name = "root";
+      relativePaths.toRoot = "./.";
+      subprojects.subproject = {
         name = "subproject";
         relativePaths = {
           toRoot = "./subproject";
           parentProjectToRoot = "./.";
           toParentProject = "./subproject";
         };
+      };
     };
-  };
+
+  "test systems are inherited" =
+    expectRenderedConfig {
+      name = "root";
+      relativePaths.toRoot = ".";
+      systems = ["x86_64-linux"];
+      subprojects.subproject = {name = "subproject";};
+    }
+    {
+      name = "root";
+      systems = ["x86_64-linux"];
+      subprojects.subproject = {
+        name = "subproject";
+        systems = ["x86_64-linux"];
+      };
+    };
 }
