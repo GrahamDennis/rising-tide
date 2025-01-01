@@ -37,6 +37,7 @@ risingTideBootstrapLib
     (lib.evalModules {
       modules = [ self.modules.flake.project projectModule { relativePaths.toRoot = lib.mkDefault "./."; } ];
     }).config;
+  sanitizeBashIdentifier = lib.strings.sanitizeDerivationName;
   types = {
     subpath =
       types.str
@@ -59,7 +60,6 @@ risingTideBootstrapLib
     in
     {
       inherit filterExprToExpected;
-      sanitizeBashIdentifier = lib.strings.sanitizeDerivationName;
       mkExpectRenderedConfig =
         { modules
         , filter ? true
