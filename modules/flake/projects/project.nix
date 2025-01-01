@@ -4,7 +4,7 @@
 in
 # user flake context
 { config, ... }: {
-  imports = builtins.map injector.injectModule [ ./subprojects.nix ./perSystem.nix ];
+  imports = builtins.map injector.injectModule [ ./subprojects.nix ./perSystem.nix ./tools.nix ];
   options = {
     name = lib.mkOption {
       type = types.str;
