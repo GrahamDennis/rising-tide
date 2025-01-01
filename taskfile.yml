@@ -13,7 +13,7 @@ tasks:
   
   check:nix-unit:
     cmds:
-      - nix-unit --flake .#tests
+      - nix-unit --flake .#tests {{.CLI_ARGS}}
   
   ci:check:
     deps: [check]

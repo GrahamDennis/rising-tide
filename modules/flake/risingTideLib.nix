@@ -1,5 +1,5 @@
 # rising-tide flake context
-{risingTideLib, ...}:
+{self, risingTideBootstrapLib, ...}:
 {
-  _module.args = {inherit risingTideLib;};
+  _module.args = { inherit risingTideBootstrapLib; risingTideLib = self.lib;};
 }

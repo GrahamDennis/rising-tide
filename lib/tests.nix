@@ -1,7 +1,7 @@
 {lib, risingTideLib, ...}: let
   inherit (risingTideLib) mkInjector;
 in {
-  "test mkInjector{...}.inject" = let
+  mkInjector = {"test inject" = let
     injector = mkInjector {
       args = {
         foo = 1;
@@ -19,7 +19,7 @@ in {
     expected = 3;
   };
 
-  "test mkInjector{...}.inject with a custom injector argument name" = let
+  "test inject with a custom injector argument name" = let
     injector = mkInjector {
       args = {
         foo = 1;
@@ -38,13 +38,28 @@ in {
     expected = 3;
   };
 
-  "test mkInjector{...}.mkChildInjector" = let
+  "test mkChildInjector" = let
     injector = mkInjector { args = {foo = 1; bar = 2; }; };
     injector' = injector.mkChildInjector { args = {foo = 3; baz = 3; }; name = "injector'";};
     fn = { bar, ... }: { foo, baz, ...}: foo + bar + baz;
   in {
     expr = injector'.inject fn;
     expected = 8;
+  };
+  };
+
+  mkProject = {
+    "test defaults" = {
+      expr = risingTideLib.mkProject { name = "example-project"; };
+      expected = {
+        name = "example-project";
+        relativePaths = {
+          toRoot = "./.";
+          toParentProject = null;
+          parentProjectToRoot = null;
+        };
+      };
+    };
   };
 
   types.subpath = let evalSubpath = value: (lib.evalModules {

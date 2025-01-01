@@ -15,9 +15,9 @@
   }: let
     root = ./.;
     lib = nixpkgs.lib;
-    risingTideLib = import (root + "/lib") {inherit lib;};
-    bootstrapInjector = risingTideLib.mkInjector {
-      args = {inherit root lib risingTideLib inputs;};
+    risingTideBootstrapLib = import (root + "/lib/bootstrap.nix") {inherit lib;};
+    bootstrapInjector = risingTideBootstrapLib.mkInjector {
+      args = {inherit root lib inputs self risingTideBootstrapLib; };
       name = "bootstrapInjector";
     };
   in
@@ -49,7 +49,7 @@
       };
       flake = {
         inherit flakeModules self;
-        lib = risingTideLib;
+        lib = injector.inject ./lib;
         tests = builtins.mapAttrs (name: injector.inject) {
           lib = ./lib/tests.nix;
           project = ./modules/flake/projects/project.tests.nix;
