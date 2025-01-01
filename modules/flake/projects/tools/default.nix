@@ -4,7 +4,11 @@ let inherit (lib) types; in
 # project per-system tools context
 {system, ...}:
 { 
-  imports = builtins.map injector.injectModule [ ./nixago ./go-task ];
+  imports = builtins.map injector.injectModule [  
+    ./go-task
+     ./nixago
+      ./treefmt.nix
+      ];
   options = {
     # FIXME: I'm not sure this is the best name
     nativeCheckInputs = lib.mkOption {
