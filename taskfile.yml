@@ -16,12 +16,27 @@ tasks:
     cmds:
       - nix-unit --flake .#tests {{.CLI_ARGS}}
   
-  check:integration-tests:
-    sources:
-      - integration-tests/**/flake.nix
+  _run-integration-test:
+    internal: true
+    label: "integration-test:{{.INTEGRATION_TEST}}"
+    prefix: "integration-test:{{.INTEGRATION_TEST}}"
     cmds:
-      - for: sources
-        cmd: cd $(dirname {{.ITEM}}); git clean -fdx .; nix develop --no-write-lock-file --command ./test.sh
+      - |
+        cd {{.INTEGRATION_TEST}};
+        git clean -fdx .;
+        nix develop --no-write-lock-file --command ./test.bats
+
+  check:integration-tests:
+    vars:
+      INTEGRATION_TESTS:
+        sh: |
+          # Find all integration test directories
+          find integration-tests/ -name flake.nix -print0 | xargs -0 dirname
+    deps:
+      - for: { var: INTEGRATION_TESTS, split: "\n" }
+        task: _run-integration-test
+        vars:
+          INTEGRATION_TEST: "{{.ITEM}}"
   
   ci:check:
     deps: [check]
