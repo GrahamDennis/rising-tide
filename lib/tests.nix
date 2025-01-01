@@ -25,7 +25,7 @@ in {
         foo = 1;
         bar = 2;
       };
-      injectorArgName = "inj";
+      name = "inj";
     };
     fn = {
       foo,
@@ -40,7 +40,7 @@ in {
 
   "test mkInjector{...}.mkChildInjector" = let
     injector = mkInjector { args = {foo = 1; bar = 2; }; };
-    injector' = injector.mkChildInjector { args = {foo = 3; baz = 3; }; injectorArgName = "injector'";};
+    injector' = injector.mkChildInjector { args = {foo = 3; baz = 3; }; name = "injector'";};
     fn = { bar, ... }: { foo, baz, ...}: foo + bar + baz;
   in {
     expr = injector'.inject fn;
