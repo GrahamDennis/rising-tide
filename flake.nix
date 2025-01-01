@@ -28,8 +28,8 @@
       injector,
       ...
     }: let
-      flakeModules.injector = bootstrapInjector.inject ./modules/flake/injector.nix;
-      flakeModules.risingTideLib = bootstrapInjector.inject ./modules/flake/risingTideLib.nix;
+      flakeModules.injector = bootstrapInjector.injectModule ./modules/flake/injector.nix;
+      flakeModules.risingTideLib = bootstrapInjector.injectModule ./modules/flake/risingTideLib.nix;
     in {
       imports = [flakeModules.injector flakeModules.risingTideLib];
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
