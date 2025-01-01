@@ -1,7 +1,8 @@
 {lib}: 
   let
-  # Call function `fn` with arguments lazily fetched by calling `getArg name` for each named
-  # argument in the function's signature.
+  inherit (lib) types;
+  # Call function `fn` with arguments from `args` and additional arguments from the function signature lazily fetched
+  # by calling `getArg name`
   callWithLazyArgs = fn: args: getLazyArg: let
       context = name: ''while evaluating the function argument `${name}':'';
       extraArgs = if getLazyArg != null then builtins.mapAttrs (name: _: lib.addErrorContext (context name) (args.${name} or (getLazyArg name)) ) (lib.functionArgs fn) else {};
@@ -25,4 +26,11 @@
   inherit callWithLazyArgs;
   mkInjector = _mkInjector rootInjector;
   getLazyArgFromConfig = config: argName: config._module.args.${argName};
+  types = {
+    subpath = types.str // {
+      name = "subpath";
+      description = "A relative path";
+      merge = loc: defs: lib.path.subpath.normalise (lib.mergeEqualOption loc defs);
+    };
+  };
 }

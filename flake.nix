@@ -28,8 +28,11 @@
       injector,
       ...
     }: let
-      flakeModules.injector = bootstrapInjector.injectModule ./modules/flake/injector.nix;
-      flakeModules.risingTideLib = bootstrapInjector.injectModule ./modules/flake/risingTideLib.nix;
+      flakeModules = {
+        risingTideLib = bootstrapInjector.injectModule ./modules/flake/risingTideLib.nix;
+        injector = bootstrapInjector.injectModule ./modules/flake/injector.nix;
+        project = injector.injectModule ./modules/flake/projects/project.nix;
+      };
     in {
       imports = [flakeModules.injector flakeModules.risingTideLib];
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
@@ -47,7 +50,10 @@
       flake = {
         inherit flakeModules self;
         lib = risingTideLib;
-        tests.lib = injector.inject ./lib/tests.nix;
+        tests = builtins.mapAttrs (name: injector.inject) {
+          lib = ./lib/tests.nix;
+          project = ./modules/flake/projects/project.tests.nix;
+        };
       };
     });
 }
