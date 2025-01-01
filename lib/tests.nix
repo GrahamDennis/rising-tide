@@ -71,7 +71,10 @@ in {
 
   mkProject = {
     "test defaults" = {
-      expr = risingTideLib.mkProject {name = "example-project";};
+      expr = risingTideLib.mkProject {
+        name = "example-project";
+        systems = ["x86_64-linux"];
+      };
       expected = {
         name = "example-project";
         relativePaths = {
@@ -80,6 +83,7 @@ in {
           parentProjectToRoot = null;
         };
         subprojects = {};
+        systems = ["x86_64-linux"];
       };
     };
   };

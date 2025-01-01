@@ -1,5 +1,6 @@
 # rising-tide flake context
 {
+  injector,
   lib,
   self,
   ...
@@ -18,6 +19,7 @@ in
             ({name, ...}: {
               inherit name;
               relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
+              systems = lib.mkDefault parentProjectConfig.systems;
             })
           ];
         });
