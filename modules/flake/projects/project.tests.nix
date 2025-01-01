@@ -39,4 +39,21 @@ in {
       relativePaths.toParentProject = "./my-awesome-project";
       subprojects = {};
     };
+  
+  "test single subproject" = expectRenderedConfig { name = "root"; relativePaths.toRoot = "."; subprojects.subproject.relativePaths.toParentProject="./subproject"; }
+  {
+    name = "root";
+    relativePaths.toRoot = "./.";
+    relativePaths.parentProjectToRoot = null;
+    relativePaths.toParentProject = null;
+    subprojects.subproject = {
+        name = "subproject";
+        relativePaths = {
+          toRoot = "./subproject";
+          parentProjectToRoot = "./.";
+          toParentProject = "./subproject";
+        };
+        subprojects = {};
+    };
+  };
 }
