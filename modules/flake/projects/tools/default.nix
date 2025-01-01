@@ -6,6 +6,7 @@ let inherit (lib) types; in
 { 
   imports = builtins.map injector.injectModule [ ./nixago ./go-task ];
   options = {
+    # FIXME: I'm not sure this is the best name
     nativeCheckInputs = lib.mkOption {
       type = types.listOf types.package;
       default = [];

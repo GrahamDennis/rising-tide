@@ -19,6 +19,7 @@ let inherit (lib) types; in
           nixagoHook = pkgs.writeShellScript "nixago-setup-hook"
           (inputs.nixago.lib.${system}.makeAll cfg.requests).shellHook;
           bashCompletionPackage = pkgs.bash-completion;
+          findup = lib.getExe pkgs.findup;
         };
       } ./mk-config-hook.sh)
     ];

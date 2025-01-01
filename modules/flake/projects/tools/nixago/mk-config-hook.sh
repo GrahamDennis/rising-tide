@@ -11,7 +11,7 @@ function @bashSafeName@() {
 function @bashSafeName@PreShell() {
   echo "Executing @bashSafeName@ (pre-shell)"
 
-  pushd "$(git rev-parse --show-toplevel)" >/dev/null || return
+  pushd "$(@findup@ flake.nix)" >/dev/null || return
   cd "@relativePathToRoot@" || return
   @nixagoHook@
   popd >/dev/null || return
