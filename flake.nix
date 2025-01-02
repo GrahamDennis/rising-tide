@@ -33,7 +33,8 @@
         injector = bootstrapInjector.injectModule ./modules/flake/injector.nix;
       };
     in {
-      imports = [inputs.flake-parts.flakeModules.modules modules.flake.injector modules.flake.risingTideLib ./flake-modules.nix];
+      imports = [
+        inputs.flake-parts.flakeModules.modules modules.flake.injector modules.flake.risingTideLib ./flake-modules.nix];
       systems = import systems;
       flake = {
         inherit modules self;
