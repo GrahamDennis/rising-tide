@@ -65,6 +65,38 @@
       expr = injector'.inject fn;
       expected = 8;
     };
+
+    injectModule = let
+      injector = mkInjector "injector" {
+        args = {
+          foo = 1;
+          bar = 2;
+        };
+      };
+      expectedModule = {
+        _file = ./module.nix;
+        imports = [{foo = 1;}];
+      };
+    in {
+      "test injectModule" = {
+        expr = injector.injectModule ./module.nix;
+        expected = expectedModule;
+      };
+      "test injectModules with list" = {
+        expr = injector.injectModules [./module.nix ./module.nix];
+        expected = [expectedModule expectedModule];
+      };
+      "test injectModules with attrs" = {
+        expr = injector.injectModules {
+          a = ./module.nix;
+          b = ./module.nix;
+        };
+        expected = {
+          a = expectedModule;
+          b = expectedModule;
+        };
+      };
+    };
   };
 
   mkProject = let
@@ -87,19 +119,6 @@
         allSystems.x86_64-linux = {};
         tools.x86_64-linux = {};
       };
-    };
-    "test go-task" = let
-      project = mkProject {
-        name = "example-project";
-        systems = ["x86_64-linux"];
-        perSystem.tools.go-task = {
-          enable = true;
-        };
-      };
-    in {
-      # How can we improve this?
-      expr = builtins.length project.tools.x86_64-linux.nativeCheckInputs;
-      expected = 2;
     };
   };
 

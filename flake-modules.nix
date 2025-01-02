@@ -8,7 +8,7 @@ in {
     inherit modules;
     lib = injector.inject ./lib;
     tests = builtins.mapAttrs (name: injector.inject) {
-      lib = ./lib/tests.nix;
+      lib = ./lib/tests;
       project = ./modules/flake/projects/project.tests.nix;
     };
   };

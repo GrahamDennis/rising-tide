@@ -17,6 +17,7 @@ in
         type = types.attrsOf (types.submoduleWith {
           modules = [
             projectModule
+            config.defaults
             # child project context
             ({name, ...}: {
               inherit name;

@@ -7,9 +7,9 @@
 }: let
   inherit (lib) types;
 in
-  # user flake context
+  # project context
   {config, ...}: {
-    imports = builtins.map injector.injectModule [./subprojects.nix ./perSystem.nix ./tools.nix];
+    imports = injector.injectModules [./subprojects.nix ./perSystem.nix ./tools.nix];
     options = {
       name = lib.mkOption {
         type = types.str;
@@ -29,6 +29,10 @@ in
           type = types.nullOr risingTideLib.types.subpath;
           default = null;
         };
+      };
+      defaults = lib.mkOption {
+        type = types.deferredModule;
+        default = {};
       };
     };
   }

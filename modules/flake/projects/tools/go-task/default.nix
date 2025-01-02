@@ -34,7 +34,7 @@ in {
     go-task.taskfile.output = lib.mkDefault "prefixed";
     nativeCheckInputs = [
       (pkgs.makeSetupHook {
-          name = "go-task-check-hook.sh";
+          name = "go-task-setup-hook.sh";
           propagatedBuildInputs = [wrappedPackage];
         }
         ./go-task-setup-hook.sh)

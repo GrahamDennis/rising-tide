@@ -16,13 +16,19 @@
     getLazyArg ? null,
   }: let
     injector = {
-      inherit inject injectModule;
+      inherit inject injectModule injectModules;
       mkChildInjector = _mkInjector injector;
     };
     additionalInjectorArgs = {"${name}" = injector;};
     argsWithInjector = args // additionalInjectorArgs;
     inject = fn: callWithLazyArgs (parentInjector.inject fn) argsWithInjector getLazyArg;
     injectModule = modulePath: lib.setDefaultModuleLocation modulePath (inject modulePath);
+    injectModules = modules:
+      if builtins.isAttrs modules
+      then builtins.mapAttrs (name: module: injectModule module) modules
+      else if builtins.isList modules
+      then builtins.map injectModule modules
+      else throw "injectModules: expected a list or an attrset, got ${builtins.typeOf modules}";
   in
     injector;
   rootInjector = {
