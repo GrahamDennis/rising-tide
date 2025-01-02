@@ -2,7 +2,7 @@
   description = "treefmt integration test";
 
   inputs = {
-    rising-tide.url = "../..";
+    rising-tide.url = "../../..";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.follows = "rising-tide/nixpkgs";
   };

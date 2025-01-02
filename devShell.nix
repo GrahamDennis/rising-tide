@@ -58,7 +58,7 @@
             cmds = [
               ''
                 cd "integration-tests/{{.INTEGRATION_TEST}}"
-                git clean -fdx .
+                git clean -fX .
                 nix develop --no-write-lock-file --command ./test.bats
               ''
             ];
@@ -73,6 +73,6 @@ in
   pkgs.mkShell {
     name = "rising-tide-root";
     nativeBuildInputs =
-      (with pkgs; [nix-unit go-task batsWithLibraries])
+      (with pkgs; [nix-unit batsWithLibraries])
       ++ project.tools.${system}.nativeCheckInputs;
   }
