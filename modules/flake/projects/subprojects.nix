@@ -9,7 +9,9 @@
   projectModule = self.modules.flake.project;
 in
   # user flake project context
-  {config, ...}: let parentProjectConfig = config; in{
+  {config, ...}: let
+    parentProjectConfig = config;
+  in {
     options = {
       subprojects = lib.mkOption {
         type = types.attrsOf (types.submoduleWith {

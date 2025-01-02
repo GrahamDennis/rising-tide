@@ -4,8 +4,8 @@
   ...
 }: {
   mkInjector = let
-  inherit (risingTideLib) mkInjector;
-in {
+    inherit (risingTideLib) mkInjector;
+  in {
     "test inject" = let
       injector = mkInjector {
         args = {
@@ -69,7 +69,9 @@ in {
     };
   };
 
-  mkProject = let inherit (risingTideLib) mkProject; in {
+  mkProject = let
+    inherit (risingTideLib) mkProject;
+  in {
     "test defaults" = risingTideLib.tests.filterExprToExpected {
       expr = mkProject {
         name = "example-project";
@@ -84,17 +86,19 @@ in {
         };
         subprojects = {};
         systems = ["x86_64-linux"];
-        allSystems.x86_64-linux = { };
+        allSystems.x86_64-linux = {};
         tools.x86_64-linux = {};
       };
     };
-    "test go-task" = let project = mkProject {
-      name = "example-project";
-      systems = ["x86_64-linux"];
-      perSystem.tools.go-task = {
-        enable = true;
+    "test go-task" = let
+      project = mkProject {
+        name = "example-project";
+        systems = ["x86_64-linux"];
+        perSystem.tools.go-task = {
+          enable = true;
+        };
       };
-    }; in {
+    in {
       # How can we improve this?
       expr = builtins.length project.tools.x86_64-linux.nativeCheckInputs;
       expected = 2;

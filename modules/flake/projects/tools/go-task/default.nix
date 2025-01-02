@@ -1,8 +1,9 @@
 # rising-tide context
 {
   lib,
-  inputs, ...
-}: 
+  inputs,
+  ...
+}:
 # project tools context
 {
   config,
