@@ -19,15 +19,16 @@ in
       relativePaths = {
         toRoot = lib.mkOption {
           type = risingTideLib.types.subpath;
-          default = lib.path.subpath.join [config.relativePaths.parentProjectToRoot config.relativePaths.toParentProject];
+          default = lib.path.subpath.join [
+            config.relativePaths.parentProjectToRoot 
+            config.relativePaths.toParentProject
+          ];
         };
         toParentProject = lib.mkOption {
-          type = types.nullOr risingTideLib.types.subpath;
-          default = null;
+          type = risingTideLib.types.subpath;
         };
         parentProjectToRoot = lib.mkOption {
-          type = types.nullOr risingTideLib.types.subpath;
-          default = null;
+          type = risingTideLib.types.subpath;
         };
       };
       defaults = lib.mkOption {

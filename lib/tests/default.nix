@@ -109,11 +109,7 @@
       };
       expected = {
         name = "example-project";
-        relativePaths = {
-          toRoot = "./.";
-          toParentProject = null;
-          parentProjectToRoot = null;
-        };
+        relativePaths.toRoot = "./.";
         subprojects = {};
         systems = ["x86_64-linux"];
         allSystems.x86_64-linux = {};
