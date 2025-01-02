@@ -13,7 +13,7 @@
       perSystem.tools = {
         go-task = {
           enable = true;
-          taskfile = {
+          taskfile.tasks = {
             check.deps = ["check:flake" "check:nix-unit" "check:integration-tests"];
             "check:flake" = {
               desc = "Check flake";
@@ -38,7 +38,10 @@
               }];
             };
             "integration-test:*" = {
+              desc = "Run an integration test";
               vars.INTEGRATION_TEST = "{{index .MATCH 0}}";
+              label = "integration-test:{{.INTEGRATION_TEST}}";
+              prefix = "integration-test:{{.INTEGRATION_TEST}}";
               cmds = [''
                 cd {{.INTEGRATION_TEST}}
                 git clean -fdx .
