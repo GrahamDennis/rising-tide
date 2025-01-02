@@ -26,9 +26,9 @@
             "check:integration-tests" = {
               desc = "Run integration tests";
               vars.INTEGRATION_TESTS.sh = ''
-                # Find all integration test directories
+                # Find all integration test directories without a ./ prefix
                 cd integration-tests;
-                find . -name flake.nix -print0 | xargs -0 dirname
+                find . -name flake.nix -print0 | xargs -0 dirname | cut -f2- -d'/'
               '';
               deps = [{
                 for = {
