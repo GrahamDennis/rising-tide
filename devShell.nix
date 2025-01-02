@@ -21,17 +21,14 @@
     systems = import inputs.systems;
     perSystem.tools = {
       alejandra.enable = true;
+      nix-unit.enable = true;
       go-task = {
         enable = true;
         taskfile.tasks = {
-          check.deps = ["check:flake" "check:nix-unit" "check:integration-tests"];
+          check.deps = ["check:flake" "check:integration-tests"];
           "check:flake" = {
             desc = "Check flake";
             cmds = ["nix flake check"];
-          };
-          "check:nix-unit" = {
-            desc = "Run nix-unit tests";
-            cmds = ["nix-unit --flake .#tests {{.CLI_ARGS}}"];
           };
           "check:integration-tests" = {
             desc = "Run integration tests";

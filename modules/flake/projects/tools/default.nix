@@ -13,6 +13,7 @@ in
       ./alejandra.nix
       ./go-task
       ./nixago
+      ./nix-unit.nix
       ./treefmt.nix
     ];
     options = {
