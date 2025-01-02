@@ -27,7 +27,8 @@
               desc = "Run integration tests";
               vars.INTEGRATION_TESTS.sh = ''
                 # Find all integration test directories
-                find integration-tests/ -name flake.nix -print0 | xargs -0 dirname
+                cd integration-tests;
+                find . -name flake.nix -print0 | xargs -0 dirname
               '';
               deps = [{
                 for = {
@@ -43,7 +44,7 @@
               label = "integration-test:{{.INTEGRATION_TEST}}";
               prefix = "integration-test:{{.INTEGRATION_TEST}}";
               cmds = [''
-                cd {{.INTEGRATION_TEST}}
+                cd "integration-tests/{{.INTEGRATION_TEST}}"
                 git clean -fdx .
                 nix develop --no-write-lock-file --command ./test.bats
               ''];
