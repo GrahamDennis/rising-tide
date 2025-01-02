@@ -34,7 +34,11 @@
       };
     in {
       imports = [
-        inputs.flake-parts.flakeModules.modules modules.flake.injector modules.flake.risingTideLib ./flake-modules.nix];
+        inputs.flake-parts.flakeModules.modules
+        modules.flake.injector
+        modules.flake.risingTideLib
+        ./flake-modules.nix
+      ];
       systems = import systems;
       flake = {
         inherit modules self;
