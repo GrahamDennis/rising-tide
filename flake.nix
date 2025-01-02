@@ -20,9 +20,8 @@
     root = ./.;
     lib = nixpkgs.lib;
     risingTideBootstrapLib = import (root + "/lib/bootstrap.nix") {inherit lib;};
-    bootstrapInjector = risingTideBootstrapLib.mkInjector {
+    bootstrapInjector = risingTideBootstrapLib.mkInjector "bootstrapInjector" {
       args = {inherit root lib inputs self risingTideBootstrapLib;};
-      name = "bootstrapInjector";
     };
   in
     flake-parts.lib.mkFlake {

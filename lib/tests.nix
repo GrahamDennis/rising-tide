@@ -7,7 +7,7 @@
     inherit (risingTideLib) mkInjector;
   in {
     "test inject" = let
-      injector = mkInjector {
+      injector = mkInjector "injector" {
         args = {
           foo = 1;
           bar = 2;
@@ -25,12 +25,11 @@
     };
 
     "test inject with a custom injector argument name" = let
-      injector = mkInjector {
+      injector = mkInjector "inj" {
         args = {
           foo = 1;
           bar = 2;
         };
-        name = "inj";
       };
       fn = {
         foo,
@@ -44,18 +43,17 @@
     };
 
     "test mkChildInjector" = let
-      injector = mkInjector {
+      injector = mkInjector "injector" {
         args = {
           foo = 1;
           bar = 2;
         };
       };
-      injector' = injector.mkChildInjector {
+      injector' = injector.mkChildInjector "injector'" {
         args = {
           foo = 3;
           baz = 3;
         };
-        name = "injector'";
       };
       fn = {bar, ...}: {
         foo,

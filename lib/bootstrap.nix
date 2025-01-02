@@ -11,10 +11,9 @@
   in
     fn (args // extraArgs);
 
-  _mkInjector = parentInjector: {
+  _mkInjector = parentInjector: name: {
     args ? {},
     getLazyArg ? null,
-    name ? "injector",
   }: let
     injector = {
       inherit inject injectModule;
