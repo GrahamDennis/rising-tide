@@ -1,5 +1,5 @@
 # injector context
-{foo, ...}:
+{ foo, ... }:
 # module context
 {
   inherit foo;

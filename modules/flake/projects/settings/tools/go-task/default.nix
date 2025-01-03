@@ -10,20 +10,22 @@
   toolsPkgs,
   system,
   ...
-}: let
+}:
+let
   cfg = config.tools.go-task;
-  yamlFormat = toolsPkgs.formats.yaml {};
+  yamlFormat = toolsPkgs.formats.yaml { };
   wrappedPackage = toolsPkgs.writeScriptBin "task" ''
     # Temporary workaround until https://github.com/go-task/task/pull/1974 gets merged
     exec ${cfg.package}/bin/task --concurrency 1 "$@"
   '';
-in {
+in
+{
   options.tools.go-task = {
     enable = lib.mkEnableOption "Enable go-task integration";
-    package = lib.mkPackageOption toolsPkgs "go-task" {};
+    package = lib.mkPackageOption toolsPkgs "go-task" { };
     taskfile = lib.mkOption {
       type = yamlFormat.type;
-      default = {};
+      default = { };
     };
   };
 
@@ -35,18 +37,17 @@ in {
       go-task.taskfile.output = lib.mkDefault "prefixed";
       all = [
         (toolsPkgs.makeSetupHook {
-            name = "go-task-setup-hook.sh";
-            propagatedBuildInputs = [wrappedPackage];
-          }
-          ./go-task-setup-hook.sh)
+          name = "go-task-setup-hook.sh";
+          propagatedBuildInputs = [ wrappedPackage ];
+        } ./go-task-setup-hook.sh)
       ];
-      nixago.requests = lib.mkIf (cfg.taskfile != {}) [
+      nixago.requests = lib.mkIf (cfg.taskfile != { }) [
         {
           data = cfg.taskfile;
           output = "taskfile.yml";
           format = "yaml";
           engine = inputs.nixago.engines.${system}.cue {
-            files = [./taskfile.cue];
+            files = [ ./taskfile.cue ];
           };
         }
       ];

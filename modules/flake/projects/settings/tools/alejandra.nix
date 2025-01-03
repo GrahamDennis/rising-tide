@@ -1,17 +1,19 @@
 # rising-tide flake context
-{lib, ...}:
+{ lib, ... }:
 # project tools context
 {
   config,
   toolsPkgs,
   ...
-}: let
+}:
+let
   cfg = config.tools.alejandra;
   alejandraExe = lib.getExe cfg.package;
-in {
+in
+{
   options.tools.alejandra = {
     enable = lib.mkEnableOption "Enable alejandra integration";
-    package = lib.mkPackageOption toolsPkgs "alejandra" {};
+    package = lib.mkPackageOption toolsPkgs "alejandra" { };
   };
 
   config = lib.mkIf cfg.enable {
@@ -21,7 +23,7 @@ in {
         config = {
           formatter.alejandra = {
             command = alejandraExe;
-            includes = ["*.nix"];
+            includes = [ "*.nix" ];
           };
         };
       };
@@ -30,7 +32,7 @@ in {
         taskfile.tasks = {
           "tools:alejandra" = {
             desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
-            cmds = ["${alejandraExe} {{.CLI_ARGS}}"];
+            cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
           };
         };
       };

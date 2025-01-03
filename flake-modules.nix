@@ -1,9 +1,11 @@
 # rising tide flake context
-{injector, ...}: let
+{ injector, ... }:
+let
   modules.flake = builtins.mapAttrs (name: injector.injectModule) {
     project = ./modules/flake/projects/project.nix;
   };
-in {
+in
+{
   flake = {
     inherit modules;
     lib = injector.inject ./lib;
@@ -13,14 +15,16 @@ in {
     };
   };
 
-  perSystem = {
-    pkgs,
-    injector',
-    ...
-  }: {
-    # FIXME: temporary
-    packages.default = pkgs.emptyFile;
+  perSystem =
+    {
+      pkgs,
+      injector',
+      ...
+    }:
+    {
+      # FIXME: temporary
+      packages.default = pkgs.emptyFile;
 
-    devShells.default = injector'.inject ./devShell.nix;
-  };
+      devShells.default = injector'.inject ./devShell.nix;
+    };
 }

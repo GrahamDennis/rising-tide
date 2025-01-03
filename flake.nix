@@ -10,37 +10,53 @@
     nixago.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    flake-parts,
-    systems,
-    ...
-  }: let
-    root = ./.;
-    lib = nixpkgs.lib;
-    risingTideBootstrapLib = import (root + "/lib/bootstrap.nix") {inherit lib;};
-    bootstrapInjector = risingTideBootstrapLib.mkInjector "bootstrapInjector" {
-      args = {inherit root lib inputs self risingTideBootstrapLib;};
-    };
-  in
-    flake-parts.lib.mkFlake {
-      inherit inputs;
-    } ({self, ...}: let
-      modules.flake = {
-        risingTideLib = bootstrapInjector.injectModule ./modules/flake/risingTideLib.nix;
-        injector = bootstrapInjector.injectModule ./modules/flake/injector.nix;
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+      systems,
+      ...
+    }:
+    let
+      root = ./.;
+      lib = nixpkgs.lib;
+      risingTideBootstrapLib = import (root + "/lib/bootstrap.nix") { inherit lib; };
+      bootstrapInjector = risingTideBootstrapLib.mkInjector "bootstrapInjector" {
+        args = {
+          inherit
+            root
+            lib
+            inputs
+            self
+            risingTideBootstrapLib
+            ;
+        };
       };
-    in {
-      imports = [
-        inputs.flake-parts.flakeModules.modules
-        modules.flake.injector
-        modules.flake.risingTideLib
-        ./flake-modules.nix
-      ];
-      systems = import systems;
-      flake = {
-        inherit modules self;
-      };
-    });
+    in
+    flake-parts.lib.mkFlake
+      {
+        inherit inputs;
+      }
+      (
+        { self, ... }:
+        let
+          modules.flake = {
+            risingTideLib = bootstrapInjector.injectModule ./modules/flake/risingTideLib.nix;
+            injector = bootstrapInjector.injectModule ./modules/flake/injector.nix;
+          };
+        in
+        {
+          imports = [
+            inputs.flake-parts.flakeModules.modules
+            modules.flake.injector
+            modules.flake.risingTideLib
+            ./flake-modules.nix
+          ];
+          systems = import systems;
+          flake = {
+            inherit modules self;
+          };
+        }
+      );
 }

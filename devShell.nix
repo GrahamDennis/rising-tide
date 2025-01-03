@@ -9,7 +9,8 @@
   pkgs,
   system,
   ...
-}: let
+}:
+let
   batsWithLibraries = pkgs.bats.withLibraries (p: [
     p.bats-support
     p.bats-assert
@@ -20,17 +21,17 @@
     relativePaths.toRoot = "./.";
     systems = import inputs.systems;
     settings.tools = {
-      alejandra.enable = true;
+      nixfmt-rfc-style.enable = true;
       nix-unit.enable = true;
       go-task = {
         enable = true;
         taskfile.tasks = {
-          check.deps = ["check:flake"];
+          check.deps = [ "check:flake" ];
           "check:flake" = {
             desc = "Check flake";
-            cmds = ["nix flake check"];
+            cmds = [ "nix flake check" ];
           };
-          test.deps = ["test:integration-tests"];
+          test.deps = [ "test:integration-tests" ];
           "test:integration-tests" = {
             desc = "Run integration tests";
             vars.INTEGRATION_TESTS.sh = ''
@@ -61,16 +62,22 @@
               ''
             ];
           };
-          "ci:check".deps = ["check" "test"];
+          "ci:check".deps = [
+            "check"
+            "test"
+          ];
         };
       };
       treefmt.enable = true;
     };
   };
 in
-  pkgs.mkShell {
-    name = "rising-tide-root";
-    nativeBuildInputs =
-      (with pkgs; [nix-unit batsWithLibraries])
-      ++ project.tools.${system};
-  }
+pkgs.mkShell {
+  name = "rising-tide-root";
+  nativeBuildInputs =
+    (with pkgs; [
+      nix-unit
+      batsWithLibraries
+    ])
+    ++ project.tools.${system};
+}
