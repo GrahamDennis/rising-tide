@@ -15,7 +15,7 @@ in
 {
   options.tools.shellcheck = {
     enable = lib.mkEnableOption "Enable shellcheck integration";
-    package = lib.mkPackageOption toolsPkgs "shellcheck" { };
+    package = lib.mkPackageOption toolsPkgs "shellcheck" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
       type = settingsFormat.type;
       default = { };

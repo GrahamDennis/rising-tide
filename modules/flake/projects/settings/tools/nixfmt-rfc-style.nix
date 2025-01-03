@@ -13,7 +13,7 @@ in
 {
   options.tools.nixfmt-rfc-style = {
     enable = lib.mkEnableOption "Enable nixfmt-rfc-style integration";
-    package = lib.mkPackageOption toolsPkgs "nixfmt-rfc-style" { };
+    package = lib.mkPackageOption toolsPkgs "nixfmt-rfc-style" { pkgsText = "toolsPkgs"; };
   };
 
   config = lib.mkIf cfg.enable {

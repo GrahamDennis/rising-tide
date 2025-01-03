@@ -15,7 +15,7 @@ in
 {
   options.tools.mypy = {
     enable = lib.mkEnableOption "Enable mypy integration";
-    package = lib.mkPackageOption toolsPkgs "mypy" { };
+    package = lib.mkPackageOption toolsPkgs "mypy" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
       type = settingsFormat.type;
       default = { };

@@ -19,7 +19,7 @@ in
 {
   options.tools.treefmt = {
     enable = lib.mkEnableOption "Enable treefmt integration";
-    package = lib.mkPackageOption toolsPkgs "treefmt" { };
+    package = lib.mkPackageOption toolsPkgs "treefmt" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
       type = settingsFormat.type;
       default = { };

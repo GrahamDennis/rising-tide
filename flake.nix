@@ -53,6 +53,7 @@
             modules.flake.risingTideLib
             ./flake-modules.nix
           ];
+          debug = true;
           systems = import systems;
           flake = {
             inherit modules self;

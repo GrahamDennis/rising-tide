@@ -14,7 +14,7 @@ in
 {
   options.tools.shfmt = {
     enable = lib.mkEnableOption "Enable shfmt integration";
-    package = lib.mkPackageOption toolsPkgs "shfmt" { };
+    package = lib.mkPackageOption toolsPkgs "shfmt" { pkgsText = "toolsPkgs"; };
     styleOptions = lib.mkOption {
       type = types.listOf types.str;
       default = [ ];

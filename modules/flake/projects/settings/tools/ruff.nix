@@ -15,7 +15,7 @@ in
 {
   options.tools.ruff = {
     enable = lib.mkEnableOption "Enable ruff integration";
-    package = lib.mkPackageOption toolsPkgs "ruff" { };
+    package = lib.mkPackageOption toolsPkgs "ruff" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
       type = settingsFormat.type;
       default = { };

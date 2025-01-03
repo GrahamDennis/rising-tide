@@ -13,7 +13,7 @@ in
 {
   options.tools.alejandra = {
     enable = lib.mkEnableOption "Enable alejandra integration";
-    package = lib.mkPackageOption toolsPkgs "alejandra" { };
+    package = lib.mkPackageOption toolsPkgs "alejandra" { pkgsText = "toolsPkgs"; };
   };
 
   config = lib.mkIf cfg.enable {

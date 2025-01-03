@@ -18,7 +18,7 @@ in
 {
   options.tools.uv = {
     enable = lib.mkEnableOption "Enable uv integration";
-    package = lib.mkPackageOption toolsPkgs "uv" { };
+    package = lib.mkPackageOption toolsPkgs "uv" { pkgsText = "toolsPkgs"; };
   };
 
   config = lib.mkIf cfg.enable {

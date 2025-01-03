@@ -35,6 +35,7 @@ in
     tools.pkgs = lib.mkOption {
       type = types.pkgs;
       default = withSystem system ({ pkgs, ... }: pkgs);
+      defaultText = lib.literalMD "`pkgs` defined by rising-tide";
     };
     tools.all = lib.mkOption {
       type = types.listOf types.package;

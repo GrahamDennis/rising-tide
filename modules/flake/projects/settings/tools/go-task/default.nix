@@ -24,7 +24,7 @@ in
 {
   options.tools.go-task = {
     enable = lib.mkEnableOption "Enable go-task integration";
-    package = lib.mkPackageOption toolsPkgs "go-task" { };
+    package = lib.mkPackageOption toolsPkgs "go-task" { pkgsText = "toolsPkgs"; };
     taskfile = lib.mkOption {
       type = settingsFormat.type;
       default = { };

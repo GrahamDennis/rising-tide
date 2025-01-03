@@ -37,6 +37,11 @@ let
           };
         };
         systems = lib.mkOption {
+          description = ''
+            All the system types supported by this project.
+
+            In other words, all valid values for `system` in e.g. `settings.<system>` and `tools.<system>`.
+          '';
           type = types.listOf types.str;
         };
         defaultSettings = lib.mkOption {

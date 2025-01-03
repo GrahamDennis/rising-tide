@@ -14,7 +14,7 @@ in
 {
   options.tools.lefthook = {
     enable = lib.mkEnableOption "Enable left-hook integration";
-    package = lib.mkPackageOption toolsPkgs "lefthook" { };
+    package = lib.mkPackageOption toolsPkgs "lefthook" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
       type = settingsFormat.type;
       default = { };

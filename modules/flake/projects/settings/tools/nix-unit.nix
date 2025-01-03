@@ -13,7 +13,7 @@ in
 {
   options.tools.nix-unit = {
     enable = lib.mkEnableOption "Enable nix-unit integration";
-    package = lib.mkPackageOption toolsPkgs "nix-unit" { };
+    package = lib.mkPackageOption toolsPkgs "nix-unit" { pkgsText = "toolsPkgs"; };
     testsFlakeAttrPath = lib.mkOption {
       type = lib.types.str;
       default = "tests";
