@@ -9,6 +9,7 @@ let
       lefthook = {
         enable = true;
         config = {
+          assert_lefthook_installed = true;
           pre-commit = {
             commands = {
               check = {
@@ -16,8 +17,6 @@ let
                 stage_fixed = true;
               };
 
-
-              
             };
           };
         };

@@ -22,15 +22,23 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    tools.nixago.requests = lib.mkIf (cfg.config != { }) [
-      {
-        data = cfg.config;
-        hook.extra = ''
-          ${lefthookExe} install
-        '';
-        output = "lefthook.yml";
-        format = "yaml";
-      }
-    ];
+    tools = {
+      lefthook.config.rc = lib.mkOptionDefault (
+        toolsPkgs.writeShellScript "export-lefthook-path" ''
+          export LEFTHOOK_BIN=${lefthookExe}
+        ''
+      );
+      nixago.requests = [
+        {
+          data = cfg.config;
+          hook.extra = ''
+            ${lefthookExe} install
+          '';
+          output = "lefthook.yml";
+          format = "yaml";
+        }
+      ];
+
+    };
   };
 }
