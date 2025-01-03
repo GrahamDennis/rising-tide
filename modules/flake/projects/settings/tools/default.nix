@@ -24,6 +24,7 @@ in
     ./shellcheck.nix
     ./shfmt.nix
     ./treefmt.nix
+    ./vscode.nix
   ];
   options = {
     tools.pkgs = lib.mkOption {
