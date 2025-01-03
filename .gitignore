@@ -22,6 +22,9 @@ uv.lock
 result
 result-*
 
+# Ignore build directories
+build/
+
 # nixago: ignore-linked-files
 /.lefthook.yml
 /taskfile.yml

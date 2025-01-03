@@ -34,7 +34,6 @@ in
               (toString configFile)
               "check"
               "--fix"
-              "."
             ];
             includes = [
               "*.py"
@@ -47,7 +46,6 @@ in
               "--config"
               (toString configFile)
               "format"
-              "."
             ];
             includes = [
               "*.py"
