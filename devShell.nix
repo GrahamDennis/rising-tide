@@ -24,12 +24,6 @@ let
       nix-unit.enable = true;
       go-task = {
         taskfile.tasks = {
-          # FIXME: Should this be a check dependency? What is "check" vs "test" vs ...?
-          check.deps = [ "check:flake" ];
-          "check:flake" = {
-            desc = "Check flake";
-            cmds = [ "nix flake check" ];
-          };
           test.deps = [ "test:integration-tests" ];
           "test:integration-tests" = {
             desc = "Run integration tests";
