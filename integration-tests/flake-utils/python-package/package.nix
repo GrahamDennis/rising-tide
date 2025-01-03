@@ -17,6 +17,7 @@ pythonPackages.buildPythonPackage rec {
   optional-dependencies = {
     dev = with pythonPackages; [
       pytest
+      pytest-cov
     ];
   };
 

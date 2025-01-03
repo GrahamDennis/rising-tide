@@ -13,6 +13,7 @@ uv.lock
 .ruff_cache/
 .mypy_cache/
 .pytest_cache/
+.coverage
 
 # Virtual environments
 .venv

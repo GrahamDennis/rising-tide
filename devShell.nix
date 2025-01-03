@@ -50,7 +50,6 @@ let
             cmds = [
               ''
                 cd "integration-tests/{{.INTEGRATION_TEST}}"
-                git clean -fX .
                 nix develop --no-write-lock-file --command ./test.bats
               ''
             ];

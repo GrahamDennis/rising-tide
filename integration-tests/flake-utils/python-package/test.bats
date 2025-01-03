@@ -6,12 +6,12 @@ setup() {
   bats_load_library bats-file
 
   mkdir -p build
-  cp -r src build/
+  cp -r src tests build/
 }
 
 teardown() {
-  rm -rf src
-  mv build/src src
+  rm -rf src tests
+  mv build/{src,tests} .
 }
 
 @test "can import and run python_package" {
@@ -38,17 +38,22 @@ teardown() {
 }
 
 @test "check task fails on poorly named functions" {
-  # Fail if the check task would modify files
   sed -i -e 's/def bar/def bAr/' src/python_package/__init__.py
-  run env CI=1 task check
+  run task check
   assert_failure
   assert_output --partial "N802"
 }
 
 @test "check fails on incorrect type hints" {
-  # Fail if the check task would modify files
   sed -i -e 's/def hello() -> str:/def hello() -> int:/' src/python_package/__init__.py
-  run env CI=1 task check
+  run task check
   assert_failure
   assert_output --partial "[return-value]"
+}
+
+@test "test fails on test failure" {
+  sed -i -e 's/Hello from/Goodbye from/g' tests/test_trivial.py
+  run task test
+  assert_failure
+  assert_output --partial "assert 'Hello from python-package!' == 'Goodbye from python-package!'"
 }

@@ -44,6 +44,29 @@ let
           }
         ];
       };
+      pytest = {
+        config = {
+          markers = [ "integration" ];
+        };
+        coverage.config = {
+          run.branch = true;
+          run.source = [ "src/" ];
+          report = {
+            exclude_also = [
+              # don't complain about conditional type checking imports
+              "if TYPE_CHECKING:"
+              # Don't complain about abstract methods, they aren't run:
+              "@(abc\\.)?abstractmethod"
+              # Don't complain about assert_never calls, as they aren't run:
+              "assert_never\\("
+            ];
+            show_missing = true;
+            skip_covered = true;
+            skip_empty = true;
+          };
+
+        };
+      };
       ruff.config = {
         # A longer default line length. 79/80 is too short.
         line-length = 120;
@@ -82,6 +105,10 @@ let
   pythonProjectConfig = {
     tools = {
       mypy.enable = true;
+      pytest = {
+        enable = true;
+        coverage.enable = true;
+      };
       ruff.enable = true;
       uv.enable = true;
     };
