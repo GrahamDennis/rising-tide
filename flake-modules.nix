@@ -1,8 +1,9 @@
 # rising tide flake context
 { injector, ... }:
 let
-  modules.flake = builtins.mapAttrs (name: injector.injectModule) {
+  modules.flake = injector.injectModules {
     project = ./modules/flake/projects/project.nix;
+    risingTideProjectDefaultSettings = ./modules/flake/projects/settings/conventions/rising-tide.nix;
   };
 in
 {

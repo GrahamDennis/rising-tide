@@ -1,4 +1,5 @@
 {
+  injector,
   lib,
   risingTideBootstrapLib,
   self,
@@ -27,11 +28,7 @@ let
         );
     in
     recurse [ ];
-in
-risingTideBootstrapLib
-// {
-  inherit filterAttrsRecursive;
-  mkProject =
+  mkBaseProject =
     projectModule:
     (lib.evalModules {
       modules = [
@@ -40,6 +37,16 @@ risingTideBootstrapLib
         { relativePaths.toRoot = lib.mkDefault "./."; }
       ];
     }).config;
+in
+risingTideBootstrapLib
+// {
+  inherit filterAttrsRecursive mkBaseProject;
+  mkProject =
+    projectModule:
+    mkBaseProject {
+      imports = [ projectModule ];
+      config.defaultSettings = self.modules.flake.risingTideProjectDefaultSettings;
+    };
   sanitizeBashIdentifier = lib.strings.sanitizeDerivationName;
   types = {
     subpath = types.str // {

@@ -13,7 +13,7 @@ in
 {
   config,
   toolsPkgs,
-  relativePaths,
+  project,
   system,
   ...
 }:
@@ -33,13 +33,13 @@ in
     tools.all = lib.mkIf (cfg.requests != [ ]) [
       (
         let
-          bashSafeName = risingTideLib.sanitizeBashIdentifier "project${relativePaths.toRoot}SetupHook";
+          bashSafeName = risingTideLib.sanitizeBashIdentifier "project${project.relativePaths.toRoot}SetupHook";
         in
         toolsPkgs.makeSetupHook {
-          name = "${relativePaths.toRoot}-setup-hook";
+          name = "${project.relativePaths.toRoot}-setup-hook";
           substitutions = {
             inherit bashSafeName;
-            relativePathToRoot = relativePaths.toRoot;
+            relativePathToRoot = project.relativePaths.toRoot;
             nixagoHook =
               toolsPkgs.writeShellScript "nixago-setup-hook"
                 (inputs.nixago.lib.${system}.makeAll cfg.requests).shellHook;

@@ -68,7 +68,7 @@ in
         relativePaths.toRoot = ".";
         systems = [ "x86_64-linux" ];
         subprojects.subproject = {
-          name = "subproject";
+          relativePaths.toParentProject = "./subproject";
         };
       }
       {
@@ -87,8 +87,8 @@ in
         relativePaths.toRoot = ".";
         systems = [ "x86_64-linux" ];
         subprojects.subproject = {
-          name = "subproject";
           systems = [ "aarch64-linux" ];
+          relativePaths.toParentProject = "./subproject";
         };
       }
       {
@@ -99,4 +99,27 @@ in
           systems = [ "aarch64-linux" ];
         };
       };
+
+  "test default settings are inherited" =
+    expectRenderedConfig
+      {
+        name = "root";
+        relativePaths.toRoot = ".";
+        defaultSettings.tools.treefmt.enable = true;
+        systems = [ "x86_64-linux" ];
+        subprojects.subproject = {
+          relativePaths.toParentProject = "./subproject";
+        };
+      }
+      {
+        name = "root";
+        systems = [ "x86_64-linux" ];
+        settings.x86_64-linux.tools.treefmt.enable = true;
+        subprojects.subproject = {
+          name = "subproject";
+          systems = [ "x86_64-linux" ];
+          settings.x86_64-linux.tools.treefmt.enable = true;
+        };
+      };
+
 }

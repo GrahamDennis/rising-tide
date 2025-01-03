@@ -21,11 +21,10 @@ let
     relativePaths.toRoot = "./.";
     systems = import inputs.systems;
     settings.tools = {
-      nixfmt-rfc-style.enable = true;
       nix-unit.enable = true;
       go-task = {
-        enable = true;
         taskfile.tasks = {
+          # FIXME: Should this be a check dependency? What is "check" vs "test" vs ...?
           check.deps = [ "check:flake" ];
           "check:flake" = {
             desc = "Check flake";
@@ -68,7 +67,6 @@ let
           ];
         };
       };
-      treefmt.enable = true;
     };
   };
 in

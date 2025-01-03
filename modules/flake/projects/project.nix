@@ -55,7 +55,6 @@ let
             flake-parts-lib.mkPerSystemType (
               {
                 system,
-                config,
                 ...
               }:
               {
@@ -106,7 +105,9 @@ let
                   ];
                   specialArgs = {
                     inherit system;
-                    inherit (config) relativePaths;
+                    project = {
+                      inherit (config) relativePaths name;
+                    };
                   };
                 }).config;
             in
