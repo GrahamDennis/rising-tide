@@ -31,9 +31,7 @@ in
     };
     inheritedTasks = lib.mkOption {
       type = types.listOf types.str;
-      default = builtins.filter (name: !(lib.hasInfix ":" name)) (
-        builtins.attrNames (cfg.taskfile.tasks or { })
-      );
+      default = builtins.attrNames (cfg.taskfile.tasks or { });
     };
   };
 

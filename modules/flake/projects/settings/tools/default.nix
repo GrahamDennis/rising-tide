@@ -22,6 +22,7 @@ in
     ./nixfmt-rfc-style.nix
     ./nix-unit.nix
     ./shellcheck.nix
+    ./shfmt.nix
     ./treefmt.nix
   ];
   options = {

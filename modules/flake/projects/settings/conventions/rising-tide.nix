@@ -10,6 +10,16 @@ let
         enable = true;
         config.external-sources = true;
       };
+      shfmt = {
+        enable = true;
+        styleOptions = [
+          "--simplify"
+          "--indent"
+          "2"
+          "--case-indent"
+          "--binary-next-line"
+        ];
+      };
       treefmt.enable = true;
     };
   };
