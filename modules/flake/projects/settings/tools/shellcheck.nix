@@ -44,7 +44,7 @@ in
       go-task = {
         enable = true;
         taskfile.tasks = {
-          "tools:shellcheck" = {
+          "tool:shellcheck" = {
             desc = "Run shellcheck. Additional CLI arguments after `--` are forwarded to shellcheck";
             cmds = [ "${shellCheckExe} --rcfile ${toString configFile} {{.CLI_ARGS}}" ];
           };

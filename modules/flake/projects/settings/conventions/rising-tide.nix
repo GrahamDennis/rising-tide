@@ -28,6 +28,32 @@ let
   allProjectsConfig = {
     tools = {
       go-task.enable = true;
+      ruff.config = {
+        # A longer default line length. 79/80 is too short.
+        line-length = 120;
+        lint = {
+          extend-select = [
+            "C4"
+            "E"
+            "F"
+            "G"
+            "I"
+            "N"
+            "NPY"
+            "PD"
+            "PL"
+            "PT"
+            "RUF"
+            "SIM"
+            "TCH"
+            "W"
+          ];
+        };
+        lint.extend-per-file-ignores = {
+          # Ignore PLR2004 (magic constants) in tests
+          "tests/**" = [ "PLR2004" ];
+        };
+      };
       shfmt.styleOptions = [
         "--simplify"
         "--indent"
@@ -38,7 +64,10 @@ let
     };
   };
   pythonProjectConfig = {
-    tools.uv.enable = true;
+    tools = {
+      ruff.enable = true;
+      uv.enable = true;
+    };
   };
 in
 {

@@ -20,8 +20,8 @@ setup() {
   assert_success
 }
 
-@test "can execute tools:treefmt task" {
-  run task tools:treefmt -- --help
+@test "can execute tool:treefmt task" {
+  run task tool:treefmt -- --help
   assert_success
   assert_output --partial "One CLI to format your repo"
 }

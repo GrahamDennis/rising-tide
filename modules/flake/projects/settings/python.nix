@@ -3,7 +3,6 @@
 # project settings context
 { config, ... }:
 let
-  inherit (lib) types;
   cfg = config.python;
 in
 {
@@ -13,12 +12,6 @@ in
       callPackageFunction = lib.mkOption {
         type = risingTideLib.types.callPackageFunction;
       };
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
-    tools = {
-      uv.enable = true;
     };
   };
 }

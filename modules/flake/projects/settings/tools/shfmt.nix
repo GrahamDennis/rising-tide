@@ -40,7 +40,7 @@ in
       go-task = {
         enable = true;
         taskfile.tasks = {
-          "tools:shfmt" = {
+          "tool:shfmt" = {
             desc = "Run shfmt. Additional CLI arguments after `--` are forwarded to shfmt";
             cmds = [ "${shfmtExe} ${lib.concatStringsSep " " cfg.styleOptions} {{.CLI_ARGS}}" ];
           };

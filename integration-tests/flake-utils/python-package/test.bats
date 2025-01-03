@@ -16,3 +16,15 @@ setup() {
   run python -c "import requests"
   assert_success
 }
+
+@test "check task succeeds" {
+  # Fail if the check task would modify files
+  run env CI=1 task check
+  assert_success
+}
+
+@test "can run ruff" {
+  run task tool:ruff -- help
+  assert_success
+  assert_output --partial "Ruff: An extremely fast Python linter and code formatter."
+}

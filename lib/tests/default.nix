@@ -138,7 +138,6 @@
           settings.x86_64-linux = {
             tools = { };
           };
-          # tools = {};
         };
       };
     };

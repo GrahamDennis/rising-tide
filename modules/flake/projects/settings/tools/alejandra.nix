@@ -30,7 +30,7 @@ in
       go-task = {
         enable = true;
         taskfile.tasks = {
-          "tools:alejandra" = {
+          "tool:alejandra" = {
             desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
             cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
           };

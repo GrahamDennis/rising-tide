@@ -22,6 +22,7 @@ in
     ./nixago
     ./nixfmt-rfc-style.nix
     ./nix-unit.nix
+    ./ruff.nix
     ./shellcheck.nix
     ./shfmt.nix
     ./treefmt.nix

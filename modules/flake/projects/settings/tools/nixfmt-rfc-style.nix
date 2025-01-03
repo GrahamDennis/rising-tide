@@ -30,7 +30,7 @@ in
       go-task = {
         enable = true;
         taskfile.tasks = {
-          "tools:nixfmt-rfc-style" = {
+          "tool:nixfmt-rfc-style" = {
             desc = "Run nixfmt-rfc-style. Additional CLI arguments after `--` are forwarded";
             cmds = [ "${nixfmtExe} {{.CLI_ARGS}}" ];
           };
