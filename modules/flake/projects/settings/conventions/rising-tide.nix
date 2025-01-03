@@ -6,6 +6,10 @@ let
   rootProjectConfig = {
     tools = {
       nixfmt-rfc-style.enable = true;
+      shellcheck = {
+        enable = true;
+        config.external-sources = true;
+      };
       treefmt.enable = true;
     };
   };

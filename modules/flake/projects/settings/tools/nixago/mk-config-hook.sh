@@ -27,7 +27,7 @@ findconfig() {
 function @bashSafeName@PreShell() {
   echo "Executing @bashSafeName@ (pre-shell)"
 
-  pushd "$(dirname $(findconfig flake.nix))" >/dev/null || return
+  pushd "$(dirname "$(findconfig flake.nix)")" >/dev/null || return
   cd "@relativePathToRoot@" || return
   @nixagoHook@
   popd >/dev/null || return
