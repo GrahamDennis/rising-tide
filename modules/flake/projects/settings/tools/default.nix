@@ -18,6 +18,7 @@ in
   imports = builtins.map injector.injectModule [
     ./alejandra.nix
     ./go-task
+    ./lefthook.nix
     ./nixago
     ./nixfmt-rfc-style.nix
     ./nix-unit.nix

@@ -1,24 +1,26 @@
 # rising-tide flake context
-{lib, ...}:
+{ lib, ... }:
 # project settings context
 {
   config,
   toolsPkgs,
   ...
-}: let
+}:
+let
   cfg = config.tools.vscode;
-  jsonFormat = toolsPkgs.formats.json {};
-in {
-  options.vscode = {
+  settingsFormat = toolsPkgs.formats.json { };
+in
+{
+  options.tools.vscode = {
     enable = lib.mkEnableOption "Enable VSCode settings";
     settings = lib.mkOption {
-      type = jsonFormat.type;
-      default = {};
+      type = settingsFormat.type;
+      default = { };
     };
   };
 
   config = lib.mkIf cfg.enable {
-    nixagoRequests = lib.mkIf (cfg.settings != {}) [
+    tools.nixago.requests = lib.mkIf (cfg.settings != { }) [
       {
         data = cfg.settings;
         output = ".vscode/settings.json";

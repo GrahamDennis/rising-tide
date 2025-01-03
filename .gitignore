@@ -6,4 +6,5 @@ result-*
 .task/
 
 # nixago: ignore-linked-files
+/lefthook.yml
 /taskfile.yml

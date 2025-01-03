@@ -15,7 +15,7 @@
 let
   inherit (lib) types;
   cfg = config.tools.go-task;
-  yamlFormat = toolsPkgs.formats.yaml { };
+  settingsFormat = toolsPkgs.formats.yaml { };
   wrappedPackage = toolsPkgs.writeScriptBin "task" ''
     # Temporary workaround until https://github.com/go-task/task/pull/1974 gets merged
     exec ${cfg.package}/bin/task --concurrency 1 "$@"
@@ -26,7 +26,7 @@ in
     enable = lib.mkEnableOption "Enable go-task integration";
     package = lib.mkPackageOption toolsPkgs "go-task" { };
     taskfile = lib.mkOption {
-      type = yamlFormat.type;
+      type = settingsFormat.type;
       default = { };
     };
     inheritedTasks = lib.mkOption {

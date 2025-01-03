@@ -6,26 +6,37 @@ let
   rootProjectConfig = {
     tools = {
       nixfmt-rfc-style.enable = true;
-      shellcheck = {
+      lefthook = {
         enable = true;
-        config.external-sources = true;
+        config = {
+          pre-commit = {
+            commands = {
+              check = {
+                run = "${lib.getExe' config.tools.go-task.package "task"} check";
+                stage_fixed = true;
+              };
+
+
+              
+            };
+          };
+        };
       };
-      shfmt = {
-        enable = true;
-        styleOptions = [
-          "--simplify"
-          "--indent"
-          "2"
-          "--case-indent"
-          "--binary-next-line"
-        ];
-      };
-      treefmt.enable = true;
+      shellcheck.enable = true;
+      shfmt.enable = true;
+      vscode.enable = true;
     };
   };
   allProjectsConfig = {
     tools = {
-      go-task.enable = true;
+      shellcheck.config.external-sources = true;
+      shfmt.styleOptions = [
+        "--simplify"
+        "--indent"
+        "2"
+        "--case-indent"
+        "--binary-next-line"
+      ];
     };
   };
 in
