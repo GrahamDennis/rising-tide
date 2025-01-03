@@ -112,8 +112,10 @@
         relativePaths.toRoot = "./.";
         subprojects = {};
         systems = ["x86_64-linux"];
-        allSystems.x86_64-linux = {};
-        tools.x86_64-linux = {};
+        settings.x86_64-linux = {
+          tools = {};
+        };
+        # tools = {};
       };
     };
   };

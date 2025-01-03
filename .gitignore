@@ -4,5 +4,6 @@ result-*
 
 # Taskfile caches
 .task/
+
 # nixago: ignore-linked-files
 /taskfile.yml

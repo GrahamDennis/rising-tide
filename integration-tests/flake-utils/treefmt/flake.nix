@@ -18,7 +18,7 @@
       name = "treefmt-integration-test";
       relativePaths.toRoot = "./.";
       systems = flake-utils.lib.defaultSystems;
-      perSystem.tools.treefmt = {
+      settings.tools.treefmt = {
         enable = true;
       };
     };
@@ -28,8 +28,7 @@
     in {
       devShells.default = pkgs.mkShell {
         name = "treefmt-integration-test";
-        nativeBuildInputs =
-          project.tools.${system}.nativeCheckInputs;
+        nativeBuildInputs = project.tools.${system};
       };
     });
 }

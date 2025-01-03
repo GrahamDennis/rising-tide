@@ -52,6 +52,7 @@ in
         expr,
       }: {
         inherit expected;
+        unfilteredExpr = expr;
         expr = filterAttrsRecursive (path: _value: lib.hasAttrByPath path expected) expr;
       };
     in {

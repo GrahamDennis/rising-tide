@@ -18,7 +18,7 @@
       name = "go-task-integration-test";
       relativePaths.toRoot = "./.";
       systems = flake-utils.lib.defaultSystems;
-      perSystem.tools.go-task = {
+      settings.tools.go-task = {
         enable = true;
         taskfile.tasks.hello.cmds = ["echo 'Hello, World!'"];
       };
@@ -29,8 +29,7 @@
     in {
       devShells.default = pkgs.mkShell {
         name = "go-task-integration-test";
-        nativeBuildInputs =
-          project.tools.${system}.nativeCheckInputs;
+        nativeBuildInputs = project.tools.${system};
       };
     });
 }

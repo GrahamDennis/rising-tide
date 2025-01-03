@@ -19,18 +19,19 @@
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
     systems = import inputs.systems;
-    perSystem.tools = {
+    settings.tools = {
       alejandra.enable = true;
       nix-unit.enable = true;
       go-task = {
         enable = true;
         taskfile.tasks = {
-          check.deps = ["check:flake" "check:integration-tests"];
+          check.deps = ["check:flake"];
           "check:flake" = {
             desc = "Check flake";
             cmds = ["nix flake check"];
           };
-          "check:integration-tests" = {
+          test.deps = ["test:integration-tests"];
+          "test:integration-tests" = {
             desc = "Run integration tests";
             vars.INTEGRATION_TESTS.sh = ''
               # Find all integration test directories without a ./ prefix
@@ -60,7 +61,7 @@
               ''
             ];
           };
-          "ci:check".deps = ["check"];
+          "ci:check".deps = ["check" "test"];
         };
       };
       treefmt.enable = true;
@@ -71,5 +72,5 @@ in
     name = "rising-tide-root";
     nativeBuildInputs =
       (with pkgs; [nix-unit batsWithLibraries])
-      ++ project.tools.${system}.nativeCheckInputs;
+      ++ project.tools.${system};
   }

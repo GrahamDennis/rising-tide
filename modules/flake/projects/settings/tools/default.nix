@@ -8,7 +8,11 @@
   inherit (lib) types;
 in
   # project per-system tools context
-  {system, ...}: {
+  {
+    system,
+    config,
+    ...
+  }: {
     imports = builtins.map injector.injectModule [
       ./alejandra.nix
       ./go-task
@@ -17,14 +21,18 @@ in
       ./treefmt.nix
     ];
     options = {
-      # FIXME: I'm not sure this is the best name
-      nativeCheckInputs = lib.mkOption {
+      tools.pkgs = lib.mkOption {
+        type = types.pkgs;
+        default = withSystem system ({pkgs, ...}: pkgs);
+      };
+      tools.all = lib.mkOption {
         type = types.listOf types.package;
+        internal = true;
         default = [];
       };
     };
     config = {
-      # the pkgs to be used by tools. By default this will be the rising-tide pkgs
-      _module.args.pkgs = lib.mkOptionDefault (withSystem system ({pkgs, ...}: pkgs));
+      # the pkgs to be used by tools. By default this will be the rising-tide pkgs.
+      _module.args.toolsPkgs = config.tools.pkgs;
     };
   }

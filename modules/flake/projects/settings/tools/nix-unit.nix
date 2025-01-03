@@ -3,15 +3,15 @@
 # project tools context
 {
   config,
-  pkgs,
+  toolsPkgs,
   ...
 }: let
-  cfg = config.nix-unit;
+  cfg = config.tools.nix-unit;
   nix-unitExe = lib.getExe cfg.package;
 in {
-  options.nix-unit = {
+  options.tools.nix-unit = {
     enable = lib.mkEnableOption "Enable nix-unit integration";
-    package = lib.mkPackageOption pkgs "nix-unit" {};
+    package = lib.mkPackageOption toolsPkgs "nix-unit" {};
     testsFlakeAttrPath = lib.mkOption {
       type = lib.types.str;
       default = "tests";
@@ -19,13 +19,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    go-task = {
+    tools.go-task = {
       enable = true;
       taskfile.tasks = {
-        check.deps = ["check:nix-unit"];
-        "check:nix-unit" = {
+        test.deps = ["test:nix-unit"];
+        "test:nix-unit" = {
           desc = "Run nix-unit tests";
-          cmds = ["${nix-unitExe} --flake .#${cfg.testsFlakeAttrPath}"];
+          cmds = ["${nix-unitExe} --show-trace --flake .#${cfg.testsFlakeAttrPath}"];
         };
         "tools:nix-unit" = {
           desc = "Run nix-unit. Additional CLI arguments after `--` are forwarded";
