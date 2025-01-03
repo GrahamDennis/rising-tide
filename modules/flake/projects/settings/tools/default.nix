@@ -25,6 +25,7 @@ in
     ./shellcheck.nix
     ./shfmt.nix
     ./treefmt.nix
+    ./uv
     ./vscode.nix
   ];
   options = {

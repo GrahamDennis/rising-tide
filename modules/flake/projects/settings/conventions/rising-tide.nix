@@ -16,7 +16,6 @@ let
                 run = "${lib.getExe' config.tools.go-task.package "task"} check";
                 stage_fixed = true;
               };
-
             };
           };
         };
@@ -28,7 +27,7 @@ let
   };
   allProjectsConfig = {
     tools = {
-      shellcheck.config.external-sources = true;
+      go-task.enable = true;
       shfmt.styleOptions = [
         "--simplify"
         "--indent"
@@ -38,10 +37,14 @@ let
       ];
     };
   };
+  pythonProjectConfig = {
+    tools.uv.enable = true;
+  };
 in
 {
   config = lib.mkMerge [
     allProjectsConfig
     (lib.mkIf (project.relativePaths.toRoot == "./.") rootProjectConfig)
+    (lib.mkIf (config.python.enable) pythonProjectConfig)
   ];
 }

@@ -34,7 +34,7 @@ in
           hook.extra = ''
             ${lefthookExe} install
           '';
-          output = "lefthook.yml";
+          output = ".lefthook.yml";
           format = "yaml";
         }
       ];

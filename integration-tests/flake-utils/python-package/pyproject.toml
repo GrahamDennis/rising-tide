@@ -1,0 +1,18 @@
+[project]
+name = "python-package"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Graham Dennis", email = "graham.dennis@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "requests"
+]
+
+[project.optional-dependencies]
+dev = [ "pytest", "pytest-cov"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

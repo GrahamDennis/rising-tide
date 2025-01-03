@@ -10,7 +10,10 @@ in
 # project settings context
 { config, ... }:
 {
-  imports = injector.injectModules [ ./tools ];
+  imports = injector.injectModules [
+    ./python.nix
+    ./tools
+  ];
   options = {
     pkgs = lib.mkOption {
       description = "the pkgs to be used by generated packages";

@@ -49,6 +49,10 @@ risingTideBootstrapLib
     };
   sanitizeBashIdentifier = lib.strings.sanitizeDerivationName;
   types = {
+    callPackageFunction = (types.addCheck types.unspecified builtins.isFunction) // {
+      name = "callPackageFunction";
+      description = "A function that can be called by callPackage and returns a package";
+    };
     subpath = types.str // {
       name = "subpath";
       description = "A relative path";

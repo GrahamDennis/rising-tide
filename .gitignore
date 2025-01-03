@@ -1,10 +1,27 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# uv
+uv.lock
+
+# Caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# Virtual environments
+.venv
+.env
+
 # Ignore build outputs from performing a nix-build or `nix build` command
 result
 result-*
 
-# Taskfile caches
-.task/
-
 # nixago: ignore-linked-files
-/lefthook.yml
+/.lefthook.yml
 /taskfile.yml
