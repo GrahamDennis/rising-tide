@@ -18,7 +18,6 @@
     let
       project = rising-tide.lib.mkProject {
         name = "python-package";
-        relativePaths.toRoot = "./.";
         systems = flake-utils.lib.defaultSystems;
         settings.python.enable = true;
       };

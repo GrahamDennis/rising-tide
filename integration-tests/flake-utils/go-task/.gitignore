@@ -1,4 +1,6 @@
 
 # nixago: ignore-linked-files
+/.vscode/extensions.json
+/.vscode/settings.json
 /.lefthook.yml
 /taskfile.yml

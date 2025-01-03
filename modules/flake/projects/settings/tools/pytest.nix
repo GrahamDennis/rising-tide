@@ -9,6 +9,7 @@
   config,
   toolsPkgs,
   system,
+  project,
   ...
 }:
 let
@@ -83,6 +84,29 @@ in
                 };
               })
             ];
+        };
+      };
+      vscode.settings = {
+        "python.testing.pytestEnabled" = true;
+        "python.testing.unittestEnabled" = false;
+        "python.testing.pytestArgs" = [
+          "--config-file=${toString configFile}"
+          "--rootdir=."
+          "./tests"
+        ];
+      };
+    };
+
+    rootProjectSettings = {
+      tools.vscode = {
+        settings = {
+          "python.testing.pytestEnabled" = true;
+          "python.testing.unittestEnabled" = false;
+          "python.testing.pytestArgs" = [
+            "--config-file=${toString configFile}"
+            "--rootdir=."
+            "${project.relativePaths.toRoot}/tests"
+          ];
         };
       };
     };

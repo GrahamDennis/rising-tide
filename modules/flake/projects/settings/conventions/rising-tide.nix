@@ -1,7 +1,12 @@
 # rising-tide flake context
 { lib, ... }:
 # project settings context
-{ config, project, ... }:
+{
+  config,
+  project,
+  toolsPkgs,
+  ...
+}:
 let
   rootProjectConfig = {
     tools = {
@@ -22,7 +27,18 @@ let
       };
       shellcheck.enable = true;
       shfmt.enable = true;
-      vscode.enable = true;
+      vscode = {
+        enable = true;
+        settings = {
+          "nix.enableLanguageServer" = true;
+          "nix.serverPath" = "${lib.getExe toolsPkgs.nil}";
+        };
+        extensions = {
+          recommendations = [
+            "jnoortheen.nix-ide"
+          ];
+        };
+      };
     };
   };
   allProjectsConfig = {

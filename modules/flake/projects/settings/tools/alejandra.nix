@@ -36,6 +36,16 @@ in
           };
         };
       };
+      vscode.settings = {
+        "nix.formatterPath" = alejandraExe;
+        "nix.serverSettings" = {
+          "nil" = {
+            "formatting" = {
+              "command" = [ alejandraExe ];
+            };
+          };
+        };
+      };
     };
   };
 }
