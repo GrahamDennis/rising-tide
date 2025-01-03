@@ -28,6 +28,22 @@ let
   allProjectsConfig = {
     tools = {
       go-task.enable = true;
+      mypy.config = {
+        strict = true;
+        warn_return_any = true;
+        warn_unused_configs = true;
+        disallow_untyped_defs = true;
+        disallow_untyped_calls = true;
+        disallow_incomplete_defs = true;
+        overrides = [
+          {
+            module = "tests.*";
+            disallow_untyped_defs = false;
+            disallow_untyped_calls = false;
+            disallow_incomplete_defs = false;
+          }
+        ];
+      };
       ruff.config = {
         # A longer default line length. 79/80 is too short.
         line-length = 120;
@@ -65,6 +81,7 @@ let
   };
   pythonProjectConfig = {
     tools = {
+      mypy.enable = true;
       ruff.enable = true;
       uv.enable = true;
     };

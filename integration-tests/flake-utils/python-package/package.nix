@@ -6,14 +6,21 @@
 }:
 # python packages context
 { pythonPackages }:
-pythonPackages.buildPythonPackage {
+pythonPackages.buildPythonPackage rec {
   name = project.name;
   pyproject = true;
   src = ./.;
 
   dependencies = with pythonPackages; [ requests ];
 
-  nativeCheckInputs = project.tools.${system};
+  # FIXME: These should end up in the dev shell automatically
+  optional-dependencies = {
+    dev = with pythonPackages; [
+      pytest
+    ];
+  };
+
+  nativeCheckInputs = project.tools.${system} ++ (optional-dependencies.dev);
 
   build-system = with pythonPackages; [ hatchling ];
 }

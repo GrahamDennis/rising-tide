@@ -45,7 +45,7 @@ risingTideBootstrapLib
     projectModule:
     mkBaseProject {
       imports = [ projectModule ];
-      config.defaultSettings = self.modules.flake.risingTideProjectDefaultSettings;
+      config.defaultSettings = self.modules.flake.risingTideConventions;
     };
   sanitizeBashIdentifier = lib.strings.sanitizeDerivationName;
   types = {

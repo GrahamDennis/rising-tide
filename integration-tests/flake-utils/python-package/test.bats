@@ -44,3 +44,11 @@ teardown() {
   assert_failure
   assert_output --partial "N802"
 }
+
+@test "check fails on incorrect type hints" {
+  # Fail if the check task would modify files
+  sed -i -e 's/def hello() -> str:/def hello() -> int:/' src/python_package/__init__.py
+  run env CI=1 task check
+  assert_failure
+  assert_output --partial "[return-value]"
+}

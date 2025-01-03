@@ -19,6 +19,7 @@ in
     ./alejandra.nix
     ./go-task
     ./lefthook.nix
+    ./mypy.nix
     ./nixago
     ./nixfmt-rfc-style.nix
     ./nix-unit.nix

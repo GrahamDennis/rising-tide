@@ -3,7 +3,7 @@
 let
   modules.flake = injector.injectModules {
     project = ./modules/flake/projects/project.nix;
-    risingTideProjectDefaultSettings = ./modules/flake/projects/settings/conventions/rising-tide.nix;
+    risingTideConventions = ./modules/flake/projects/settings/conventions/rising-tide.nix;
   };
 in
 {
