@@ -1,14 +1,12 @@
 [project]
-name = "python-package"
+name = "package-1"
 version = "0.1.0"
 description = "Add your description here"
 authors = [
     { name = "Graham Dennis", email = "graham.dennis@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = [
-    "requests"
-]
+dependencies = []
 
 [project.optional-dependencies]
 dev = [ "pytest", "pytest-cov"]
@@ -18,4 +16,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-hello = "python_package:cli"
+package-1-hello = "package_1:cli"

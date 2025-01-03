@@ -51,9 +51,20 @@ teardown() {
   assert_output --partial "[return-value]"
 }
 
+@test "test task succeeds" {
+  run task test
+  assert_success
+}
+
 @test "test fails on test failure" {
   sed -i -e 's/Hello from/Goodbye from/g' tests/test_trivial.py
   run task test
   assert_failure
   assert_output --partial "assert 'Hello from python-package!' == 'Goodbye from python-package!'"
+}
+
+@test "can run script published from package" {
+  run hello
+  assert_success
+  assert_output "Hello from python-package!"
 }
