@@ -17,7 +17,6 @@
     let
       project = rising-tide.lib.mkProject {
         name = "go-task-integration-test";
-        relativePaths.toRoot = "./.";
         systems = flake-utils.lib.defaultSystems;
         settings.tools.go-task = {
           enable = true;

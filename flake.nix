@@ -5,7 +5,6 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     flake-parts.url = "https://flakehub.com/f/hercules-ci/flake-parts/*";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-    systems.url = "github:nix-systems/default";
     nixago.url = "github:nix-community/nixago";
     nixago.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -15,11 +14,16 @@
       self,
       nixpkgs,
       flake-parts,
-      systems,
       ...
     }:
     let
       root = ./.;
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
       lib = nixpkgs.lib;
       risingTideBootstrapLib = import (root + "/lib/bootstrap.nix") { inherit lib; };
       bootstrapInjector = risingTideBootstrapLib.mkInjector "bootstrapInjector" {
@@ -54,7 +58,7 @@
             ./flake-modules.nix
           ];
           debug = true;
-          systems = import systems;
+          inherit systems;
           flake = {
             inherit modules self;
           };
