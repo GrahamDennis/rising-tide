@@ -176,6 +176,20 @@ let
           default = lib.mapAttrs (_system: perSystemSettings: perSystemSettings.tools.all) config.settings;
           defaultText = lib.literalMD "perSystemSettings.tools.all";
         };
+
+        pythonOverlay = lib.mkOption {
+          description = ''
+            An overlay that contains all python packages for this project and all child projects.
+          '';
+          type = risingTideLib.types.overlay;
+          default = (
+            python-final: _python-prev:
+            let
+              system = python-final.pkgs.system;
+            in
+            config.settings.${system}.python.pythonOverlay
+          );
+        };
       };
     };
 in

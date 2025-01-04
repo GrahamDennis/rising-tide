@@ -22,7 +22,10 @@
           package-1 = import ./projects/package-1/project.nix;
           package-2 = {
             relativePaths.toParentProject = "projects/package-2";
-            settings.python.enable = true;
+            settings.python = {
+              enable = true;
+              callPackageFunction = (import ./projects/package-2 { project = project.subprojects.package-2; });
+            };
           };
         };
       };
@@ -36,10 +39,10 @@
             python-final.callPackage
               (project.subprojects.package-1.settings.${system}.python.callPackageFunction)
               { };
-          package-2 = python-final.callPackage (import ./projects/package-2 {
-            inherit system;
-            project = project.subprojects.package-2;
-          }) { };
+          package-2 =
+            python-final.callPackage
+              (project.subprojects.package-2.settings.${system}.python.callPackageFunction)
+              { };
         };
       nixpkgsOverlay = _final: prev: {
         pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlay ];

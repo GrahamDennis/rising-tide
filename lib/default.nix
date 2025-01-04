@@ -57,6 +57,20 @@ risingTideBootstrapLib
       description = "A relative path";
       merge = loc: defs: lib.path.subpath.normalise (lib.mergeEqualOption loc defs);
     };
+    overlay = lib.mkOptionType {
+      name = "overlay";
+      description = "A package overlay";
+      descriptionClass = "noun";
+      merge =
+        _loc: defs:
+        let
+          list = lib.options.getValues defs;
+        in
+        lib.composeManyExtensions list;
+      emptyValue = {
+        value = { };
+      };
+    };
   };
   tests =
     let

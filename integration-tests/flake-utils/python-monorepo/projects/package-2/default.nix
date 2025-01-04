@@ -1,11 +1,11 @@
 {
   project,
-  system,
   ...
 }:
 # python packages context
 { pythonPackages, lib }:
 let
+  system = pythonPackages.pkgs.system;
   # Create a filtered src set to reduce rebuilds. This could be replaced with just `./.`
   src = lib.fileset.toSource {
     fileset = files;
