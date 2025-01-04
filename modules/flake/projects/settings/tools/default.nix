@@ -45,6 +45,6 @@ in
   };
   config = {
     # the pkgs to be used by tools. By default this will be the rising-tide pkgs.
-    _module.args.toolsPkgs = config.tools.pkgs;
+    _module.args.toolsPkgs = lib.mkOptionDefault config.tools.pkgs;
   };
 }

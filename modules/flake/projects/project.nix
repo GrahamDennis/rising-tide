@@ -27,6 +27,12 @@ let
               config.relativePaths.parentProjectToRoot
               config.relativePaths.toParentProject
             ];
+            defaultText = lib.literalExpression ''
+              lib.path.subpath.join [
+                config.relativePaths.parentProjectToRoot
+                config.relativePaths.toParentProject
+              ]
+            '';
           };
           toParentProject = lib.mkOption {
             type = risingTideLib.types.subpath;
@@ -67,18 +73,19 @@ let
                   [ (injector.injectModule ./settings) ]
                   # Apply default settings
                   ++ [ projectConfig.defaultSettings ]
-                  # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
-                  ++ (lib.mapAttrsToList (
-                    _subprojectName: subprojectConfig:
-                    (subprojectConfig.settings.${system} or emptyChildProjectSettings).parentProjectSettings
-                  ) projectConfig.subprojects)
-                  # Apply root project settings from child projects if this is the root project
-                  ++ (lib.optionals (projectConfig.relativePaths.toRoot == "./.") (
-                    lib.mapAttrsToList (
-                      _subprojectName: subprojectConfig:
-                      (subprojectConfig.settings.${system} or emptyChildProjectSettings).rootProjectSettings
-                    ) projectConfig.subprojects
-                  ));
+                # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
+                # ++ (lib.mapAttrsToList (
+                #   _subprojectName: subprojectConfig:
+                #   (subprojectConfig.settings.${system} or emptyChildProjectSettings).parentProjectSettings
+                # ) projectConfig.subprojects)
+                # # Apply root project settings from child projects if this is the root project
+                # ++ (lib.optionals (projectConfig.relativePaths.toRoot == "./.") (
+                #   lib.mapAttrsToList (
+                #     _subprojectName: subprojectConfig:
+                #     (subprojectConfig.settings.${system} or emptyChildProjectSettings).rootProjectSettings
+                #   ) projectConfig.subprojects
+                # ))
+                ;
                 options = {
                   parentProjectSettings = lib.mkOption {
                     type = types.deferredModule;
@@ -86,10 +93,11 @@ let
                   };
                   rootProjectSettings = lib.mkOption {
                     type = types.deferredModuleWith {
-                      staticModules = lib.mapAttrsToList (
-                        _subprojectName: subprojectConfig:
-                        (subprojectConfig.settings.${system} or emptyChildProjectSettings).rootProjectSettings
-                      ) projectConfig.subprojects;
+                      staticModules = [ ];
+                      # lib.mapAttrsToList (
+                      #   _subprojectName: subprojectConfig:
+                      #   (subprojectConfig.settings.${system} or emptyChildProjectSettings).rootProjectSettings
+                      # ) projectConfig.subprojects;
                     };
                     default = { };
                   };
@@ -116,37 +124,39 @@ let
                   };
                 }).config;
             in
-            lib.genAttrs config.systems generatePerSystemSettings;
+            generatePerSystemSettings;
+          # lib.genAttrs config.systems generatePerSystemSettings;
         };
-        subprojects = lib.mkOption {
-          type = types.attrsOf (
-            types.submoduleWith {
-              modules =
-                let
-                  parentProjectConfig = config;
-                in
-                [
-                  projectModule
-                  # child project context
-                  (
-                    { name, ... }:
-                    {
-                      inherit name;
-                      relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
-                      systems = lib.mkDefault parentProjectConfig.systems;
-                      # Inherit defaults from the parent project
-                      defaultSettings = parentProjectConfig.defaultSettings;
-                    }
-                  )
-                ];
-            }
-          );
-          default = { };
-        };
+        # subprojects = lib.mkOption {
+        #   type = types.attrsOf (
+        #     types.submoduleWith {
+        #       modules =
+        #         let
+        #           parentProjectConfig = config;
+        #         in
+        #         [
+        #           projectModule
+        #           # child project context
+        #           (
+        #             { name, ... }:
+        #             {
+        #               inherit name;
+        #               relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
+        #               systems = lib.mkDefault parentProjectConfig.systems;
+        #               # Inherit defaults from the parent project
+        #               defaultSettings = parentProjectConfig.defaultSettings;
+        #             }
+        #           )
+        #         ];
+        #     }
+        #   );
+        #   default = { };
+        # };
         tools = lib.mkOption {
           type = types.attrsOf (types.listOf types.package);
           readOnly = true;
           default = lib.mapAttrs (_system: perSystemSettings: perSystemSettings.tools.all) config.settings;
+          defaultText = lib.literalMD "perSystemSettings.tools.all";
         };
       };
     };
