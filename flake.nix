@@ -65,7 +65,7 @@
                       modules = [
                         self.modules.flake.project
                         {
-                          options.settings = flake-parts.lib.mkPerSystemOption {
+                          options.defaultSettings = flake-parts.lib.mkPerSystemOption {
                             config = {
                               _module.args.toolsPkgs = pkgs;
                             };

@@ -127,31 +127,32 @@ let
             generatePerSystemSettings;
           # lib.genAttrs config.systems generatePerSystemSettings;
         };
-        # subprojects = lib.mkOption {
-        #   type = types.attrsOf (
-        #     types.submoduleWith {
-        #       modules =
-        #         let
-        #           parentProjectConfig = config;
-        #         in
-        #         [
-        #           projectModule
-        #           # child project context
-        #           (
-        #             { name, ... }:
-        #             {
-        #               inherit name;
-        #               relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
-        #               systems = lib.mkDefault parentProjectConfig.systems;
-        #               # Inherit defaults from the parent project
-        #               defaultSettings = parentProjectConfig.defaultSettings;
-        #             }
-        #           )
-        #         ];
-        #     }
-        #   );
-        #   default = { };
-        # };
+        subprojects = lib.mkOption {
+          type = types.attrsOf (
+            types.submoduleWith {
+              modules =
+                let
+                  parentProjectConfig = config;
+                in
+                [
+                  projectModule
+                  # child project context
+                  (
+                    { name, ... }:
+                    {
+                      inherit name;
+                      relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
+                      systems = lib.mkDefault parentProjectConfig.systems;
+                      # Inherit defaults from the parent project
+                      defaultSettings = parentProjectConfig.defaultSettings;
+                    }
+                  )
+                ];
+            }
+          );
+          default = { };
+          visible = "shallow";
+        };
         tools = lib.mkOption {
           type = types.attrsOf (types.listOf types.package);
           readOnly = true;
