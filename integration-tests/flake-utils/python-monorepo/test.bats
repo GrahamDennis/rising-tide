@@ -40,3 +40,8 @@ setup() {
   assert_success
   assert_output "Hello from package-2!"
 }
+
+@test "can build all packages" {
+  run nix build --no-write-lock-file .#package-1 .#package-2
+  assert_success
+}

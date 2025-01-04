@@ -19,10 +19,7 @@
         name = "python-monorepo-root";
         systems = flake-utils.lib.defaultSystems;
         subprojects = {
-          package-1 = {
-            relativePaths.toParentProject = "projects/package-1";
-            settings.python.enable = true;
-          };
+          package-1 = import ./projects/package-1/project.nix;
           package-2 = {
             relativePaths.toParentProject = "projects/package-2";
             settings.python.enable = true;
@@ -33,18 +30,29 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pythonOverlay = python-final: _python-prev: {
+          package-1 =
+            python-final.callPackage
+              (project.subprojects.package-1.settings.${system}.python.callPackageFunction)
+              { };
+          package-2 = python-final.callPackage (import ./projects/package-2 {
+            inherit system;
+            project = project.subprojects.package-2;
+          }) { };
+        };
+        nixpkgsOverlay = _final: prev: {
+          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlay ];
+        };
+        pkgs = (
+          import nixpkgs {
+            overlays = [ nixpkgsOverlay ];
+            inherit system;
+          }
+        );
         pythonPackages = pkgs.python3.pkgs;
       in
       rec {
-        packages.package-1 = pythonPackages.callPackage (import ./projects/package-1 {
-          inherit system;
-          project = project.subprojects.package-1;
-        }) { };
-        packages.package-2 = pythonPackages.callPackage (import ./projects/package-2 {
-          inherit system;
-          project = project.subprojects.package-2;
-        }) { };
+        packages = { inherit (pythonPackages) package-1 package-2; };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [

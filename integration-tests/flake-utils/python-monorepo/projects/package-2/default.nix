@@ -22,6 +22,8 @@ pythonPackages.buildPythonPackage rec {
   pyproject = true;
   inherit src;
 
+  dependencies = with pythonPackages; [ package-1 ];
+
   # FIXME: These should end up in the dev shell automatically
   optional-dependencies = {
     dev = with pythonPackages; [

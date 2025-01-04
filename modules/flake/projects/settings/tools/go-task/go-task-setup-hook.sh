@@ -6,7 +6,7 @@ function goTaskCheckHook() {
   echo "Executing goTaskCheckHook"
 
   # Run the 'check' and 'test' tasks
-  eval "task --parallel check test"
+  eval "CI=1 task --parallel check test"
 
   echo "Finished executing goTaskCheckHook"
 }

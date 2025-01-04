@@ -75,3 +75,8 @@ teardown() {
   assert_success
   assert_output "Hello from python-package!"
 }
+
+@test "can build all packages" {
+  run nix build --no-write-lock-file .#
+  assert_success
+}
