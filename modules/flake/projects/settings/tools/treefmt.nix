@@ -1,7 +1,6 @@
 # rising-tide flake context
 {
   lib,
-  inputs,
   ...
 }:
 # project tools context

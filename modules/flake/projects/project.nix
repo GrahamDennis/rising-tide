@@ -4,7 +4,6 @@
   lib,
   risingTideLib,
   flake-parts-lib,
-  self,
   ...
 }:
 let

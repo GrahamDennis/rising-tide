@@ -21,6 +21,7 @@
             {
               foo,
               bar,
+              # deadnix: skip
               injector,
             }:
             foo + bar;
@@ -42,6 +43,7 @@
             {
               foo,
               bar,
+              # deadnix: skip
               inj,
             }:
             foo + bar;

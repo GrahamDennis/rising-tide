@@ -1,6 +1,5 @@
 # rising-tide flake context
 {
-  injector,
   lib,
   inputs,
   risingTideLib,

@@ -1,14 +1,12 @@
 # rising-tide flake context
 {
   lib,
-  inputs,
   ...
 }:
 # project settings context
 {
   config,
   toolsPkgs,
-  system,
   project,
   ...
 }:

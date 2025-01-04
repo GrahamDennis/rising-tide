@@ -37,7 +37,7 @@ let
       injectModules =
         modules:
         if builtins.isAttrs modules then
-          builtins.mapAttrs (name: module: injectModule module) modules
+          builtins.mapAttrs (_name: module: injectModule module) modules
         else if builtins.isList modules then
           builtins.map injectModule modules
         else

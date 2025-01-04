@@ -10,7 +10,7 @@ in
   flake = {
     inherit modules;
     lib = injector.inject ./lib;
-    tests = builtins.mapAttrs (name: injector.inject) {
+    tests = builtins.mapAttrs (_name: injector.inject) {
       lib = ./lib/tests;
       project = ./modules/flake/projects/project.tests.nix;
     };

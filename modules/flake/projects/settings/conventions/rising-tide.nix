@@ -10,6 +10,7 @@
 let
   rootProjectConfig = {
     tools = {
+      deadnix.enable = true;
       nixfmt-rfc-style.enable = true;
       lefthook = {
         enable = true;

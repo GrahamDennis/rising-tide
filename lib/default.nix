@@ -1,5 +1,4 @@
 {
-  injector,
   lib,
   risingTideBootstrapLib,
   self,
