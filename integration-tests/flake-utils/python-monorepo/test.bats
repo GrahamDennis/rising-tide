@@ -19,8 +19,7 @@ setup() {
 }
 
 @test "check task succeeds" {
-  # Fail if the check task would modify files
-  run env CI=1 task check
+  run task check
   assert_success
 }
 

@@ -26,11 +26,12 @@
           };
         };
       };
-    in
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pythonOverlay = python-final: _python-prev: {
+      pythonOverlay =
+        python-final: _python-prev:
+        let
+          system = python-final.pkgs.system;
+        in
+        {
           package-1 =
             python-final.callPackage
               (project.subprojects.package-1.settings.${system}.python.callPackageFunction)
@@ -40,9 +41,13 @@
             project = project.subprojects.package-2;
           }) { };
         };
-        nixpkgsOverlay = _final: prev: {
-          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlay ];
-        };
+      nixpkgsOverlay = _final: prev: {
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlay ];
+      };
+    in
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
         pkgs = (
           import nixpkgs {
             overlays = [ nixpkgsOverlay ];
