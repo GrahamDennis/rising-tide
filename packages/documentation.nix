@@ -9,9 +9,14 @@
 { pkgs }:
 let
   fixupsModule = {
-    options.defaultSettings = flake-parts-lib.mkPerSystemOption {
-      config = {
-        _module.args.toolsPkgs = pkgs;
+    options = {
+      _module.args = lib.mkOption {
+        internal = true;
+      };
+      defaultSettings = flake-parts-lib.mkPerSystemOption {
+        config = {
+          _module.args.toolsPkgs = pkgs;
+        };
       };
     };
     config = {

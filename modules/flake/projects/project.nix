@@ -53,7 +53,10 @@ let
           type = types.listOf types.str;
         };
         defaultSettings = lib.mkOption {
-          description = "`settings` configs that apply to this project and all nested subprojects";
+          description = ''
+            `settings` configs that apply to this project and all nested subprojects.
+            Project-wide or organisation-wide configuration should be set here (for example the rising-tide default conventions).
+          '';
           type = types.deferredModule;
           default = { };
         };
