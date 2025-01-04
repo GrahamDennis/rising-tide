@@ -1,12 +1,10 @@
-# rising-tide flake context
+# rising-tide bootstrap injector context
 {
-  self,
-  risingTideBootstrapLib,
+  risingTideLib,
   ...
 }:
 {
   _module.args = {
-    inherit risingTideBootstrapLib;
-    risingTideLib = self.lib;
+    inherit risingTideLib;
   };
 }

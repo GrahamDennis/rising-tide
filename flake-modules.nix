@@ -1,5 +1,5 @@
 # rising tide flake context
-{ injector, ... }:
+{ injector, risingTideLib, ... }:
 let
   modules.flake = injector.injectModules {
     project = ./modules/flake/projects/project.nix;
@@ -9,7 +9,7 @@ in
 {
   flake = {
     inherit modules;
-    lib = injector.inject ./lib;
+    lib = risingTideLib;
     tests = builtins.mapAttrs (_name: injector.inject) {
       lib = ./lib/tests;
       project = ./modules/flake/projects/project.tests.nix;

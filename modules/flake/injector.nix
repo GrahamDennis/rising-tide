@@ -1,11 +1,11 @@
-# rising-tide flake context
-{ risingTideBootstrapLib, ... }:
+# rising-tide bootstrap injector context
+{ risingTideLib, ... }:
 # user flake context
 flakeArgs@{ config, ... }:
 let
-  injector = risingTideBootstrapLib.mkInjector "injector" {
+  injector = risingTideLib.mkInjector "injector" {
     args = flakeArgs;
-    getLazyArg = risingTideBootstrapLib.getLazyArgFromConfig config;
+    getLazyArg = risingTideLib.getLazyArgFromConfig config;
   };
 in
 {
@@ -15,7 +15,7 @@ in
     let
       injector' = injector.mkChildInjector "injector'" {
         args = perSystemArgs;
-        getLazyArg = risingTideBootstrapLib.getLazyArgFromConfig config;
+        getLazyArg = risingTideLib.getLazyArgFromConfig config;
       };
     in
     {

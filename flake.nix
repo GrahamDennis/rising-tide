@@ -21,16 +21,19 @@
     let
       root = ./.;
       lib = nixpkgs.lib;
-      risingTideBootstrapLib = import (root + "/lib/bootstrap.nix") { inherit lib; };
-      bootstrapInjector = risingTideBootstrapLib.mkInjector "bootstrapInjector" {
+      risingTideLib = import (root + "/lib/default.nix") {
+        inherit lib;
+        risingTide = self;
+      };
+      bootstrapInjector = risingTideLib.mkInjector "bootstrapInjector" {
         args = {
           inherit
             root
             lib
             inputs
-            self
-            risingTideBootstrapLib
+            risingTideLib
             ;
+          risingTide = self;
         };
       };
     in

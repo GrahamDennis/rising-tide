@@ -1,105 +1,35 @@
 {
   lib,
-  risingTideBootstrapLib,
-  self,
+  risingTide,
   ...
 }:
 let
-  inherit (lib) types;
-  filterAttrsRecursive =
-    pred:
+  risingTideBootstrapLib = import ./bootstrap.nix { inherit lib; };
+  risingTideLib = lib.makeExtensible (
+    self:
     let
-      recurse =
-        prefix: set:
-        builtins.listToAttrs (
-          builtins.concatMap (
-            name:
-            let
-              v = set.${name};
-            in
-            if pred (prefix ++ [ name ]) v then
-              [
-                (lib.nameValuePair name (if builtins.isAttrs v then recurse (prefix ++ [ name ]) v else v))
-              ]
-            else
-              [ ]
-          ) (builtins.attrNames set)
-        );
-    in
-    recurse [ ];
-  mkBaseProject =
-    projectModule:
-    (lib.evalModules {
-      modules = [
-        self.modules.flake.project
-        projectModule
-        { relativePaths.toRoot = lib.mkDefault "./."; }
-      ];
-    }).config;
-in
-risingTideBootstrapLib
-// {
-  inherit filterAttrsRecursive mkBaseProject;
-  mkProject =
-    projectModule:
-    mkBaseProject {
-      imports = [ projectModule ];
-      config.defaultSettings = self.modules.flake.risingTideConventions;
-    };
-  sanitizeBashIdentifier = lib.strings.sanitizeDerivationName;
-  types = {
-    callPackageFunction = (types.addCheck types.unspecified builtins.isFunction) // {
-      name = "callPackageFunction";
-      description = "A function that can be called by callPackage and returns a package";
-    };
-    subpath = types.str // {
-      name = "subpath";
-      description = "A relative path";
-      merge = loc: defs: lib.path.subpath.normalise (lib.mergeEqualOption loc defs);
-    };
-    overlay = lib.mkOptionType {
-      name = "overlay";
-      description = "A package overlay";
-      descriptionClass = "noun";
-      merge =
-        _loc: defs:
-        let
-          list = lib.options.getValues defs;
-        in
-        lib.composeManyExtensions list;
-      emptyValue = {
-        value = _final: _prev: { };
-      };
-    };
-  };
-  tests =
-    let
-      filterExprToExpected =
-        {
-          expected,
-          expr,
-        }:
-        {
-          inherit expected;
-          unfilteredExpr = expr;
-          expr = filterAttrsRecursive (path: _value: lib.hasAttrByPath path expected) expr;
+      injector = risingTideBootstrapLib.mkInjector "injector" {
+        args = {
+          inherit lib risingTide;
+          risingTideLib = self;
         };
+      };
     in
     {
-      inherit filterExprToExpected;
-      mkExpectRenderedConfig =
-        {
-          modules,
-          filter ? true,
-        }:
-        module: expected:
-        let
-          expr =
-            (lib.evalModules {
-              modules = modules ++ [ module ];
-            }).config;
-          result = { inherit expr expected; };
-        in
-        if filter == true then filterExprToExpected result else result;
-    };
-}
+      inherit injector;
+
+      attrs = injector.inject ./attrs.nix;
+      bootstrap = injector.inject ./bootstrap.nix;
+      project = injector.inject ./project.nix;
+      strings = injector.inject ./strings.nix;
+      testutils = injector.inject ./testutils.nix;
+      types = injector.inject ./types.nix;
+
+      inherit (self.attrs) filterAttrsByPathRecursive;
+      inherit (self.bootstrap) callWithLazyArgs mkInjector getLazyArgFromConfig;
+      inherit (self.strings) sanitizeBashIdentifier;
+      inherit (self.project) mkBaseProject mkProject;
+    }
+  );
+in
+risingTideLib

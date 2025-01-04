@@ -78,6 +78,8 @@ let
       };
     };
   };
+  nixdocFlake = builtins.getFlake "github:nix-community/nixdoc?rev=5a469fe9dbb1deabfd16efbbe68ac84568fa0ba7";
+  nixdoc = nixdocFlake.packages.${system}.default;
 in
 pkgs.mkShell {
   name = "rising-tide-root";
@@ -86,6 +88,8 @@ pkgs.mkShell {
       nix-unit
       batsWithLibraries
       nodejs
+
+      # Temporary until documentation generation is handled as a package.
       nixdoc
     ])
     ++ project.tools.${system};
