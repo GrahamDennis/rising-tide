@@ -16,6 +16,10 @@ in
     enable = lib.mkEnableOption "Enable left-hook integration";
     package = lib.mkPackageOption toolsPkgs "lefthook" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
+      description = ''
+        The left-hook YAML file to generate.
+        Refer to the [left-hook documentation](https://evilmartians.github.io/lefthook/configuration/index.html).
+      '';
       type = settingsFormat.type;
       default = { };
     };

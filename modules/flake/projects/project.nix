@@ -16,12 +16,13 @@ let
       _file = ./project.nix;
       options = {
         name = lib.mkOption {
-          type = types.str;
           description = "The name of the project";
+          type = types.str;
           example = "my-project";
         };
         relativePaths = {
           toRoot = lib.mkOption {
+            description = "The path from the project to the root of the flake";
             type = risingTideLib.types.subpath;
             default = lib.path.subpath.join [
               config.relativePaths.parentProjectToRoot
@@ -35,9 +36,11 @@ let
             '';
           };
           toParentProject = lib.mkOption {
+            description = "The path from the project to the parent project";
             type = risingTideLib.types.subpath;
           };
           parentProjectToRoot = lib.mkOption {
+            description = "The path from the parent project to the root of the flake";
             type = risingTideLib.types.subpath;
             readOnly = true;
           };
@@ -51,10 +54,12 @@ let
           type = types.listOf types.str;
         };
         defaultSettings = lib.mkOption {
+          description = "`settings` configs that apply to this project and all nested subprojects";
           type = types.deferredModule;
           default = { };
         };
         settings = lib.mkOption {
+          description = "Settings for each system type";
           type =
             let
               projectConfig = config;
@@ -78,20 +83,25 @@ let
                     _subprojectName: subprojectConfig:
                     (subprojectConfig.settings.${system} or emptyChildProjectSettings).parentProjectSettings
                   ) projectConfig.subprojects)
-                # # Apply root project settings from child projects if this is the root project
-                # ++ (lib.optionals (projectConfig.relativePaths.toRoot == "./.") (
-                #   lib.mapAttrsToList (
-                #     _subprojectName: subprojectConfig:
-                #     (subprojectConfig.settings.${system} or emptyChildProjectSettings).rootProjectSettings
-                #   ) projectConfig.subprojects
-                # ))
-                ;
+                  # Apply root project settings from child projects if this is the root project
+                  ++ (lib.optionals (projectConfig.relativePaths.toRoot == "./.") (
+                    lib.mapAttrsToList (
+                      _subprojectName: subprojectConfig:
+                      (subprojectConfig.settings.${system} or emptyChildProjectSettings).rootProjectSettings
+                    ) projectConfig.subprojects
+                  ));
                 options = {
                   parentProjectSettings = lib.mkOption {
+                    description = "Settings that a child project requests to be applied to its parent project";
                     type = types.deferredModule;
                     default = { };
                   };
                   rootProjectSettings = lib.mkOption {
+                    description = ''
+                      Settings that a child project requests to be applied to the root project.
+                      Note: If this project _is_ the root project, these settings will not be applied to the project itself, only
+                      child projects' `rootProjectSettings` will be applied.
+                    '';
                     type = types.deferredModuleWith {
                       staticModules = lib.mapAttrsToList (
                         _subprojectName: subprojectConfig:
@@ -123,10 +133,15 @@ let
                   };
                 }).config;
             in
-            generatePerSystemSettings;
-          # lib.genAttrs config.systems generatePerSystemSettings;
+            lib.genAttrs config.systems generatePerSystemSettings;
         };
         subprojects = lib.mkOption {
+          description = ''
+            An attribute set of child projects where each attribute set is itself a project.
+
+            `defaultSettings` from this project are applied to all child projects, and child projects'
+            `parentProjectSettings` are applied to this project.
+          '';
           type = types.attrsOf (
             types.submoduleWith {
               modules =
@@ -153,6 +168,10 @@ let
           visible = "shallow";
         };
         tools = lib.mkOption {
+          description = ''
+            An list of tools to be used by this project. This is typically included in
+            the `nativeCheckInputs` of the project's package, or `nativeBuildInputs` of a devShell.
+          '';
           type = types.attrsOf (types.listOf types.package);
           readOnly = true;
           default = lib.mapAttrs (_system: perSystemSettings: perSystemSettings.tools.all) config.settings;

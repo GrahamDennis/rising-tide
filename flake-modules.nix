@@ -25,6 +25,7 @@ in
     {
       # FIXME: temporary
       packages.default = pkgs.emptyFile;
+      packages.documentation = pkgs.callPackage (injector.inject ./packages/documentation.nix) { };
 
       devShells.default = injector'.inject ./devShell.nix;
     };

@@ -25,16 +25,29 @@ in
 {
   options.tools.pytest = {
     enable = lib.mkEnableOption "Enable pytest integration";
+    config = lib.mkOption {
+      description = ''
+        The pytest TOML configuration file to generate. All configuration here is nested under the `tool.pytest.ini_options` key
+        in the generated file.
+
+        Refer to the [pytest documentation](https://docs.pytest.org/en/stable/reference/customize.html),
+        in particular the [pyproject.toml format documentation](https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml).
+      '';
+      type = settingsFormat.type;
+      default = { };
+    };
     coverage = {
       enable = lib.mkEnableOption "Enable pytest-cov integration";
       config = lib.mkOption {
+        description = ''
+          The python coverage TOML configuration file to generate. All configuration here is nested under the `tool.coverage` key
+          in the generated file.
+
+          Refer to the [coverage documentation](https://coverage.readthedocs.io/en/7.6.10/config.html#toml-syntax).
+        '';
         type = settingsFormat.type;
         default = { };
       };
-    };
-    config = lib.mkOption {
-      type = settingsFormat.type;
-      default = { };
     };
   };
 

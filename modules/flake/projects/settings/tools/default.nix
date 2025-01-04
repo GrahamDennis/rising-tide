@@ -33,6 +33,11 @@ in
   ];
   options = {
     tools.pkgs = lib.mkOption {
+      description = ''
+        The nixpkgs package set to be used by project tooling, e.g. shellcheck, ruff, mypy, etc.
+        This package set does not need to be the same as is used for building the project itself, to permit
+        newer tooling to be used with projects building against older versions of nixpkgs.
+      '';
       type = types.pkgs;
       default = withSystem system ({ pkgs, ... }: pkgs);
       defaultText = lib.literalMD "`pkgs` defined by rising-tide";

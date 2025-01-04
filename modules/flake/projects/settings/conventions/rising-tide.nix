@@ -109,7 +109,7 @@ let
           "tests/**" = [ "PLR2004" ];
         };
       };
-      shfmt.styleOptions = [
+      shfmt.printerFlags = [
         "--simplify"
         "--indent"
         "2"

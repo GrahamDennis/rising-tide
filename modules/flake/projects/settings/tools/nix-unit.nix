@@ -15,6 +15,7 @@ in
     enable = lib.mkEnableOption "Enable nix-unit integration";
     package = lib.mkPackageOption toolsPkgs "nix-unit" { pkgsText = "toolsPkgs"; };
     testsFlakeAttrPath = lib.mkOption {
+      description = "The flake attribute path that contains nix-unit tests";
       type = lib.types.str;
       default = "tests";
     };

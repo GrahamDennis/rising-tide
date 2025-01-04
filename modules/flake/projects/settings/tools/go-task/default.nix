@@ -26,14 +26,19 @@ in
     enable = lib.mkEnableOption "Enable go-task integration";
     package = lib.mkPackageOption toolsPkgs "go-task" { pkgsText = "toolsPkgs"; };
     taskfile = lib.mkOption {
+      description = ''
+        The go-task taskfile to generate. Refer to the [go-task documentation](https://taskfile.dev/reference/schema).
+      '';
       type = settingsFormat.type;
       default = { };
     };
     inheritedTasks = lib.mkOption {
+      description = "Tasks to publish to the parent project";
       type = types.listOf types.str;
       default = builtins.filter (taskName: !(lib.hasInfix ":" taskName)) (
         builtins.attrNames (cfg.taskfile.tasks or { })
       );
+      defaultText = lib.literalMD "All tasks that do not contain a colon in their name";
     };
   };
 

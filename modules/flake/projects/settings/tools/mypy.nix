@@ -9,7 +9,7 @@
 let
   cfg = config.tools.mypy;
   settingsFormat = toolsPkgs.formats.toml { };
-  configFile = settingsFormat.generate "mypy.toml" cfg.config;
+  configFile = settingsFormat.generate "mypy.toml" { tool.mypy = cfg.config; };
   mypyExe = lib.getExe cfg.package;
 in
 {
@@ -17,6 +17,13 @@ in
     enable = lib.mkEnableOption "Enable mypy integration";
     package = lib.mkPackageOption toolsPkgs "mypy" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
+      description = ''
+        The mypy TOML file to generate. All configuration here is nested under the `tool.mypy` key
+        in the generated file.
+
+        Refer to the [mypy documentation](https://mypy.readthedocs.io/en/stable/config_file.html),
+        in particular the [pyproject.toml format documentation](https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file).
+      '';
       type = settingsFormat.type;
       default = { };
     };

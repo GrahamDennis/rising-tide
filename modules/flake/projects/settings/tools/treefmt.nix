@@ -21,6 +21,11 @@ in
     enable = lib.mkEnableOption "Enable treefmt integration";
     package = lib.mkPackageOption toolsPkgs "treefmt" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
+      description = ''
+        The treefmt TOML configuration file (`treefmt.toml`) to generate.
+
+        Refer to the [treefmt documentation](https://treefmt.com/latest/getting-started/configure/).
+      '';
       type = settingsFormat.type;
       default = { };
     };

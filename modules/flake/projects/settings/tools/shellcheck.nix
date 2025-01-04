@@ -17,6 +17,11 @@ in
     enable = lib.mkEnableOption "Enable shellcheck integration";
     package = lib.mkPackageOption toolsPkgs "shellcheck" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
+      description = ''
+        The shellcheck configuration file (`shellcheckrc`) to generate.
+
+        Refer to the [shellcheck documentation](https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files).
+      '';
       type = settingsFormat.type;
       default = { };
     };

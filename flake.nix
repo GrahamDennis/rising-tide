@@ -55,30 +55,6 @@
           ];
           debug = true;
           systems = import systems;
-          perSystem =
-            { system, pkgs, ... }:
-            {
-              packages.project-docs =
-                (pkgs.nixosOptionsDoc {
-                  inherit
-                    (lib.evalModules {
-                      modules = [
-                        self.modules.flake.project
-                        {
-                          options.defaultSettings = flake-parts.lib.mkPerSystemOption {
-                            config = {
-                              _module.args.toolsPkgs = pkgs;
-                            };
-                          };
-                        }
-                      ];
-                    })
-                    options
-                    ;
-                  documentType = "none";
-                  warningsAreErrors = false;
-                }).optionsCommonMark;
-            };
           flake = {
             inherit modules self;
           };

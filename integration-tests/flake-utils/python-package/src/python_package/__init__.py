@@ -5,5 +5,6 @@ def hello() -> str:
 def bar() -> str:
     return "BaR"
 
+
 def cli() -> None:
     print(hello())

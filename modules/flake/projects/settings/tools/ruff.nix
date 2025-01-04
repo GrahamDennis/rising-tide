@@ -17,6 +17,10 @@ in
     enable = lib.mkEnableOption "Enable ruff integration";
     package = lib.mkPackageOption toolsPkgs "ruff" { pkgsText = "toolsPkgs"; };
     config = lib.mkOption {
+      description = ''
+        The ruff TOML configuration file (`ruff.toml`) to generate.
+
+        Refer to the [ruff documentation](https://docs.astral.sh/ruff/settings/#__tabbed_1_2).'';
       type = settingsFormat.type;
       default = { };
     };

@@ -51,6 +51,13 @@ teardown() {
   assert_output --partial "[return-value]"
 }
 
+@test "check fails on missing type hints" {
+  sed -i -e 's/def hello() -> str:/def hello():/' src/python_package/__init__.py
+  run task check
+  assert_failure
+  assert_output --partial "[no-untyped-def]"
+}
+
 @test "test task succeeds" {
   run task test
   assert_success

@@ -54,9 +54,25 @@ let
               ''
             ];
           };
+          "build" = {
+            desc = "Build all packages";
+            deps = [ "build:documentation" ];
+          };
+          "build:*" = {
+            desc = "Build a package";
+            vars.PACKAGE = "{{index .MATCH 0}}";
+            label = "build:{{.PACKAGE}}";
+            prefix = "build:{{.PACKAGE}}";
+            cmds = [
+              ''
+                nix build ".#{{.PACKAGE}}"
+              ''
+            ];
+          };
           "ci:check".deps = [
             "check"
             "test"
+            "build"
           ];
         };
       };

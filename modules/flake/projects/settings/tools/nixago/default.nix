@@ -24,6 +24,11 @@ in
   options = {
     tools.nixago = {
       requests = lib.mkOption {
+        description = ''
+          The files to generate using [nixago](https://nix-community.github.io/nixago/quick_start.html#generate-a-configuration).
+
+          Each request is a set of arguments to `nixago.lib.make` such that the entire list can be passed to `nixago.lib.makeAll`.
+        '';
         type = types.listOf types.attrs;
         default = [ ];
       };
