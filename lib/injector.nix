@@ -1,5 +1,10 @@
 { lib, ... }:
 let
+  rootInjector = {
+    inject = fn: if builtins.isFunction fn then fn else import fn;
+  };
+in
+rec {
   /**
     Call function `fn` with arguments from `args` and additional arguments from
     the function signature lazily fetched by calling `getArg name`.
@@ -7,7 +12,7 @@ let
   callWithLazyArgs =
     fn: args: getLazyArg:
     let
-      context = name: ''while evaluating the function argument `${name}':'';
+      context = name: ''while evaluating the function argument `${name}' for function `${fn}`:'';
       extraArgs =
         if getLazyArg != null then
           builtins.mapAttrs (
@@ -18,7 +23,12 @@ let
     in
     fn (args // extraArgs);
 
-  _mkInjector =
+  /**
+    Create a new injector with `parentInjector` as its parent.
+    Prefer instead to call `mkInjector` to create a new root injector or
+    `mkChildInjector` on an existing injector.
+  */
+  mkInjectorWithParent =
     parentInjector: name:
     {
       args ? { },
@@ -27,7 +37,7 @@ let
     let
       injector = {
         inherit inject injectModule injectModules;
-        mkChildInjector = _mkInjector injector;
+        mkChildInjector = mkInjectorWithParent injector;
       };
       additionalInjectorArgs = {
         "${name}" = injector;
@@ -45,16 +55,10 @@ let
           throw "injectModules: expected a list or an attrset, got ${builtins.typeOf modules}";
     in
     injector;
-  rootInjector = {
-    inject = fn: if builtins.isFunction fn then fn else import fn;
-  };
-in
-{
-  inherit callWithLazyArgs;
 
   /**
     Create an injector that can be used to perform dependency injection / apply a scope to a function.
   */
-  mkInjector = _mkInjector rootInjector;
+  mkInjector = mkInjectorWithParent rootInjector;
   getLazyArgFromConfig = config: argName: config._module.args.${argName};
 }
