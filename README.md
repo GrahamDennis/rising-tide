@@ -41,8 +41,10 @@ devShells.default = pkgs.mkShell {
     nativeBuildInputs = project.tools.${system}
         ++ [ /* other dev tools */ ];
 };
-
 ```
+
+Now inside your nix develop shell you can list all supported tasks by running `task -l`, run all checks (including code reformatting) by running `task check` or just reformatting by running `task check:treefmt`.
+
 
 By default the versions of the rising-tide tooling comes from the nixos-unstable nixpkgs channel, and this can be different from the nixpkgs channel used for projects and their dependencies.
 
