@@ -86,6 +86,7 @@ pkgs.mkShell {
       nix-unit
       batsWithLibraries
       nodejs
+      nixdoc
     ])
     ++ project.tools.${system};
 }
