@@ -1,6 +1,5 @@
 {
-  project,
-  ...
+  project ? null,
 }:
 # python packages context
 { pythonPackages, lib }:
@@ -18,7 +17,7 @@ let
   ];
 in
 pythonPackages.buildPythonPackage rec {
-  name = project.name;
+  name = "package-2";
   pyproject = true;
   inherit src;
 
@@ -32,7 +31,8 @@ pythonPackages.buildPythonPackage rec {
     ];
   };
 
-  nativeCheckInputs = project.tools.${system} ++ (optional-dependencies.dev);
+  nativeCheckInputs =
+    (lib.optionals (project != null) project.tools.${system}) ++ (optional-dependencies.dev);
 
   build-system = with pythonPackages; [ hatchling ];
 }

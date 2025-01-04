@@ -183,11 +183,11 @@ let
           '';
           type = risingTideLib.types.overlay;
           default = (
-            python-final: _python-prev:
+            python-final: python-prev:
             let
-              system = python-final.pkgs.system;
+              system = python-prev.pkgs.system;
             in
-            config.settings.${system}.python.pythonOverlay
+            config.settings.${system}.python.pythonOverlay python-final python-prev
           );
         };
       };

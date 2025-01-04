@@ -68,7 +68,7 @@ risingTideBootstrapLib
         in
         lib.composeManyExtensions list;
       emptyValue = {
-        value = { };
+        value = _final: _prev: { };
       };
     };
   };

@@ -1,7 +1,7 @@
 # rising-tide flake context
 { lib, risingTideLib, ... }:
 # project settings context
-{ config, ... }:
+{ config, project, ... }:
 let
   cfg = config.python;
 in
@@ -47,7 +47,7 @@ in
   config = lib.mkIf cfg.enable {
     python.pythonOverlay = lib.mkDefault (
       python-final: _python-prev: {
-        package = python-final.callPackage cfg.callPackageFunction { };
+        ${project.name} = python-final.callPackage cfg.callPackageFunction { };
       }
     );
 
