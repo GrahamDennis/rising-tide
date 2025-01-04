@@ -29,21 +29,7 @@
           };
         };
       };
-      pythonOverlay =
-        python-final: _python-prev:
-        let
-          system = python-final.pkgs.system;
-        in
-        {
-          package-1 =
-            python-final.callPackage
-              (project.subprojects.package-1.settings.${system}.python.callPackageFunction)
-              { };
-          package-2 =
-            python-final.callPackage
-              (project.subprojects.package-2.settings.${system}.python.callPackageFunction)
-              { };
-        };
+      pythonOverlay = project.pythonOverlay;
       nixpkgsOverlay = _final: prev: {
         pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlay ];
       };
