@@ -5,11 +5,23 @@
   ...
 }:
 # python packages context
-{ pythonPackages }:
+{ pythonPackages, lib }:
+let
+  # Create a filtered src set to reduce rebuilds. This could be replaced with just `./.`
+  src = lib.fileset.toSource {
+    fileset = files;
+    root = ./.;
+  };
+  files = lib.fileset.unions [
+    ./src
+    ./tests
+    ./pyproject.toml
+  ];
+in
 pythonPackages.buildPythonPackage rec {
   name = project.name;
   pyproject = true;
-  src = ./.;
+  inherit src;
 
   dependencies = with pythonPackages; [ requests ];
 
