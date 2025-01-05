@@ -70,6 +70,7 @@ let
             cmds = [
               ''
                 cd docs/rising-tide
+                npm install
                 npm run build
               ''
             ];
