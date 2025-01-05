@@ -3,9 +3,6 @@ let
   inherit (lib) types;
 in
 {
-  /**
-    Type of a function that...
-  */
   callPackageFunction = (types.addCheck types.unspecified builtins.isFunction) // {
     name = "callPackageFunction";
     description = "A function that can be called by callPackage and returns a package";

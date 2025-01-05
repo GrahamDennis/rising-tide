@@ -56,7 +56,7 @@ let
           };
           build = {
             desc = "Build all packages";
-            deps = [ "build:documentation" ];
+            deps = [ "build:project-module-docs" ];
           };
           "build:*" = {
             desc = "Build a package";
@@ -68,7 +68,8 @@ let
           "docs:generate" = {
             cmds = [
               "rm -rf docs/rising-tide/docs/_generated; mkdir -p docs/rising-tide/docs/_generated"
-              "nix build -o docs/rising-tide/docs/_generated/modules.flake.project.md .#documentation"
+              "nix build -o docs/rising-tide/docs/_generated/modules.flake.project.md .#project-module-docs"
+              "nix build -o docs/rising-tide/docs/_generated/lib/ .#lib-docs"
             ];
           };
           "docs:build" = {

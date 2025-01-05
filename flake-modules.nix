@@ -34,7 +34,10 @@ in
     {
       # FIXME: temporary
       packages.default = pkgs.emptyFile;
-      packages.documentation = pkgs.callPackage (injector.inject ./packages/documentation.nix) { };
+      packages.project-module-docs =
+        pkgs.callPackage (injector.inject ./packages/project-module-docs.nix)
+          { };
+      packages.lib-docs = pkgs.callPackage (injector.inject ./packages/lib-docs.nix) { };
 
       devShells.default = injector'.inject ./devShell.nix;
     };
