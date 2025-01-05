@@ -44,5 +44,11 @@
   },
   "engines": {
     "node": ">=18.0"
+  },
+  "overrides": {
+    "@easyops-cn/docusaurus-search-local": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }
