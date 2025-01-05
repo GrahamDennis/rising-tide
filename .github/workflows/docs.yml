@@ -1,4 +1,4 @@
-name: Deploy documentation to GitHub Pages
+name: Publish documentation
 
 on:
   # Runs on pushes targeting the default branch
@@ -43,7 +43,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - name: Deploy to GitHub Pages
