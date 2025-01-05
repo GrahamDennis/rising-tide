@@ -54,7 +54,7 @@ let
               ''
             ];
           };
-          "build" = {
+          build = {
             desc = "Build all packages";
             deps = [ "build:documentation" ];
           };
@@ -63,9 +63,14 @@ let
             vars.PACKAGE = "{{index .MATCH 0}}";
             label = "build:{{.PACKAGE}}";
             prefix = "build:{{.PACKAGE}}";
+            cmds = [ "nix build .#{{.PACKAGE}}" ];
+          };
+          "docs:build" = {
+            desc = "Build documentation";
             cmds = [
               ''
-                nix build ".#{{.PACKAGE}}"
+                cd docs/rising-tide
+                npm run build
               ''
             ];
           };
