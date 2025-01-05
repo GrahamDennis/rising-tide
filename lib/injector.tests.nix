@@ -116,5 +116,38 @@ in
           b = expectedModule;
         };
       };
+
+      errors =
+        let
+          expectedErrorMessages = {
+            fnCalledWithoutBar = "function '.*fn.*' called without required argument '.*bar.*'";
+            anonymousLambdaCalledWithoutBar = "function '.*anonymous lambda.*' called without required argument '.*bar.*'";
+          };
+        in
+        {
+          "test exception message of normal function" =
+            let
+              fn = { foo, bar, ... }: foo + bar;
+            in
+            {
+              expr = fn { foo = 1; };
+              expectedError.msg = expectedErrorMessages.fnCalledWithoutBar;
+            };
+          "test exception message of anonymous lambda" = {
+            expr = ({ foo, bar, ... }: foo + bar) { foo = 1; };
+            expectedError.msg = expectedErrorMessages.anonymousLambdaCalledWithoutBar;
+          };
+          "test exception message of injected normal function" =
+            let
+              injector = mkInjector "injector" { };
+              # deadnix: skip
+              fn = { injector, ... }: ({ foo, bar, ... }: foo + bar);
+            in
+            {
+              expr = (injector.inject fn) { foo = 1; };
+              expectedError.msg = expectedErrorMessages.fnCalledWithoutBar;
+            };
+          # FIXME: Add tests for injected module errors
+        };
     };
 }
