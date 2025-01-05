@@ -65,7 +65,14 @@ let
             prefix = "build:{{.PACKAGE}}";
             cmds = [ "nix build .#{{.PACKAGE}}" ];
           };
+          "docs:generate" = {
+            cmds = [
+              "rm -rf docs/rising-tide/docs/_generated; mkdir -p docs/rising-tide/docs/_generated"
+              "nix build -o docs/rising-tide/docs/_generated/modules.flake.project.md .#documentation"
+            ];
+          };
           "docs:build" = {
+            deps = [ "docs:generate" ];
             desc = "Build documentation";
             cmds = [
               ''
