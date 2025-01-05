@@ -4,8 +4,8 @@
   ...
 }:
 let
-  risingTideInjectorLib = import ./injector.nix { inherit lib; };
-  injector = risingTideInjectorLib.mkInjector "injector" {
+  inherit (import ./injector.nix { inherit lib; }) mkInjector;
+  injector = mkInjector "injector" {
     args = {
       inherit lib risingTide risingTideLib;
     };
@@ -15,7 +15,7 @@ let
     injector = injector.inject ./injector.nix;
     project = injector.inject ./project.nix;
     strings = injector.inject ./strings.nix;
-    testutils = injector.inject ./testutils.nix;
+    tests = injector.inject ./tests.nix;
     types = injector.inject ./types.nix;
 
     inherit (risingTideLib.attrs) filterAttrsByPathRecursive;

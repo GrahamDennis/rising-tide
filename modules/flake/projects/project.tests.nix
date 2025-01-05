@@ -11,7 +11,7 @@ let
     name = lib.mkDefault "default-project-name";
     systems = lib.mkDefault [ "example-system" ];
   };
-  expectRenderedConfig = risingTideLib.testutils.mkExpectRenderedConfig {
+  expectRenderedConfig = risingTideLib.tests.mkExpectRenderedConfig {
     modules = [
       projectModule
       defaults
