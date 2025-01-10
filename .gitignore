@@ -18,6 +18,7 @@ uv.lock
 # Virtual environments
 .venv
 .env
+.direnv
 
 # Ignore build outputs from performing a nix-build or `nix build` command
 result
