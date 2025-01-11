@@ -14,25 +14,22 @@
       nixpkgs,
       ...
     }:
-    let
-      project = rising-tide.lib.mkProject {
-        name = "go-task-integration-test";
-        systems = flake-utils.lib.defaultSystems;
-        settings.tools.go-task = {
-          enable = true;
-          taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
-        };
-      };
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        project = rising-tide.lib.mkProject system {
+          name = "go-task-integration-test";
+          settings.tools.go-task = {
+            enable = true;
+            taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
+          };
+        };
       in
       {
         devShells.default = pkgs.mkShell {
           name = "go-task-integration-test";
-          nativeBuildInputs = project.tools.${system};
+          nativeBuildInputs = project.tools;
         };
       }
     );

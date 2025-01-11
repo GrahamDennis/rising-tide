@@ -146,6 +146,16 @@ let
           default = { };
           visible = "shallow";
         };
+        tools = lib.mkOption {
+          description = ''
+            An list of tools to be used by this project. This is typically included in
+            the `nativeCheckInputs` of the project's package, or `nativeBuildInputs` of a devShell.
+          '';
+          type = (types.listOf types.package);
+          readOnly = true;
+          default = config.settings.tools.all;
+          defaultText = lib.literalText "config.settings.tools.all";
+        };
       };
     };
 in
