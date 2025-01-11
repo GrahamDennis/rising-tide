@@ -14,25 +14,22 @@
       nixpkgs,
       ...
     }:
-    let
-      project = rising-tide.lib.mkProject {
-        name = "treefmt-integration-test";
-        relativePaths.toRoot = "./.";
-        systems = flake-utils.lib.defaultSystems;
-        settings.tools.treefmt = {
-          enable = true;
-        };
-      };
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        project = rising-tide.lib.mkProject system {
+          name = "treefmt-integration-test";
+          relativePaths.toRoot = "./.";
+          settings.tools.treefmt = {
+            enable = true;
+          };
+        };
       in
       {
         devShells.default = pkgs.mkShell {
           name = "treefmt-integration-test";
-          nativeBuildInputs = project.tools.${system};
+          nativeBuildInputs = project.tools;
         };
       }
     );

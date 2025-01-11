@@ -1,7 +1,6 @@
 # project injector context
 {
   project,
-  system,
   ...
 }:
 # python packages context
@@ -19,5 +18,5 @@ stdenv.mkDerivation {
     lldb
   ];
 
-  nativeCheckInputs = project.tools.${system} ++ [ pkgs.lldb ];
+  nativeCheckInputs = project.tools ++ [ pkgs.lldb ];
 }

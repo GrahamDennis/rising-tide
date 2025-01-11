@@ -3,9 +3,6 @@
 }:
 # python packages context
 { pythonPackages, lib }:
-let
-  system = pythonPackages.pkgs.system;
-in
 pythonPackages.buildPythonPackage rec {
   name = "package-2";
   pyproject = true;
@@ -21,8 +18,7 @@ pythonPackages.buildPythonPackage rec {
     ];
   };
 
-  nativeCheckInputs =
-    (lib.optionals (project != null) project.tools.${system}) ++ (optional-dependencies.dev);
+  nativeCheckInputs = (lib.optionals (project != null) project.tools) ++ (optional-dependencies.dev);
 
   build-system = with pythonPackages; [ hatchling ];
 }

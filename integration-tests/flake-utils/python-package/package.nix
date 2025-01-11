@@ -1,7 +1,6 @@
 # project injector context
 {
   project,
-  system,
   ...
 }:
 # python packages context
@@ -21,7 +20,7 @@ pythonPackages.buildPythonPackage rec {
     ];
   };
 
-  nativeCheckInputs = project.tools.${system} ++ (optional-dependencies.dev);
+  nativeCheckInputs = project.tools ++ (optional-dependencies.dev);
 
   build-system = with pythonPackages; [ hatchling ];
 }

@@ -14,26 +14,23 @@
       nixpkgs,
       ...
     }:
-    let
-      project = rising-tide.lib.mkProject {
-        name = "cpp-package";
-        systems = flake-utils.lib.defaultSystems;
-        settings.tools.go-task = {
-          enable = true;
-        };
-      };
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        project = rising-tide.lib.mkProject system {
+          name = "cpp-package";
+          settings.tools.go-task = {
+            enable = true;
+          };
+        };
         injector = rising-tide.lib.mkInjector "injector" { args = { inherit project system; }; };
       in
       rec {
         packages.default = pkgs.callPackage (injector.inject ./package.nix) { };
         devShells.default = pkgs.mkShell {
           inputsFrom = [ packages.default ];
-          nativeBuildInputs = project.tools.${system};
+          nativeBuildInputs = project.tools;
         };
       }
     );

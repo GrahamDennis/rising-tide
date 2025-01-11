@@ -4,31 +4,29 @@
 }:
 {
   relativePaths.toParentProject = "projects/package-1";
-  settings =
-    { tools', ... }:
-    {
-      python = {
-        enable = true;
-        callPackageFunction = (
-          { pythonPackages }:
-          pythonPackages.buildPythonPackage rec {
-            name = config.name;
-            pyproject = true;
-            src = ./.;
+  settings = {
+    python = {
+      enable = true;
+      callPackageFunction = (
+        { pythonPackages }:
+        pythonPackages.buildPythonPackage rec {
+          name = config.name;
+          pyproject = true;
+          src = ./.;
 
-            # FIXME: These should end up in the dev shell automatically
-            optional-dependencies = {
-              dev = with pythonPackages; [
-                pytest
-                pytest-cov
-              ];
-            };
+          # FIXME: These should end up in the dev shell automatically
+          optional-dependencies = {
+            dev = with pythonPackages; [
+              pytest
+              pytest-cov
+            ];
+          };
 
-            nativeCheckInputs = tools' ++ (optional-dependencies.dev);
+          nativeCheckInputs = config.tools ++ (optional-dependencies.dev);
 
-            build-system = with pythonPackages; [ hatchling ];
-          }
-        );
-      };
+          build-system = with pythonPackages; [ hatchling ];
+        }
+      );
     };
+  };
 }
