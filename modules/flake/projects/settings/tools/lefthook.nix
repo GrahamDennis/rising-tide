@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, ... }:
+{ lib, flake-parts-lib, ... }:
 # project settings context
 {
   config,
@@ -7,42 +7,51 @@
   ...
 }:
 let
-  cfg = config.tools.lefthook;
+  inherit (flake-parts-lib) mkSubmoduleOptions;
+  cfg = config.settings.tools.lefthook;
   settingsFormat = toolsPkgs.formats.yaml { };
   lefthookExe = lib.getExe cfg.package;
 in
 {
-  options.tools.lefthook = {
-    enable = lib.mkEnableOption "Enable left-hook integration";
-    package = lib.mkPackageOption toolsPkgs "lefthook" { pkgsText = "toolsPkgs"; };
-    config = lib.mkOption {
-      description = ''
-        The left-hook YAML file to generate.
-        Refer to the [left-hook documentation](https://evilmartians.github.io/lefthook/configuration/index.html).
-      '';
-      type = settingsFormat.type;
-      default = { };
+  options.settings = mkSubmoduleOptions {
+    tools.lefthook = {
+      enable = lib.mkEnableOption "Enable left-hook integration";
+      package = lib.mkPackageOption toolsPkgs "lefthook" { pkgsText = "toolsPkgs"; };
+      config = lib.mkOption {
+        description = ''
+          The left-hook YAML file to generate.
+          Refer to the [left-hook documentation](https://evilmartians.github.io/lefthook/configuration/index.html).
+        '';
+        type = settingsFormat.type;
+        default = { };
+      };
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    tools = {
-      lefthook.config.rc = lib.mkOptionDefault (
-        toolsPkgs.writeShellScript "export-lefthook-path" ''
-          export LEFTHOOK_BIN=${lefthookExe}
-        ''
-      );
-      nixago.requests = [
-        {
-          data = cfg.config;
-          hook.extra = ''
-            ${lefthookExe} install
-          '';
-          output = ".lefthook.yml";
-          format = "yaml";
-        }
-      ];
+  config =
+    let
+      ifEnabled = lib.mkIf cfg.enable;
+    in
+    {
+      settings.tools = {
+        lefthook.config.rc = ifEnabled (
+          lib.mkOptionDefault (
+            toolsPkgs.writeShellScript "export-lefthook-path" ''
+              export LEFTHOOK_BIN=${lefthookExe}
+            ''
+          )
+        );
+        nixago.requests = ifEnabled ([
+          {
+            data = cfg.config;
+            hook.extra = ''
+              ${lefthookExe} install
+            '';
+            output = ".lefthook.yml";
+            format = "yaml";
+          }
+        ]);
 
+      };
     };
-  };
 }

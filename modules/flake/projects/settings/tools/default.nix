@@ -13,7 +13,7 @@ in
     ./alejandra.nix
     ./deadnix.nix
     ./go-task
-    ./lefthook.nix
+    # ./lefthook.nix
     # ./mypy.nix
     ./nixago
     # ./nix-unit.nix

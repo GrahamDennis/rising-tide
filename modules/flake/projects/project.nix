@@ -19,6 +19,7 @@ let
         ./settings/python.nix
 
         # tools
+        ./settings/tools/lefthook.nix
         ./settings/tools/mypy.nix
         ./settings/tools/nix-unit.nix
         ./settings/tools/nixfmt-rfc-style.nix
