@@ -2,35 +2,42 @@
 {
   risingTideLib,
   lib,
+  flake-parts-lib,
   ...
 }:
-# project settings context
+# project context
 {
   config,
-  project,
   toolsPkgs,
   ...
 }:
 let
+  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.tools.uv;
-  bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${project.relativePaths.toRoot}";
+  bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
 in
 {
-  options.tools.uv = {
-    enable = lib.mkEnableOption "Enable uv integration";
-    package = lib.mkPackageOption toolsPkgs "uv" { pkgsText = "toolsPkgs"; };
+  options.settings = mkSubmoduleOptions {
+    tools.uv = {
+      enable = lib.mkEnableOption "Enable uv integration";
+      package = lib.mkPackageOption toolsPkgs "uv" { pkgsText = "toolsPkgs"; };
+    };
   };
 
-  config = lib.mkIf cfg.enable {
-    tools.all = [
-      (toolsPkgs.makeSetupHook {
-        name = "uv-shell-hook.sh";
-        propagatedBuildInputs = [ cfg.package ];
-        substitutions = {
-          name = bashSafeName;
-          relativePathToRoot = project.relativePaths.toRoot;
-        };
-      } ./uv-shell-hook.sh)
-    ];
-  };
+  config =
+    let
+      ifEnabled = lib.mkIf cfg.enable;
+    in
+    {
+      settings.tools.all = ifEnabled [
+        (toolsPkgs.makeSetupHook {
+          name = "uv-shell-hook.sh";
+          propagatedBuildInputs = [ cfg.package ];
+          substitutions = {
+            name = bashSafeName;
+            relativePathToRoot = config.relativePaths.toRoot;
+          };
+        } ./uv-shell-hook.sh)
+      ];
+    };
 }

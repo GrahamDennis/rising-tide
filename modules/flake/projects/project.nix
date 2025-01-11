@@ -32,6 +32,7 @@ let
         ./settings/tools/shellcheck.nix
         ./settings/tools/shfmt.nix
         ./settings/tools/treefmt.nix
+        ./settings/tools/uv
         ./settings/tools/vscode.nix
       ];
 
