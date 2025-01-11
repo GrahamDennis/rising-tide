@@ -43,13 +43,13 @@ in
             };
           };
         };
-        vscode.settings = {
-          "nix.formatterPath" = nixfmtExe;
-          "nix.serverSettings" = {
-            "nil" = {
-              "formatting" = {
-                "command" = [ nixfmtExe ];
-              };
+      };
+      rootProjectSettings.vscode.settings = {
+        "nix.formatterPath" = nixfmtExe;
+        "nix.serverSettings" = {
+          "nil" = {
+            "formatting" = {
+              "command" = [ nixfmtExe ];
             };
           };
         };

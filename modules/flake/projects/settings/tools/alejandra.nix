@@ -43,13 +43,13 @@ in
             };
           };
         };
-        vscode.settings = ifEnabled {
-          "nix.formatterPath" = alejandraExe;
-          "nix.serverSettings" = {
-            "nil" = {
-              "formatting" = {
-                "command" = [ alejandraExe ];
-              };
+      };
+      rootProjectSettings.vscode.settings = ifEnabled {
+        "nix.formatterPath" = alejandraExe;
+        "nix.serverSettings" = {
+          "nil" = {
+            "formatting" = {
+              "command" = [ alejandraExe ];
             };
           };
         };
