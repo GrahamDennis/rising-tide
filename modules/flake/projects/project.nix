@@ -19,6 +19,7 @@ let
         ./settings/python.nix
 
         # tools
+        ./settings/tools/deadnix.nix
         ./settings/tools/lefthook.nix
         ./settings/tools/mypy.nix
         ./settings/tools/nix-unit.nix

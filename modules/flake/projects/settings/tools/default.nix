@@ -11,7 +11,7 @@ in
 {
   imports = builtins.map injector.injectModule [
     ./alejandra.nix
-    ./deadnix.nix
+    # ./deadnix.nix
     ./go-task
     # ./lefthook.nix
     # ./mypy.nix
