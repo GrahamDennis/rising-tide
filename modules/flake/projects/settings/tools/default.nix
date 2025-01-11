@@ -20,7 +20,7 @@ in
     ./nix-unit.nix
     ./pytest.nix
     ./ruff.nix
-    ./shellcheck.nix
+    # ./shellcheck.nix
     # ./shfmt.nix
     # ./treefmt.nix
     ./uv
