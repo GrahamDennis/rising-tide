@@ -7,11 +7,11 @@
 let
   inherit (lib) types;
 in
-# project settings context
+# project context
 { config, ... }:
 {
   imports = injector.injectModules [
-    ./languages/python.nix
+    ./languages
     ./tools
   ];
   options = {

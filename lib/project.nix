@@ -1,9 +1,12 @@
 { lib, risingTide, ... }:
 rec {
   mkBaseProject =
+    {
+      projectModules ? [ ],
+    }:
     system: projectModule:
     (lib.evalModules {
-      specialArgs = { inherit system; };
+      specialArgs = { inherit system projectModules; };
       modules = [
         risingTide.modules.flake.project
         projectModule
@@ -13,9 +16,13 @@ rec {
 
   mkProject =
     system: projectModule:
-    mkBaseProject system {
-      imports = [ projectModule ];
-      config.defaultSettings = risingTide.modules.flake.risingTideConventions;
-    };
+    mkBaseProject
+      {
+        projectModules = [ risingTide.modules.flake.risingTideConventions ];
+      }
+      system
+      {
+        imports = [ projectModule ];
+      };
 
 }

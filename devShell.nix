@@ -54,14 +54,17 @@ let
           };
           build = {
             desc = "Build all packages";
-            deps = [ "build:project-module-docs" ];
+            deps = [
+              "build:project-module-docs"
+              "build:lib-docs"
+            ];
           };
           "build:*" = {
             desc = "Build a package";
             vars.PACKAGE = "{{index .MATCH 0}}";
             label = "build:{{.PACKAGE}}";
             prefix = "build:{{.PACKAGE}}";
-            cmds = [ "nix build .#{{.PACKAGE}}" ];
+            cmds = [ "nix build --show-trace .#{{.PACKAGE}}" ];
           };
           "docs:generate" = {
             cmds = [

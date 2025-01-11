@@ -2,7 +2,6 @@
 {
   lib,
   self,
-  flake-parts-lib,
   ...
 }:
 # pkgs context
@@ -14,19 +13,18 @@ let
       _module.args = lib.mkOption {
         internal = true;
       };
-      defaultSettings = flake-parts-lib.mkPerSystemOption {
-        config = {
-          _module.args.toolsPkgs = pkgs;
-        };
-      };
     };
     config = {
+      toolsPkgs = pkgs;
       relativePaths.toRoot = "./.";
     };
   };
 
   evaluatedProjectModule = lib.evalModules {
-    specialArgs = { inherit system; };
+    specialArgs = {
+      inherit system;
+      projectModules = [ ];
+    };
     modules = [
       self.modules.flake.project
       fixupsModule

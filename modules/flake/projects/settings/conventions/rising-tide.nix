@@ -1,15 +1,14 @@
 # rising-tide flake context
 { lib, ... }:
-# project settings context
+# project context
 {
   config,
-  project,
   toolsPkgs,
   ...
 }:
 let
   rootProjectConfig = {
-    tools = {
+    settings.tools = {
       deadnix.enable = true;
       nixfmt-rfc-style.enable = true;
       lefthook = {
@@ -19,7 +18,7 @@ let
           pre-commit = {
             commands = {
               check = {
-                run = "${lib.getExe' config.tools.go-task.package "task"} check";
+                run = "${lib.getExe' config.settings.tools.go-task.package "task"} check";
                 stage_fixed = true;
               };
             };
@@ -43,7 +42,7 @@ let
     };
   };
   allProjectsConfig = {
-    tools = {
+    settings.tools = {
       go-task.enable = true;
       mypy.config = {
         strict = true;
@@ -120,7 +119,7 @@ let
     };
   };
   pythonProjectConfig = {
-    tools = {
+    settings.tools = lib.mkIf (config.settings.languages.python.enable) {
       mypy.enable = true;
       pytest = {
         enable = true;
@@ -134,7 +133,7 @@ in
 {
   config = lib.mkMerge [
     allProjectsConfig
-    (lib.mkIf (project.relativePaths.toRoot == "./.") rootProjectConfig)
-    (lib.mkIf (config.languages.python.enable) pythonProjectConfig)
+    (lib.mkIf (config.relativePaths.toRoot == "./.") rootProjectConfig)
+    (pythonProjectConfig)
   ];
 }

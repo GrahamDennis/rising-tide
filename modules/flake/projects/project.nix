@@ -10,13 +10,20 @@ let
   inherit (lib) types;
   projectModule =
     # project context
-    { config, system, ... }:
+    {
+      config,
+      system,
+      projectModules,
+      ...
+    }:
     {
       _file = ./project.nix;
 
-      imports = injector.injectModules [
-        ./settings
-      ];
+      imports =
+        (injector.injectModules [
+          ./settings
+        ])
+        ++ projectModules;
 
       options = {
         name = lib.mkOption {
@@ -49,14 +56,6 @@ let
             readOnly = true;
           };
         };
-        defaultSettings = lib.mkOption {
-          description = ''
-            `settings` configs that apply to this project and all nested subprojects.
-            Project-wide or organisation-wide configuration should be set here (for example the rising-tide default conventions).
-          '';
-          type = types.deferredModule;
-          default = { };
-        };
         settings = lib.mkOption {
           description = "Settings for the project";
           type =
@@ -67,10 +66,8 @@ let
               modules = [
                 {
                   imports =
-                    # Apply default settings
-                    [ projectConfig.defaultSettings ]
                     # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
-                    ++ (lib.mapAttrsToList (
+                    (lib.mapAttrsToList (
                       _subprojectName: subprojectConfig: subprojectConfig.parentProjectSettings
                     ) projectConfig.subprojects)
                     # Apply root project settings from child projects if this is the root project
@@ -112,12 +109,11 @@ let
           description = ''
             An attribute set of child projects where each attribute set is itself a project.
 
-            `defaultSettings` from this project are applied to all child projects, and child projects'
-            `parentProjectSettings` are applied to this project.
+            Child projects' `parentProjectSettings` are applied to this project.
           '';
           type = types.attrsOf (
             types.submoduleWith {
-              specialArgs = { inherit system; };
+              specialArgs = { inherit system projectModules; };
               modules =
                 let
                   parentProjectConfig = config;
@@ -130,8 +126,6 @@ let
                     {
                       inherit name;
                       relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
-                      # Inherit defaults from the parent project
-                      defaultSettings = parentProjectConfig.defaultSettings;
                     }
                   )
                 ];

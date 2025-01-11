@@ -17,6 +17,7 @@ let
     ];
     specialArgs = {
       system = "example-system";
+      projectModules = [ ];
     };
   };
 in
@@ -92,25 +93,6 @@ in
         name = "root";
         subprojects.subproject = {
           name = "subproject";
-        };
-      };
-
-  "test default settings are inherited" =
-    expectRenderedConfig
-      {
-        name = "root";
-        relativePaths.toRoot = ".";
-        defaultSettings.tools.treefmt.enable = true;
-        subprojects.subproject = {
-          relativePaths.toParentProject = "./subproject";
-        };
-      }
-      {
-        name = "root";
-        settings.tools.treefmt.enable = true;
-        subprojects.subproject = {
-          name = "subproject";
-          settings.tools.treefmt.enable = true;
         };
       };
 
