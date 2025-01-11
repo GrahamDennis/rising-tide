@@ -12,6 +12,11 @@ let
     { config, system, ... }:
     {
       _file = ./project.nix;
+
+      imports = injector.injectModules [
+        ./settings/python.nix
+      ];
+
       options = {
         name = lib.mkOption {
           description = "The name of the project";

@@ -1,6 +1,5 @@
 # rising-tide flake context
 {
-  inputs,
   risingTideLib,
   ...
 }:
@@ -16,10 +15,9 @@ let
     p.bats-assert
     p.bats-file
   ]);
-  project = risingTideLib.mkProject {
+  project = risingTideLib.mkProject system {
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
-    systems = import inputs.systems;
     settings.tools = {
       nix-unit.enable = true;
       go-task = {
@@ -50,7 +48,7 @@ let
             cmds = [
               ''
                 cd "integration-tests/{{.INTEGRATION_TEST}}"
-                nix develop --no-write-lock-file --command ./test.bats
+                nix develop --no-write-lock-file --show-trace --command ./test.bats
               ''
             ];
           };
@@ -106,5 +104,5 @@ pkgs.mkShell {
       # Temporary until documentation generation is handled as a package.
       nixdoc
     ])
-    ++ project.tools.${system};
+    ++ project.tools;
 }
