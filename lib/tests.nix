@@ -16,12 +16,14 @@ rec {
   mkExpectRenderedConfig =
     {
       modules,
+      specialArgs ? { },
       filter ? true,
     }:
     module: expected:
     let
       expr =
         (lib.evalModules {
+          inherit specialArgs;
           modules = modules ++ [ module ];
         }).config;
       result = { inherit expr expected; };

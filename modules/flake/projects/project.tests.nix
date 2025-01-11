@@ -9,13 +9,15 @@ let
   projectModule = self.modules.flake.project;
   defaults = {
     name = lib.mkDefault "default-project-name";
-    systems = lib.mkDefault [ "example-system" ];
   };
   expectRenderedConfig = risingTideLib.tests.mkExpectRenderedConfig {
     modules = [
       projectModule
       defaults
     ];
+    specialArgs = {
+      system = "example-system";
+    };
   };
 in
 {
@@ -66,17 +68,14 @@ in
       {
         name = "root";
         relativePaths.toRoot = ".";
-        systems = [ "x86_64-linux" ];
         subprojects.subproject = {
           relativePaths.toParentProject = "./subproject";
         };
       }
       {
         name = "root";
-        systems = [ "x86_64-linux" ];
         subprojects.subproject = {
           name = "subproject";
-          systems = [ "x86_64-linux" ];
         };
       };
 
@@ -85,18 +84,14 @@ in
       {
         name = "root";
         relativePaths.toRoot = ".";
-        systems = [ "x86_64-linux" ];
         subprojects.subproject = {
-          systems = [ "aarch64-linux" ];
           relativePaths.toParentProject = "./subproject";
         };
       }
       {
         name = "root";
-        systems = [ "x86_64-linux" ];
         subprojects.subproject = {
           name = "subproject";
-          systems = [ "aarch64-linux" ];
         };
       };
 
@@ -106,19 +101,16 @@ in
         name = "root";
         relativePaths.toRoot = ".";
         defaultSettings.tools.treefmt.enable = true;
-        systems = [ "x86_64-linux" ];
         subprojects.subproject = {
           relativePaths.toParentProject = "./subproject";
         };
       }
       {
         name = "root";
-        systems = [ "x86_64-linux" ];
-        settings.x86_64-linux.tools.treefmt.enable = true;
+        settings.tools.treefmt.enable = true;
         subprojects.subproject = {
           name = "subproject";
-          systems = [ "x86_64-linux" ];
-          settings.x86_64-linux.tools.treefmt.enable = true;
+          settings.tools.treefmt.enable = true;
         };
       };
 

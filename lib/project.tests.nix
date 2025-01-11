@@ -5,16 +5,14 @@ let
 in
 {
   "test defaults" = risingTideLib.tests.filterExprToExpected {
-    expr = mkProject {
+    expr = mkProject "x86_64-linux" {
       name = "example-project";
-      systems = [ "x86_64-linux" ];
     };
     expected = {
       name = "example-project";
       relativePaths.toRoot = "./.";
       subprojects = { };
-      systems = [ "x86_64-linux" ];
-      settings.x86_64-linux = {
+      settings = {
         tools = { };
       };
     };
