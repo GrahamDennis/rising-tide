@@ -8,6 +8,7 @@
 # pkgs context
 { pkgs }:
 let
+  inherit (pkgs) system;
   fixupsModule = {
     options = {
       _module.args = lib.mkOption {
@@ -25,6 +26,7 @@ let
   };
 
   evaluatedProjectModule = lib.evalModules {
+    specialArgs = { inherit system; };
     modules = [
       self.modules.flake.project
       fixupsModule
