@@ -19,7 +19,7 @@ in
     ./nixfmt-rfc-style.nix
     ./nix-unit.nix
     ./pytest.nix
-    ./ruff.nix
+    # ./ruff.nix
     # ./shellcheck.nix
     # ./shfmt.nix
     # ./treefmt.nix
