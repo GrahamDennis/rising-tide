@@ -21,7 +21,7 @@
         pythonPackages = pkgs.python3.pkgs;
         project = rising-tide.lib.mkProject system {
           name = "python-package";
-          settings.python.enable = true;
+          settings.languages.python.enable = true;
         };
         injector = rising-tide.lib.mkInjector "injector" { args = { inherit project system; }; };
       in

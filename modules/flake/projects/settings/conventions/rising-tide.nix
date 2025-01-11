@@ -135,6 +135,6 @@ in
   config = lib.mkMerge [
     allProjectsConfig
     (lib.mkIf (project.relativePaths.toRoot == "./.") rootProjectConfig)
-    (lib.mkIf (config.python.enable) pythonProjectConfig)
+    (lib.mkIf (config.languages.python.enable) pythonProjectConfig)
   ];
 }

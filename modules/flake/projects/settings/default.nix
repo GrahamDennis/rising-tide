@@ -11,7 +11,7 @@ in
 { config, ... }:
 {
   imports = injector.injectModules [
-    ./python.nix
+    ./languages/python.nix
     ./tools
   ];
   options = {

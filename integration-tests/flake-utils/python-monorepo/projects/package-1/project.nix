@@ -5,7 +5,7 @@
 {
   relativePaths.toParentProject = "projects/package-1";
   settings = {
-    python = {
+    languages.python = {
       enable = true;
       callPackageFunction = (
         { pythonPackages }:

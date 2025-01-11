@@ -9,12 +9,12 @@
 { config, ... }:
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
-  cfg = config.settings.python;
+  cfg = config.settings.languages.python;
 in
 {
   options = {
     settings = mkSubmoduleOptions {
-      python = {
+      languages.python = {
         enable = lib.mkEnableOption "Enable python package configuration";
         callPackageFunction = lib.mkOption {
           description = ''
@@ -58,7 +58,7 @@ in
     in
     {
       settings = {
-        python.pythonOverlay = ifEnabled (
+        languages.python.pythonOverlay = ifEnabled (
           lib.mkDefault (
             python-final: _python-prev: {
               ${config.name} = python-final.callPackage cfg.callPackageFunction { };
@@ -67,6 +67,6 @@ in
         );
 
       };
-      parentProjectSettings.python.pythonOverlay = ifEnabled cfg.pythonOverlay;
+      parentProjectSettings.languages.python.pythonOverlay = ifEnabled cfg.pythonOverlay;
     };
 }
