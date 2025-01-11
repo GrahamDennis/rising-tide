@@ -3,6 +3,7 @@
   injector,
   lib,
   risingTideLib,
+  withSystem,
   ...
 }:
 let
@@ -14,7 +15,12 @@ let
       _file = ./project.nix;
 
       imports = injector.injectModules [
+        # languages
         ./settings/python.nix
+
+        # tools
+        ./settings/tools/treefmt.nix
+        ./settings/tools/vscode.nix
       ];
 
       options = {
@@ -110,6 +116,7 @@ let
                     # FIXME: Can this be removed?
                     _module.args = {
                       inherit system;
+                      inherit (config) toolsPkgs;
                       project = {
                         inherit (config) relativePaths name;
                       };
@@ -161,6 +168,21 @@ let
           readOnly = true;
           default = config.settings.tools.all;
           defaultText = lib.literalText "config.settings.tools.all";
+        };
+        toolsPkgs = lib.mkOption {
+          description = ''
+            The nixpkgs package set to be used by project tooling, e.g. shellcheck, ruff, mypy, etc.
+            This package set does not need to be the same as is used for building the project itself, to permit
+            newer tooling to be used with projects building against older versions of nixpkgs.
+          '';
+          type = types.pkgs;
+          default = withSystem system ({ pkgs, ... }: pkgs);
+          defaultText = lib.literalMD "`pkgs` defined by rising-tide";
+        };
+      };
+      config = {
+        _module.args = {
+          toolsPkgs = config.toolsPkgs;
         };
       };
     };
