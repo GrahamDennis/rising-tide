@@ -50,17 +50,17 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      # The default output format of interleaved does not do line-buffering. As a result,
-      # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
-      # terminal codes confusing the terminal.
+      allTools = ifEnabled [
+        (toolsPkgs.makeSetupHook {
+          name = "go-task-setup-hook.sh";
+          propagatedBuildInputs = [ wrappedPackage ];
+        } ./go-task-setup-hook.sh)
+      ];
       settings.tools = {
+        # The default output format of interleaved does not do line-buffering. As a result,
+        # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
+        # terminal codes confusing the terminal.
         go-task.taskfile.output = ifEnabled (lib.mkDefault "prefixed");
-        all = ifEnabled [
-          (toolsPkgs.makeSetupHook {
-            name = "go-task-setup-hook.sh";
-            propagatedBuildInputs = [ wrappedPackage ];
-          } ./go-task-setup-hook.sh)
-        ];
         nixago.requests = ifEnabled (
           lib.mkIf (cfg.taskfile != { }) [
             {

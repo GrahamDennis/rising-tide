@@ -64,7 +64,7 @@
             packages.package-1
             packages.package-2
           ];
-          nativeBuildInputs = project.tools;
+          nativeBuildInputs = project.allTools;
         };
       }
     )

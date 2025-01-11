@@ -15,25 +15,7 @@ let
       _file = ./project.nix;
 
       imports = injector.injectModules [
-        # languages
-        ./settings/python.nix
-
-        # tools
-        ./settings/tools/alejandra.nix
-        ./settings/tools/deadnix.nix
-        ./settings/tools/go-task
-        ./settings/tools/lefthook.nix
-        ./settings/tools/mypy.nix
-        ./settings/tools/nix-unit.nix
-        ./settings/tools/nixago
-        ./settings/tools/nixfmt-rfc-style.nix
-        ./settings/tools/pytest.nix
-        ./settings/tools/ruff.nix
-        ./settings/tools/shellcheck.nix
-        ./settings/tools/shfmt.nix
-        ./settings/tools/treefmt.nix
-        ./settings/tools/uv
-        ./settings/tools/vscode.nix
+        ./settings
       ];
 
       options = {
@@ -89,9 +71,8 @@ let
               modules = [
                 {
                   imports =
-                    [ (injector.injectModule ./settings) ]
                     # Apply default settings
-                    ++ [ projectConfig.defaultSettings ]
+                    [ projectConfig.defaultSettings ]
                     # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
                     ++ (lib.mapAttrsToList (
                       _subprojectName: subprojectConfig:
@@ -172,15 +153,13 @@ let
           default = { };
           visible = "shallow";
         };
-        tools = lib.mkOption {
+        allTools = lib.mkOption {
           description = ''
             An list of tools to be used by this project. This is typically included in
             the `nativeCheckInputs` of the project's package, or `nativeBuildInputs` of a devShell.
           '';
           type = (types.listOf types.package);
-          readOnly = true;
-          default = config.settings.tools.all;
-          defaultText = lib.literalText "config.settings.tools.all";
+          default = [ ];
         };
         toolsPkgs = lib.mkOption {
           description = ''

@@ -34,11 +34,11 @@ project = rising-tide.lib.mkProject {
     systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
 };
 
-# Then add project.tools.${system} to nativeCheckInputs of your package or nativeBuildInputs of your devShell:
+# Then add project.allTools to nativeCheckInputs of your package or nativeBuildInputs of your devShell:
 
 devShells.default = pkgs.mkShell {
     name = "my-awesome-project";
-    nativeBuildInputs = project.tools.${system}
+    nativeBuildInputs = project.allTools
         ++ [ /* other dev tools */ ];
 };
 ```

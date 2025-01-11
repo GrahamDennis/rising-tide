@@ -30,7 +30,7 @@
         packages.default = pkgs.callPackage (injector.inject ./package.nix) { };
         devShells.default = pkgs.mkShell {
           inputsFrom = [ packages.default ];
-          nativeBuildInputs = project.tools;
+          nativeBuildInputs = project.allTools;
         };
       }
     );

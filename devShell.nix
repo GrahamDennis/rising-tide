@@ -104,5 +104,5 @@ pkgs.mkShell {
       # Temporary until documentation generation is handled as a package.
       nixdoc
     ])
-    ++ project.tools;
+    ++ project.allTools;
 }

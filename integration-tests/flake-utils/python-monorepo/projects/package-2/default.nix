@@ -18,7 +18,8 @@ pythonPackages.buildPythonPackage rec {
     ];
   };
 
-  nativeCheckInputs = (lib.optionals (project != null) project.tools) ++ (optional-dependencies.dev);
+  nativeCheckInputs =
+    (lib.optionals (project != null) project.allTools) ++ (optional-dependencies.dev);
 
   build-system = with pythonPackages; [ hatchling ];
 }

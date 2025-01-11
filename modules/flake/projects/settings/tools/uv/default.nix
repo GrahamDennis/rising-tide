@@ -13,7 +13,7 @@
 }:
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
-  cfg = config.tools.uv;
+  cfg = config.settings.tools.uv;
   bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
 in
 {
@@ -29,7 +29,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools.all = ifEnabled [
+      allTools = ifEnabled [
         (toolsPkgs.makeSetupHook {
           name = "uv-shell-hook.sh";
           propagatedBuildInputs = [ cfg.package ];

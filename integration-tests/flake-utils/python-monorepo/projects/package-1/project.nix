@@ -22,7 +22,7 @@
             ];
           };
 
-          nativeCheckInputs = config.tools ++ (optional-dependencies.dev);
+          nativeCheckInputs = config.allTools ++ (optional-dependencies.dev);
 
           build-system = with pythonPackages; [ hatchling ];
         }

@@ -18,5 +18,5 @@ stdenv.mkDerivation {
     lldb
   ];
 
-  nativeCheckInputs = project.tools ++ [ pkgs.lldb ];
+  nativeCheckInputs = project.allTools ++ [ pkgs.lldb ];
 }

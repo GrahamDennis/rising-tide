@@ -35,7 +35,7 @@
           # Including the subproject manually like this shouldn't normally be necessary because
           # one would typically use `inputsFrom` the subproject package and the subproject package should
           # include its tools in nativeCheckInputs.
-          nativeBuildInputs = project.tools ++ project.subprojects.subproject.tools;
+          nativeBuildInputs = project.allTools ++ project.subprojects.subproject.allTools;
         };
       }
     );

@@ -29,7 +29,7 @@
       {
         devShells.default = pkgs.mkShell {
           name = "treefmt-integration-test";
-          nativeBuildInputs = project.tools;
+          nativeBuildInputs = project.allTools;
         };
       }
     );

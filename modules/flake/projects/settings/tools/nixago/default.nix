@@ -35,7 +35,7 @@ in
     };
   };
   config = {
-    settings.tools.all = lib.mkIf (cfg.requests != [ ]) [
+    allTools = lib.mkIf (cfg.requests != [ ]) [
       (
         let
           bashSafeName = risingTideLib.sanitizeBashIdentifier "project${config.relativePaths.toRoot}SetupHook";
