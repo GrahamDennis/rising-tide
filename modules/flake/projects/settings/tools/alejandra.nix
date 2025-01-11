@@ -44,7 +44,7 @@ in
           };
         };
       };
-      rootProjectSettings.vscode.settings = ifEnabled {
+      rootProjectSettings.tools.vscode.settings = ifEnabled {
         "nix.formatterPath" = alejandraExe;
         "nix.serverSettings" = {
           "nil" = {

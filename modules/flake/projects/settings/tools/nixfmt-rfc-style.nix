@@ -44,7 +44,7 @@ in
           };
         };
       };
-      rootProjectSettings.vscode.settings = {
+      rootProjectSettings.tools.vscode.settings = {
         "nix.formatterPath" = nixfmtExe;
         "nix.serverSettings" = {
           "nil" = {
