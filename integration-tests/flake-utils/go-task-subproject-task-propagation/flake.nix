@@ -14,23 +14,20 @@
       nixpkgs,
       ...
     }:
-    let
-      project = rising-tide.lib.mkProject {
-        name = "go-task-subproject-task-propagation-integration-test";
-        relativePaths.toRoot = "./.";
-        systems = flake-utils.lib.defaultSystems;
-        subprojects.subproject = {
-          relativePaths.toParentProject = "subproject";
-          settings.tools.go-task = {
-            taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
-          };
-        };
-      };
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        project = rising-tide.lib.mkProject system {
+          name = "go-task-subproject-task-propagation-integration-test";
+          relativePaths.toRoot = "./.";
+          subprojects.subproject = {
+            relativePaths.toParentProject = "subproject";
+            settings.tools.go-task = {
+              taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
+            };
+          };
+        };
       in
       {
         devShells.default = pkgs.mkShell {
@@ -38,7 +35,7 @@
           # Including the subproject manually like this shouldn't normally be necessary because
           # one would typically use `inputsFrom` the subproject package and the subproject package should
           # include its tools in nativeCheckInputs.
-          nativeBuildInputs = project.tools.${system} ++ project.subprojects.subproject.tools.${system};
+          nativeBuildInputs = project.tools ++ project.subprojects.subproject.tools;
         };
       }
     );

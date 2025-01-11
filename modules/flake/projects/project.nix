@@ -124,6 +124,7 @@ let
           '';
           type = types.attrsOf (
             types.submoduleWith {
+              specialArgs = { inherit system; };
               modules =
                 let
                   parentProjectConfig = config;
