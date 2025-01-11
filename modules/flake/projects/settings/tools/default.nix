@@ -10,9 +10,9 @@ in
 # project settings tools context
 {
   imports = builtins.map injector.injectModule [
-    ./alejandra.nix
+    # ./alejandra.nix
     # ./deadnix.nix
-    ./go-task
+    # ./go-task
     # ./lefthook.nix
     # ./mypy.nix
     ./nixago

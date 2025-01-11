@@ -19,7 +19,9 @@ let
         ./settings/python.nix
 
         # tools
+        ./settings/tools/alejandra.nix
         ./settings/tools/deadnix.nix
+        ./settings/tools/go-task
         ./settings/tools/lefthook.nix
         ./settings/tools/mypy.nix
         ./settings/tools/nix-unit.nix
