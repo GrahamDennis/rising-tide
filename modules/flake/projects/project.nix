@@ -19,6 +19,7 @@ let
         ./settings/python.nix
 
         # tools
+        ./settings/tools/pytest.nix
         ./settings/tools/ruff.nix
         ./settings/tools/shellcheck.nix
         ./settings/tools/shfmt.nix

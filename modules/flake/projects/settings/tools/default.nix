@@ -18,7 +18,7 @@ in
     ./nixago
     ./nixfmt-rfc-style.nix
     ./nix-unit.nix
-    ./pytest.nix
+    # ./pytest.nix
     # ./ruff.nix
     # ./shellcheck.nix
     # ./shfmt.nix
