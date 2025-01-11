@@ -1,6 +1,6 @@
 # rising-tide flake context
 { lib, flake-parts-lib, ... }:
-# project settings context
+# project context
 {
   config,
   toolsPkgs,

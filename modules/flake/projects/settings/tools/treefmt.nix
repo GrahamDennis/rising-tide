@@ -4,7 +4,7 @@
   flake-parts-lib,
   ...
 }:
-# project tools context
+# project context
 {
   config,
   toolsPkgs,

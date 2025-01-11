@@ -16,8 +16,8 @@ in
     ./lefthook.nix
     ./mypy.nix
     ./nixago
-    ./nixfmt-rfc-style.nix
     ./nix-unit.nix
+    # ./nixfmt-rfc-style.nix
     # ./pytest.nix
     # ./ruff.nix
     # ./shellcheck.nix
