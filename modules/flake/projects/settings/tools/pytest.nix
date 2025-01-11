@@ -65,6 +65,7 @@ in
                 addopts = [
                   "--showlocals"
                   "--maxfail=1"
+                  "--import-mode=importlib"
                 ];
               }
               (lib.mkIf cfg.coverage.enable {
@@ -106,15 +107,6 @@ in
                   })
                 ];
             };
-          };
-          vscode.settings = ifEnabled {
-            "python.testing.pytestEnabled" = true;
-            "python.testing.unittestEnabled" = false;
-            "python.testing.pytestArgs" = [
-              "--config-file=${toString configFile}"
-              "--rootdir=."
-              "./tests"
-            ];
           };
         };
       };
