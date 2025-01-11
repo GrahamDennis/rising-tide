@@ -21,7 +21,7 @@ in
     ./pytest.nix
     ./ruff.nix
     ./shellcheck.nix
-    ./shfmt.nix
+    # ./shfmt.nix
     # ./treefmt.nix
     ./uv
     # ./vscode.nix
