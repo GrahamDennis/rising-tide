@@ -14,9 +14,9 @@ in
     ./deadnix.nix
     ./go-task
     ./lefthook.nix
-    ./mypy.nix
+    # ./mypy.nix
     ./nixago
-    ./nix-unit.nix
+    # ./nix-unit.nix
     # ./nixfmt-rfc-style.nix
     # ./pytest.nix
     # ./ruff.nix

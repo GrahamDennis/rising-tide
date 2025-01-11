@@ -19,6 +19,8 @@ let
         ./settings/python.nix
 
         # tools
+        ./settings/tools/mypy.nix
+        ./settings/tools/nix-unit.nix
         ./settings/tools/nixfmt-rfc-style.nix
         ./settings/tools/pytest.nix
         ./settings/tools/ruff.nix
