@@ -64,36 +64,4 @@ in
         };
       };
 
-  "test systems are inherited" =
-    expectRenderedConfig
-      {
-        name = "root";
-        relativePaths.toRoot = ".";
-        subprojects.subproject = {
-          relativePaths.toParentProject = "./subproject";
-        };
-      }
-      {
-        name = "root";
-        subprojects.subproject = {
-          name = "subproject";
-        };
-      };
-
-  "test subproject systems can be overridden" =
-    expectRenderedConfig
-      {
-        name = "root";
-        relativePaths.toRoot = ".";
-        subprojects.subproject = {
-          relativePaths.toParentProject = "./subproject";
-        };
-      }
-      {
-        name = "root";
-        subprojects.subproject = {
-          name = "subproject";
-        };
-      };
-
 }

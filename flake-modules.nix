@@ -8,7 +8,7 @@
 let
   modules.flake = injector.injectModules {
     project = ./modules/flake/projects/project.nix;
-    risingTideConventions = ./modules/flake/projects/settings/conventions/rising-tide.nix;
+    risingTideConventions = ./modules/flake/projects/settings/conventions/rising-tide;
   };
 in
 {

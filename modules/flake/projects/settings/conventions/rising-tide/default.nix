@@ -1,47 +1,16 @@
 # rising-tide flake context
-{ lib, ... }:
+{ injector, ... }:
 # project context
 {
   config,
-  toolsPkgs,
   ...
 }:
-let
-  rootProjectConfig = {
-    settings.tools = {
-      deadnix.enable = true;
-      nixfmt-rfc-style.enable = true;
-      lefthook = {
-        enable = true;
-        config = {
-          assert_lefthook_installed = true;
-          pre-commit = {
-            commands = {
-              check = {
-                run = "${lib.getExe' config.settings.tools.go-task.package "task"} check";
-                stage_fixed = true;
-              };
-            };
-          };
-        };
-      };
-      shellcheck.enable = true;
-      shfmt.enable = true;
-      vscode = {
-        enable = true;
-        settings = {
-          "nix.enableLanguageServer" = true;
-          "nix.serverPath" = "${lib.getExe toolsPkgs.nil}";
-        };
-        extensions = {
-          recommendations = [
-            "jnoortheen.nix-ide"
-          ];
-        };
-      };
-    };
-  };
-  allProjectsConfig = {
+{
+  imports = injector.injectModules [
+    ./python.nix
+    ./root-project.nix
+  ];
+  config = {
     settings.tools = {
       go-task.enable = true;
       mypy.config = {
@@ -118,22 +87,4 @@ let
       ];
     };
   };
-  pythonProjectConfig = {
-    settings.tools = lib.mkIf (config.settings.languages.python.enable) {
-      mypy.enable = true;
-      pytest = {
-        enable = true;
-        coverage.enable = true;
-      };
-      ruff.enable = true;
-      uv.enable = true;
-    };
-  };
-in
-{
-  config = lib.mkMerge [
-    allProjectsConfig
-    (lib.mkIf (config.relativePaths.toRoot == "./.") rootProjectConfig)
-    (pythonProjectConfig)
-  ];
 }
