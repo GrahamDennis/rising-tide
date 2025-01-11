@@ -75,7 +75,7 @@ in
         );
       };
 
-      settings.parentProjectSettings = ifEnabled {
+      parentProjectSettings = ifEnabled {
         tools.go-task.taskfile = {
           includes.${config.name} = {
             taskfile = config.relativePaths.toParentProject;

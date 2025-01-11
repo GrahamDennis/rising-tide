@@ -62,10 +62,6 @@ let
           type =
             let
               projectConfig = config;
-              emptyChildProjectSettings = {
-                parentProjectSettings = { };
-                rootProjectSettings = { };
-              };
             in
             types.submoduleWith ({
               modules = [
@@ -75,37 +71,10 @@ let
                     [ projectConfig.defaultSettings ]
                     # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
                     ++ (lib.mapAttrsToList (
-                      _subprojectName: subprojectConfig:
-                      (subprojectConfig.settings or emptyChildProjectSettings).parentProjectSettings
+                      _subprojectName: subprojectConfig: subprojectConfig.parentProjectSettings
                     ) projectConfig.subprojects)
                     # Apply root project settings from child projects if this is the root project
-                    ++ (lib.optionals (projectConfig.relativePaths.toRoot == "./.") (
-                      lib.mapAttrsToList (
-                        _subprojectName: subprojectConfig:
-                        (subprojectConfig.settings or emptyChildProjectSettings).rootProjectSettings
-                      ) projectConfig.subprojects
-                    ));
-                  options = {
-                    parentProjectSettings = lib.mkOption {
-                      description = "Settings that a child project requests to be applied to its parent project";
-                      type = types.deferredModule;
-                      default = { };
-                    };
-                    rootProjectSettings = lib.mkOption {
-                      description = ''
-                        Settings that a child project requests to be applied to the root project.
-                        Note: If this project _is_ the root project, these settings will not be applied to the project itself, only
-                        child projects' `rootProjectSettings` will be applied.
-                      '';
-                      type = types.deferredModuleWith {
-                        staticModules = lib.mapAttrsToList (
-                          _subprojectName: subprojectConfig:
-                          (subprojectConfig.settings or emptyChildProjectSettings).rootProjectSettings
-                        ) projectConfig.subprojects;
-                      };
-                      default = { };
-                    };
-                  };
+                    ++ (lib.optional (projectConfig.relativePaths.toRoot == "./.") (projectConfig.rootProjectSettings));
                   config = {
                     # FIXME: Can this be removed?
                     _module.args = {
@@ -119,6 +88,24 @@ let
                 }
               ];
             });
+          default = { };
+        };
+        parentProjectSettings = lib.mkOption {
+          description = "Settings that a child project requests to be applied to its parent project";
+          type = types.deferredModule;
+          default = { };
+        };
+        rootProjectSettings = lib.mkOption {
+          description = ''
+            Settings that a child project requests to be applied to the root project.
+            Note: If this project _is_ the root project, these settings will not be applied to the project itself, only
+            child projects' `rootProjectSettings` will be applied.
+          '';
+          type = types.deferredModuleWith {
+            staticModules = lib.mapAttrsToList (
+              _subprojectName: subprojectConfig: subprojectConfig.rootProjectSettings
+            ) config.subprojects;
+          };
           default = { };
         };
         subprojects = lib.mkOption {

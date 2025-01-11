@@ -66,7 +66,7 @@ in
           )
         );
 
-        parentProjectSettings.python.pythonOverlay = ifEnabled cfg.pythonOverlay;
       };
+      parentProjectSettings.python.pythonOverlay = ifEnabled cfg.pythonOverlay;
     };
 }

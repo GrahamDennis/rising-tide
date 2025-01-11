@@ -117,17 +117,17 @@ in
             ];
           };
         };
-        rootProjectSettings = {
-          tools.vscode = {
-            settings = ifEnabled {
-              "python.testing.pytestEnabled" = true;
-              "python.testing.unittestEnabled" = false;
-              "python.testing.pytestArgs" = [
-                "--config-file=${toString configFile}"
-                "--rootdir=."
-                "${config.relativePaths.toRoot}/tests"
-              ];
-            };
+      };
+      rootProjectSettings = {
+        tools.vscode = {
+          settings = ifEnabled {
+            "python.testing.pytestEnabled" = true;
+            "python.testing.unittestEnabled" = false;
+            "python.testing.pytestArgs" = [
+              "--config-file=${toString configFile}"
+              "--rootdir=."
+              "${config.relativePaths.toRoot}/tests"
+            ];
           };
         };
       };
