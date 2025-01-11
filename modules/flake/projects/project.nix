@@ -25,6 +25,7 @@ let
         ./settings/tools/lefthook.nix
         ./settings/tools/mypy.nix
         ./settings/tools/nix-unit.nix
+        ./settings/tools/nixago
         ./settings/tools/nixfmt-rfc-style.nix
         ./settings/tools/pytest.nix
         ./settings/tools/ruff.nix

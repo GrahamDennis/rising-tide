@@ -15,7 +15,7 @@ in
     # ./go-task
     # ./lefthook.nix
     # ./mypy.nix
-    ./nixago
+    # ./nixago
     # ./nix-unit.nix
     # ./nixfmt-rfc-style.nix
     # ./pytest.nix

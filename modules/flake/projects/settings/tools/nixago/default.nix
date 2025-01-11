@@ -3,24 +3,25 @@
   lib,
   inputs,
   risingTideLib,
+  flake-parts-lib,
   ...
 }:
 let
   inherit (lib) types;
+  inherit (flake-parts-lib) mkSubmoduleOptions;
 in
-# project tools context
+# project context
 {
   config,
   toolsPkgs,
-  project,
   system,
   ...
 }:
 let
-  cfg = config.tools.nixago;
+  cfg = config.settings.tools.nixago;
 in
 {
-  options = {
+  options.settings = mkSubmoduleOptions {
     tools.nixago = {
       requests = lib.mkOption {
         description = ''
@@ -34,16 +35,16 @@ in
     };
   };
   config = {
-    tools.all = lib.mkIf (cfg.requests != [ ]) [
+    settings.tools.all = lib.mkIf (cfg.requests != [ ]) [
       (
         let
-          bashSafeName = risingTideLib.sanitizeBashIdentifier "project${project.relativePaths.toRoot}SetupHook";
+          bashSafeName = risingTideLib.sanitizeBashIdentifier "project${config.relativePaths.toRoot}SetupHook";
         in
         toolsPkgs.makeSetupHook {
-          name = "${project.relativePaths.toRoot}-setup-hook";
+          name = "${config.relativePaths.toRoot}-setup-hook";
           substitutions = {
             inherit bashSafeName;
-            relativePathToRoot = project.relativePaths.toRoot;
+            relativePathToRoot = config.relativePaths.toRoot;
             nixagoHook =
               toolsPkgs.writeShellScript "nixago-setup-hook"
                 (inputs.nixago.lib.${system}.makeAll cfg.requests).shellHook;
