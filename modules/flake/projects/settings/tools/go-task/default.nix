@@ -18,7 +18,7 @@ let
   cfg = config.settings.tools.go-task;
   settingsFormat = toolsPkgs.formats.yaml { };
   wrappedPackage = toolsPkgs.writeScriptBin "task" ''
-    # Temporary workaround until https://github.com/go-task/task/pull/1974 gets merged
+    # Temporary workaround until go-task >3.40.1 is available in nixpkgs
     exec ${cfg.package}/bin/task --concurrency 1 "$@"
   '';
 in
