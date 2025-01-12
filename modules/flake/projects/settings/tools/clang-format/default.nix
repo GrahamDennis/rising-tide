@@ -38,6 +38,7 @@ in
           description = ''
             Language-specific sections of the clang-format YAML file to generate.
           '';
+          default = { };
         };
       };
     };

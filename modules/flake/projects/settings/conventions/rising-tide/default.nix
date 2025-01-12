@@ -19,6 +19,9 @@
           ColumnLimit = 120;
         };
       };
+      clang-tidy.config = {
+        Checks = "bugprone-*,cppcoreguidelines-*";
+      };
       cmake-format.config = {
         format.line_width = 120;
       };

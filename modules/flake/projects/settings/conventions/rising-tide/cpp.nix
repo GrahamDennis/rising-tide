@@ -11,6 +11,7 @@ in
 {
   settings.tools = ifEnabled {
     clang-format.enable = true;
+    clang-tidy.enable = true;
     cmake-format.enable = true;
     cmake.enable = true;
   };
