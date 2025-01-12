@@ -19,6 +19,7 @@ let
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
     settings.tools = {
+      cue.enable = true;
       nix-unit.enable = true;
       go-task = {
         taskfile.tasks = {

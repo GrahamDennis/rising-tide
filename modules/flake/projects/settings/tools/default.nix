@@ -8,6 +8,7 @@
   imports = builtins.map injector.injectModule [
     ./alejandra.nix
     ./cmake-format.nix
+    ./cue.nix
     ./deadnix.nix
     ./direnv
     ./go-task
