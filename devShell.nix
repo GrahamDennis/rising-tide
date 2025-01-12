@@ -54,7 +54,6 @@ let
             ];
           };
           build = {
-            desc = "Build all packages";
             deps = [
               "build:project-module-docs"
               "build:lib-docs"
