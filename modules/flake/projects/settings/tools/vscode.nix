@@ -29,13 +29,17 @@ in
         '';
         type = types.attrsOf types.bool;
         default = { };
+        example = {
+          "jnoortheen.nix-ide" = true;
+        };
       };
       extensions = lib.mkOption {
         description = ''
           Contents of the VSCode `.vscode/extensions.json` file to generate. This file describes extensions
-          that are recommended to be used with this project.
+          that are recommended to be used with this project. Prefer to instead modify `recommendedExtensions`.
         '';
         type = settingsFormat.type;
+        readOnly = true;
         default = { };
       };
     };
