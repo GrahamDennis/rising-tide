@@ -8,6 +8,16 @@
 }:
 {
   settings.tools = lib.mkIf (config.relativePaths.toRoot == "./.") {
+    envrc = {
+      enable = true;
+      content = ''
+        if ! has nix_direnv_version || ! nix_direnv_version 3.0.6; then
+          source_url "https://raw.githubusercontent.com/nix-community/nix-direnv/3.0.6/direnvrc" "sha256-RYcUJaRMf8oF5LznDrlCXbkOQrywm0HDv1VjYGaJGdM="
+        fi
+
+        use flake
+      '';
+    };
     deadnix.enable = true;
     nixfmt-rfc-style.enable = true;
     lefthook = {

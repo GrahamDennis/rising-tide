@@ -9,6 +9,7 @@
     ./alejandra.nix
     ./cmake-format.nix
     ./deadnix.nix
+    ./envrc
     ./go-task
     ./lefthook.nix
     ./mypy.nix
