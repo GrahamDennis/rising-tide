@@ -2,6 +2,7 @@
 {
   lib,
   flake-parts-lib,
+  risingTideLib,
   ...
 }:
 # project context
@@ -11,6 +12,7 @@
   ...
 }:
 let
+  inherit (lib) types;
   inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.pytest;
   settingsFormat = toolsPkgs.formats.toml { };
@@ -47,6 +49,17 @@ in
           '';
           type = settingsFormat.type;
           default = { };
+        };
+      };
+      vscode = {
+        configFile = lib.mkOption {
+          internal = true;
+          type = types.pathInStore;
+        };
+        testPaths = lib.mkOption {
+          internal = true;
+          type = types.listOf risingTideLib.types.subpath;
+          default = [ ];
         };
       };
     };
@@ -108,20 +121,25 @@ in
                 ];
             };
           };
+
+          # This doesn't live in rootProjectSettings because we need the pytestArguments array to not just accumulate
+          # for every single python project. The pytest configuration options must be the same.
+          vscode.settings =
+            lib.mkIf ((cfg.vscode.testPaths != [ ]) && (config.relativePaths.toRoot == "./."))
+              {
+                "python.testing.pytestEnabled" = true;
+                "python.testing.unittestEnabled" = false;
+                "python.testing.pytestArgs" = [
+                  "--config-file=${cfg.vscode.configFile}"
+                  "--rootdir=."
+                ] ++ cfg.vscode.testPaths;
+              };
         };
       };
       rootProjectSettings = {
-        tools.vscode = {
-          settings = ifEnabled {
-            "python.testing.pytestEnabled" = true;
-            "python.testing.unittestEnabled" = false;
-            # This is not quite right because --config-file and --rootdir get added multiple times
-            "python.testing.pytestArgs" = [
-              "--config-file=${toString configFile}"
-              "--rootdir=."
-              "${config.relativePaths.toRoot}/tests"
-            ];
-          };
+        tools.pytest.vscode = ifEnabled {
+          inherit configFile;
+          testPaths = [ "${config.relativePaths.toRoot}/tests" ];
         };
       };
     };

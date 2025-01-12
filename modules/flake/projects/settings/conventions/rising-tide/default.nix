@@ -27,7 +27,13 @@
       };
       go-task.enable = true;
       mypy.config = {
+        pretty = true;
         strict = true;
+        mypy_path = [
+          "src"
+          "."
+        ];
+        explicit_package_bases = true;
         warn_return_any = true;
         warn_unused_configs = true;
         disallow_untyped_defs = true;
