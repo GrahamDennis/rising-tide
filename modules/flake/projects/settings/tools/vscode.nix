@@ -40,16 +40,17 @@ in
         '';
         type = settingsFormat.type;
         readOnly = true;
-        default = { };
+        default = {
+          recommendations = builtins.attrNames (
+            lib.filterAttrs (_name: enabled: enabled) cfg.recommendedExtensions
+          );
+        };
       };
     };
   };
 
   config = {
     settings.tools = {
-      vscode.extensions.recommendations = builtins.attrNames (
-        lib.filterAttrs (_name: enabled: enabled) cfg.recommendedExtensions
-      );
       nixago.requests = lib.mkIf cfg.enable (
         lib.mkMerge [
           (lib.mkIf (cfg.settings != { }) [

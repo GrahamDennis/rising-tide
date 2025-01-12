@@ -49,5 +49,11 @@ in
         }
       ];
     };
+
+    rootProjectSettings.tools = lib.mkIf cfg.enable {
+      vscode.recommendedExtensions = {
+        "mkhl.direnv" = true;
+      };
+    };
   };
 }
