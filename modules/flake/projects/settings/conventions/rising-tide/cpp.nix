@@ -10,6 +10,7 @@ let
 in
 {
   settings.tools = ifEnabled {
+    clang-format.enable = true;
     cmake-format.enable = true;
     cmake.enable = true;
   };

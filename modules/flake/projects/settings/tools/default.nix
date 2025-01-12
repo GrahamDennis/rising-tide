@@ -7,6 +7,7 @@
 {
   imports = builtins.map injector.injectModule [
     ./alejandra.nix
+    ./clang-format
     ./cmake-format.nix
     ./cmake.nix
     ./cue.nix

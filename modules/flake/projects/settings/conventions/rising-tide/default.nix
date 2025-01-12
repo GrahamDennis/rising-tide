@@ -13,6 +13,12 @@
   ];
   config = {
     settings.tools = {
+      clang-format.config = {
+        header = {
+          BasedOnStyle = "Google";
+          ColumnLimit = 120;
+        };
+      };
       cmake-format.config = {
         format.line_width = 120;
       };
