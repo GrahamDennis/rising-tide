@@ -20,9 +20,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
         project = rising-tide.lib.mkProject system {
           name = "cpp-package";
-          settings.tools.go-task = {
-            enable = true;
-          };
+          settings.languages.cpp.enable = true;
+          settings.tools.go-task.enable = true;
         };
         injector = rising-tide.lib.mkInjector "injector" { args = { inherit project system; }; };
       in

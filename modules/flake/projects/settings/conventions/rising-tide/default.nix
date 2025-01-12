@@ -7,6 +7,7 @@
 }:
 {
   imports = injector.injectModules [
+    ./cpp.nix
     ./python.nix
     ./root-project.nix
   ];

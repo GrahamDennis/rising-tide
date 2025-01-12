@@ -8,6 +8,7 @@
 }:
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
+  inherit (lib) types;
   cfg = config.settings.tools.vscode;
   settingsFormat = toolsPkgs.formats.json { };
 in
@@ -22,6 +23,13 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      recommendedExtensions = lib.mkOption {
+        description = ''
+          An attrset of booleans to indicate which extensions should be included in `.vscode/extensions.json`.
+        '';
+        type = types.attrsOf types.bool;
+        default = { };
+      };
       extensions = lib.mkOption {
         description = ''
           Contents of the VSCode `.vscode/extensions.json` file to generate. This file describes extensions
@@ -33,22 +41,29 @@ in
     };
   };
 
-  config.settings.tools.nixago.requests = lib.mkIf cfg.enable (
-    lib.mkMerge [
-      (lib.mkIf (cfg.settings != { }) [
-        {
-          data = cfg.settings;
-          output = ".vscode/settings.json";
-          format = "json";
-        }
-      ])
-      (lib.mkIf (cfg.extensions != { }) [
-        {
-          data = cfg.extensions;
-          output = ".vscode/extensions.json";
-          format = "json";
-        }
-      ])
-    ]
-  );
+  config = {
+    settings.tools = {
+      vscode.extensions.recommendations = builtins.attrNames (
+        lib.filterAttrs (_name: enabled: enabled) cfg.recommendedExtensions
+      );
+      nixago.requests = lib.mkIf cfg.enable (
+        lib.mkMerge [
+          (lib.mkIf (cfg.settings != { }) [
+            {
+              data = cfg.settings;
+              output = ".vscode/settings.json";
+              format = "json";
+            }
+          ])
+          (lib.mkIf (cfg.extensions != { }) [
+            {
+              data = cfg.extensions;
+              output = ".vscode/extensions.json";
+              format = "json";
+            }
+          ])
+        ]
+      );
+    };
+  };
 }

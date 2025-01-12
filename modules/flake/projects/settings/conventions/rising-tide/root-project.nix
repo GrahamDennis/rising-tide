@@ -32,10 +32,8 @@
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "${lib.getExe toolsPkgs.nil}";
       };
-      extensions = {
-        recommendations = [
-          "jnoortheen.nix-ide"
-        ];
+      recommendedExtensions = {
+        "jnoortheen.nix-ide" = true;
       };
     };
   };
