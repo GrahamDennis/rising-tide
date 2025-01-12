@@ -5,8 +5,14 @@
   config,
   ...
 }:
+let
+  ifEnabled = lib.mkIf (config.settings.languages.cpp.enable);
+in
 {
-  rootProjectSettings.tools = lib.mkIf (config.settings.languages.cpp.enable) {
+  settings.tools = ifEnabled {
+    cmake-format.enable = true;
+  };
+  rootProjectSettings.tools = ifEnabled {
     vscode = {
       recommendedExtensions = {
         "ms-vscode.cpptools-extension-pack" = true;

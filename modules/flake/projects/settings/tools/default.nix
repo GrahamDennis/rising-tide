@@ -7,6 +7,7 @@
 {
   imports = builtins.map injector.injectModule [
     ./alejandra.nix
+    ./cmake-format.nix
     ./deadnix.nix
     ./go-task
     ./lefthook.nix

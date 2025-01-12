@@ -13,6 +13,9 @@
   ];
   config = {
     settings.tools = {
+      cmake-format.config = {
+        format.line_width = 120;
+      };
       go-task.enable = true;
       mypy.config = {
         strict = true;
