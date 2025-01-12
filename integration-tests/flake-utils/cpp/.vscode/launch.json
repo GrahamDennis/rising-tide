@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Launch greet",
+            "name": "Debug",
             "program": "${workspaceFolder}/build/src/greet",
             "args": [],
             "cwd": "${workspaceFolder}"

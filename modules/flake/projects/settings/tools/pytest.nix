@@ -115,6 +115,7 @@ in
           settings = ifEnabled {
             "python.testing.pytestEnabled" = true;
             "python.testing.unittestEnabled" = false;
+            # This is not quite right because --config-file and --rootdir get added multiple times
             "python.testing.pytestArgs" = [
               "--config-file=${toString configFile}"
               "--rootdir=."
