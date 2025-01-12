@@ -11,6 +11,7 @@ in
 {
   settings.tools = ifEnabled {
     cmake-format.enable = true;
+    cmake.enable = true;
   };
   rootProjectSettings.tools = ifEnabled {
     vscode = {

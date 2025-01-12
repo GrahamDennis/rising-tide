@@ -8,14 +8,15 @@
   imports = builtins.map injector.injectModule [
     ./alejandra.nix
     ./cmake-format.nix
+    ./cmake.nix
     ./cue.nix
     ./deadnix.nix
     ./direnv
     ./go-task
     ./lefthook.nix
     ./mypy.nix
-    ./nixago
     ./nix-unit.nix
+    ./nixago
     ./nixfmt-rfc-style.nix
     ./pytest.nix
     ./ruff.nix

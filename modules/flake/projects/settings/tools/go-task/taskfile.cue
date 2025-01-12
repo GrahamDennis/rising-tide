@@ -17,4 +17,5 @@ tasks: [string]: #Task
 tasks: {
 	test: desc: "Run all tests"
 	check: {desc: "Run all checks", aliases: ["lint", "format", "fmt"]}
+	build: desc: "Build"
 }
