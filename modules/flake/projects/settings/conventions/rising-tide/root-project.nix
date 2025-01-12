@@ -8,7 +8,7 @@
 }:
 {
   settings.tools = lib.mkIf (config.relativePaths.toRoot == "./.") {
-    envrc = {
+    direnv = {
       enable = true;
       content = ''
         if ! has nix_direnv_version || ! nix_direnv_version 3.0.6; then

@@ -14,12 +14,12 @@
 let
   inherit (lib) types;
   inherit (flake-parts-lib) mkSubmoduleOptions;
-  cfg = config.settings.tools.envrc;
+  cfg = config.settings.tools.direnv;
 in
 {
   options.settings = mkSubmoduleOptions {
-    tools.envrc = {
-      enable = lib.mkEnableOption "Enable envrc integration";
+    tools.direnv = {
+      enable = lib.mkEnableOption "Enable direnv integration";
       content = lib.mkOption {
         type = types.str;
         description = "Content of the .envrc file";
