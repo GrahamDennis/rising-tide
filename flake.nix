@@ -22,8 +22,7 @@
       root = ./.;
       lib = nixpkgs.lib;
       risingTideLib = import (root + "/lib/default.nix") {
-        inherit lib;
-        risingTide = self;
+        inherit lib self;
       };
       bootstrapInjector = risingTideLib.mkInjector "bootstrapInjector" {
         args = {

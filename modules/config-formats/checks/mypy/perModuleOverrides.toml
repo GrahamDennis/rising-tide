@@ -1,0 +1,11 @@
+[tool.mypy]
+pretty = true
+strict = true
+warn_return_any = true
+[[tool.mypy.overrides]]
+module = "example1.*"
+strict = false
+
+[[tool.mypy.overrides]]
+disallow_untyped_defs = false
+module = "mycode.foo.*"

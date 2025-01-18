@@ -1,3 +1,4 @@
+# rising-tide flake context
 { lib, ... }:
 let
   rootInjector = {

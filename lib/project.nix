@@ -1,4 +1,5 @@
-{ lib, risingTide, ... }:
+# rising-tide flake context
+{ lib, self, ... }:
 rec {
   mkBaseProject =
     {
@@ -8,7 +9,7 @@ rec {
     (lib.evalModules {
       specialArgs = { inherit system projectModules; };
       modules = [
-        risingTide.modules.flake.project
+        self.modules.flake.project
         projectModule
         { relativePaths.toRoot = lib.mkDefault "./."; }
       ];
@@ -18,7 +19,7 @@ rec {
     system: projectModule:
     mkBaseProject
       {
-        projectModules = [ risingTide.modules.flake.risingTideConventions ];
+        projectModules = [ self.modules.flake.risingTideConventions ];
       }
       system
       {
