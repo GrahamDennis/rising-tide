@@ -34,7 +34,7 @@ in
             };
           };
         };
-        go-task = {
+        go-task = ifEnabled {
           enable = true;
           taskfile.tasks = {
             "tool:nixfmt-rfc-style" = {
@@ -44,11 +44,12 @@ in
           };
         };
       };
-      rootProjectSettings.tools.vscode.settings = {
+      rootProjectSettings.tools.vscode.settings = ifEnabled {
         "nix.formatterPath" = nixfmtExe;
         "nix.serverSettings" = {
           "nil" = {
             "formatting" = {
+              # This isn't right, this should only be set once vs merging
               "command" = [ nixfmtExe ];
             };
           };

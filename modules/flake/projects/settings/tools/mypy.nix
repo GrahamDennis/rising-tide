@@ -8,9 +8,9 @@
 }:
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
+  inherit (lib) types;
   cfg = config.settings.tools.mypy;
   settingsFormat = toolsPkgs.formats.toml { };
-  configFile = settingsFormat.generate "mypy.toml" { tool.mypy = cfg.config; };
   mypyExe = lib.getExe cfg.package;
 in
 {
@@ -29,6 +29,49 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      perModuleOverrides = lib.mkOption {
+        description = ''
+          An attrset of overrides where the key of the attrset is the module that the override is for.
+        '';
+        type = types.attrsOf (settingsFormat.type);
+        default = { };
+        example = {
+          "mycode.foo.*" = {
+            disallow_untyped_defs = false;
+          };
+        };
+      };
+      mergedConfig = lib.mkOption {
+        readOnly = true;
+        description = ''
+          The merged mypy configuration that will be written to a mypy.toml file.
+        '';
+        type = settingsFormat.type;
+        default =
+          let
+            checkedBaseConfig =
+              if cfg.config ? "overrides" then
+                throw "Do not set `overrides` in mypy config. Instead set the overrides in `tools.mypy.perModuleOverrides.\"<modulePath>\"`."
+              else
+                cfg.config;
+          in
+          {
+            tool.mypy = lib.mkMerge [
+              # base configuration
+              checkedBaseConfig
+              # per module overrides
+              (lib.mkIf (cfg.perModuleOverrides != { }) ({
+                overrides = lib.mapAttrsToList (
+                  module: override: override // { inherit module; }
+                ) cfg.perModuleOverrides;
+              }))
+            ];
+          };
+      };
+      configFile = lib.mkOption {
+        type = types.pathInStore;
+        default = settingsFormat.generate "mypy.toml" cfg.mergedConfig;
+      };
     };
   };
 
@@ -42,7 +85,7 @@ in
           enable = true;
           taskfile.tasks =
             let
-              callMypy = args: "${mypyExe} --config-file=${toString configFile} ${args}";
+              callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
             in
             {
               # Mypy must run after treefmt, so we run it as a command not a dependency

@@ -20,6 +20,8 @@ in
   };
   rootProjectSettings.tools.vscode = ifEnabled {
     recommendedExtensions = {
+      # FIXME: Make this pytest
+      # FIXME: This would belong in the pytest config
       "jnoortheen.nix-ide" = true;
     };
   };

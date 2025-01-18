@@ -78,7 +78,6 @@ in
                 addopts = [
                   "--showlocals"
                   "--maxfail=1"
-                  "--import-mode=importlib"
                 ];
               }
               (lib.mkIf cfg.coverage.enable {
@@ -131,6 +130,8 @@ in
                 "python.testing.unittestEnabled" = false;
                 "python.testing.pytestArgs" = [
                   "--config-file=${cfg.vscode.configFile}"
+                  "--override-ini=consider_namespace_packages=true"
+                  "--override-ini=pythonpath=."
                   "--rootdir=."
                 ] ++ cfg.vscode.testPaths;
               };
