@@ -55,15 +55,16 @@ let
           };
           build = {
             deps = [
-              "build:project-module-docs"
-              "build:lib-docs"
+              "nix-build:project-module-docs"
+              "nix-build:lib-docs"
+              "nix-build:all-checks"
             ];
           };
-          "build:*" = {
-            desc = "Build a package";
+          "nix-build:*" = {
+            desc = "Build a package with `nix build`";
             vars.PACKAGE = "{{index .MATCH 0}}";
-            label = "build:{{.PACKAGE}}";
-            prefix = "build:{{.PACKAGE}}";
+            label = "nix-build:{{.PACKAGE}}";
+            prefix = "nix-build:{{.PACKAGE}}";
             cmds = [ "nix build --show-trace .#{{.PACKAGE}}" ];
           };
           "docs:generate" = {
