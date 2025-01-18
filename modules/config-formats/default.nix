@@ -13,5 +13,6 @@ builtins.mapAttrs
   (
     injector.injectModules {
       mypy = ./mypy.nix;
+      go-task = ./go-task;
     }
   )

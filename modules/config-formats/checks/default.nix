@@ -9,7 +9,9 @@ let
     pkgs.runCommand "diffCheck" { } ''diff --recursive --unified ${expected} ${actual}; touch $out''
   );
 in
-mkDiffChecks {
-  # FIXME: there might be a use case for an injectRecursive or injectAttrs
-  mypy = injector'.inject ./mypy;
-}
+mkDiffChecks (
+  builtins.mapAttrs (_name: checks: injector'.inject checks) {
+    mypy = ./mypy;
+    go-task = ./go-task;
+  }
+)

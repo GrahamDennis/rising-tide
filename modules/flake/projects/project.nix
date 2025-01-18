@@ -31,6 +31,12 @@ let
           type = types.str;
           example = "my-project";
         };
+        isRootProject = lib.mkOption {
+          description = "Whether this is the root project";
+          type = types.bool;
+          readOnly = true;
+          default = config.relativePaths.toRoot == "./.";
+        };
         relativePaths = {
           toRoot = lib.mkOption {
             description = "The path from the project to the root of the flake";
