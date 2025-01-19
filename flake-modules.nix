@@ -14,10 +14,7 @@
     modules.configFormats = injector.inject ./modules/config-formats;
     lib = risingTideLib;
 
-    tests = lib.mapAttrsRecursive (_path: injector.inject) {
-      lib = ./lib/default.tests.nix;
-      modules.flake.project = ./modules/flake/projects/project.tests.nix;
-    };
+    tests = injector.inject ./tests;
   };
 
   perSystem =

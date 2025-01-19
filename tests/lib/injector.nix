@@ -87,20 +87,20 @@ in
         };
       };
       expectedModule = {
-        _file = ./test-module.nix;
-        key = ./test-module.nix;
+        _file = ./test-modules/copy-foo.nix;
+        key = ./test-modules/copy-foo.nix;
         imports = [ { foo = 1; } ];
       };
     in
     {
       "test injectModule" = {
-        expr = injector.injectModule ./test-module.nix;
+        expr = injector.injectModule ./test-modules/copy-foo.nix;
         expected = expectedModule;
       };
       "test injectModules with list" = {
         expr = injector.injectModules [
-          ./test-module.nix
-          ./test-module.nix
+          ./test-modules/copy-foo.nix
+          ./test-modules/copy-foo.nix
         ];
         expected = [
           expectedModule
@@ -109,8 +109,8 @@ in
       };
       "test injectModules with attrs" = {
         expr = injector.injectModules {
-          a = ./test-module.nix;
-          b = ./test-module.nix;
+          a = ./test-modules/copy-foo.nix;
+          b = ./test-modules/copy-foo.nix;
         };
         expected = {
           a = expectedModule;
@@ -156,11 +156,11 @@ in
               expr =
                 (lib.evalModules {
                   modules = injector.injectModules [
-                    ./test-conflicts-module-1.nix
-                    ./test-conflicts-module-2.nix
+                    ./test-modules/test-conflicts-1.nix
+                    ./test-modules/test-conflicts-2.nix
                   ];
                 }).config;
-              expectedError.msg = ".*test-conflicts-module.*";
+              expectedError.msg = ".*test-conflicts-.*";
             };
         };
     };
@@ -181,8 +181,8 @@ in
         expr =
           (lib.evalModules {
             modules = injector.injectModules [
-              ./test-duplicates-module.nix
-              ./test-duplicates-module.nix
+              ./test-modules/deduplication.nix
+              ./test-modules/deduplication.nix
             ];
           }).config;
         inherit expected;
