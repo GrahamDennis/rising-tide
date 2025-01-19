@@ -44,20 +44,6 @@ in
           cmake.enable = true;
         };
       })
-      # Root project configuration when any subproject has C++ enabled
-      # FIXME: This belongs in the C++ language module
-      (lib.mkIf (config.isRootProject && (builtins.any cppEnabledIn config.allProjectsList)) {
-        tools.vscode = {
-          recommendedExtensions = {
-            "ms-vscode.cpptools-extension-pack" = true;
-            "matepek.vscode-catch2-test-adapter" = true;
-            "vadimcn.vscode-lldb" = true;
-          };
-          settings = {
-            "cmake.ctest.testExplorerIntegrationEnabled" = false;
-          };
-        };
-      })
     ]
   );
 }
