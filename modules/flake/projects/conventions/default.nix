@@ -1,5 +1,5 @@
 # rising-tide flake context
 { injector, ... }:
 {
-  imports = injector.injectModules [ ./rising-tide-v2 ];
+  imports = injector.injectModules [ ./rising-tide ];
 }
