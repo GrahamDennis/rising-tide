@@ -72,6 +72,9 @@ in
         type = types.pathInStore;
         default = settingsFormat.generate "mypy.toml" cfg.mergedConfig;
       };
+      vscode.enable = (lib.mkEnableOption "Enable VSCode integration") // {
+        default = cfg.enable;
+      };
     };
   };
 
@@ -101,6 +104,24 @@ in
               };
             };
         };
+        # FIXME: Also only enable if any child project uses mypy
+        # Or alternatively set in a non-mergeable manner: See how pytest does this
+        vscode = lib.mkIf (cfg.vscode.enable && config.isRootProject) {
+          settings = {
+            "mypy-type-checker.path" = [
+              mypyExe
+            ];
+            "mypy-type-checker.args" = [
+              "--config-file=${toString cfg.configFile}"
+            ];
+          };
+          recommendedExtensions."ms-python.mypy-type-checker" = true;
+        };
+      };
+      # FIXME: This doesn't preserve priority. Should it?
+      rootProjectSettings.tools.mypy = lib.mkIf (cfg.enable && !config.isRootProject) {
+        perModuleOverrides = cfg.perModuleOverrides;
+        vscode.enable = cfg.vscode.enable;
       };
     };
 }

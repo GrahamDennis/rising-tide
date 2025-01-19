@@ -101,8 +101,6 @@ let
         rootProjectSettings = lib.mkOption {
           description = ''
             Settings that a child project requests to be applied to the root project.
-            Note: If this project _is_ the root project, these settings will not be applied to the project itself, only
-            child projects' `rootProjectSettings` will be applied.
           '';
           type = types.deferredModuleWith {
             staticModules = lib.mapAttrsToList (

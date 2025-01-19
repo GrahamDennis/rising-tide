@@ -123,18 +123,16 @@ in
 
           # This doesn't live in rootProjectSettings because we need the pytestArguments array to not just accumulate
           # for every single python project. The pytest configuration options must be the same.
-          vscode.settings =
-            lib.mkIf ((cfg.vscode.testPaths != [ ]) && (config.relativePaths.toRoot == "./."))
-              {
-                "python.testing.pytestEnabled" = true;
-                "python.testing.unittestEnabled" = false;
-                "python.testing.pytestArgs" = [
-                  "--config-file=${cfg.vscode.configFile}"
-                  "--override-ini=consider_namespace_packages=true"
-                  "--override-ini=pythonpath=."
-                  "--rootdir=."
-                ] ++ cfg.vscode.testPaths;
-              };
+          vscode.settings = lib.mkIf ((cfg.vscode.testPaths != [ ]) && (config.isRootProject)) {
+            "python.testing.pytestEnabled" = true;
+            "python.testing.unittestEnabled" = false;
+            "python.testing.pytestArgs" = [
+              "--config-file=${cfg.vscode.configFile}"
+              "--override-ini=consider_namespace_packages=true"
+              "--override-ini=pythonpath=."
+              "--rootdir=."
+            ] ++ cfg.vscode.testPaths;
+          };
         };
       };
       rootProjectSettings = {
