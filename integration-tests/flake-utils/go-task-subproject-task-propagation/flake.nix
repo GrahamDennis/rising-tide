@@ -23,7 +23,7 @@
           relativePaths.toRoot = "./.";
           subprojects.subproject = {
             relativePaths.toParentProject = "subproject";
-            settings.tools.go-task = {
+            tools.go-task = {
               taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
             };
           };

@@ -7,12 +7,12 @@
   ...
 }:
 let
-  cfg = config.settings.tools.lefthook;
+  cfg = config.tools.lefthook;
   settingsFormat = toolsPkgs.formats.yaml { };
   lefthookExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.lefthook = {
       enable = lib.mkEnableOption "Enable left-hook integration";
       package = lib.mkPackageOption toolsPkgs "lefthook" { pkgsText = "toolsPkgs"; };
@@ -32,7 +32,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         lefthook.config.rc = ifEnabled (
           lib.mkOptionDefault (
             toolsPkgs.writeShellScript "export-lefthook-path" ''

@@ -7,13 +7,13 @@
   ...
 }:
 let
-  cfg = config.settings.tools.shellcheck;
+  cfg = config.tools.shellcheck;
   settingsFormat = toolsPkgs.formats.keyValue { };
   configFile = settingsFormat.generate "shellcheckrc" cfg.config;
   shellCheckExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.shellcheck = {
       enable = lib.mkEnableOption "Enable shellcheck integration";
       package = lib.mkPackageOption toolsPkgs "shellcheck" { pkgsText = "toolsPkgs"; };
@@ -34,7 +34,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         treefmt = ifEnabled {
           enable = true;
           config = {

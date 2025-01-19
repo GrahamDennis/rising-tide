@@ -7,12 +7,12 @@
   ...
 }:
 let
-  enabledIn = projectConfig: projectConfig.settings.tools.alejandra.enable;
-  cfg = config.settings.tools.alejandra;
+  enabledIn = projectConfig: projectConfig.tools.alejandra.enable;
+  cfg = config.tools.alejandra;
   alejandraExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.alejandra = {
       enable = lib.mkEnableOption "Enable alejandra integration";
       package = lib.mkPackageOption toolsPkgs "alejandra" { pkgsText = "toolsPkgs"; };
@@ -25,7 +25,7 @@ in
     in
     lib.mkMerge [
       {
-        settings.tools = {
+        tools = {
           treefmt = ifEnabled {
             enable = true;
             config = {
@@ -47,7 +47,7 @@ in
         };
       }
       (lib.mkIf config.isRootProject {
-        settings.tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+        tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
           "nix.formatterPath" = alejandraExe;
           "nix.serverSettings" = {
             "nil" = {

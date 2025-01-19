@@ -7,7 +7,7 @@
   ...
 }:
 {
-  settings.tools = lib.mkIf (config.relativePaths.toRoot == "./.") {
+  tools = lib.mkIf config.isRootProject {
     direnv = {
       enable = true;
       content = ''
@@ -27,7 +27,7 @@
         pre-commit = {
           commands = {
             check = {
-              run = "${lib.getExe' config.settings.tools.go-task.package "task"} check";
+              run = "${lib.getExe' config.tools.go-task.package "task"} check";
               stage_fixed = true;
             };
           };

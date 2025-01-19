@@ -8,11 +8,11 @@
 }:
 let
   inherit (lib) types;
-  cfg = config.settings.tools.vscode;
+  cfg = config.tools.vscode;
   settingsFormat = toolsPkgs.formats.json { };
 in
 {
-  options.settings = {
+  options = {
     tools.vscode = {
       enable = lib.mkEnableOption "Enable VSCode settings";
       settings = lib.mkOption {
@@ -49,7 +49,7 @@ in
   };
 
   config = {
-    settings.tools = {
+    tools = {
       nixago.requests = lib.mkIf cfg.enable (
         lib.mkMerge [
           (lib.mkIf (cfg.settings != { }) [

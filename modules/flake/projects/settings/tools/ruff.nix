@@ -7,13 +7,13 @@
   ...
 }:
 let
-  cfg = config.settings.tools.ruff;
+  cfg = config.tools.ruff;
   settingsFormat = toolsPkgs.formats.toml { };
   configFile = settingsFormat.generate "ruff.toml" cfg.config;
   ruffExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.ruff = {
       enable = lib.mkEnableOption "Enable ruff integration";
       package = lib.mkPackageOption toolsPkgs "ruff" { pkgsText = "toolsPkgs"; };
@@ -33,7 +33,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         treefmt = ifEnabled {
           enable = true;
           config = {

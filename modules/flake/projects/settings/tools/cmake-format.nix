@@ -7,13 +7,13 @@
   ...
 }:
 let
-  cfg = config.settings.tools.cmake-format;
+  cfg = config.tools.cmake-format;
   settingsFormat = toolsPkgs.formats.yaml { };
   configFile = settingsFormat.generate "cmake-format.yaml" cfg.config;
   cmakeFormatExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.cmake-format = {
       enable = lib.mkEnableOption "Enable cmake-format integration";
       package = lib.mkPackageOption toolsPkgs "cmake-format" { pkgsText = "toolsPkgs"; };
@@ -33,7 +33,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         treefmt = ifEnabled {
           enable = true;
           config = {

@@ -12,9 +12,7 @@ in
       name = "example-project";
       relativePaths.toRoot = "./.";
       subprojects = { };
-      settings = {
-        tools = { };
-      };
+      tools = { };
     };
   };
 }

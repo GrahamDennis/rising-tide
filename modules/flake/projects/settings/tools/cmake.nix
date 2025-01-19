@@ -7,11 +7,11 @@
   ...
 }:
 let
-  cfg = config.settings.tools.cmake;
+  cfg = config.tools.cmake;
   cmakeExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.cmake = {
       enable = lib.mkEnableOption "Enable cmake integration";
       package = lib.mkPackageOption toolsPkgs "cmake" { pkgsText = "toolsPkgs"; };
@@ -27,7 +27,7 @@ in
         cfg.package
         toolsPkgs.ninja
       ];
-      settings.tools = {
+      tools = {
         go-task = ifEnabled {
           enable = true;
           taskfile.tasks = {

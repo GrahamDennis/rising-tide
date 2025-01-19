@@ -13,8 +13,7 @@
 }:
 let
   inherit (lib) types;
-
-  getCfg = projectConfig: projectConfig.settings.tools.go-task;
+  getCfg = projectConfig: projectConfig.tools.go-task;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.yaml { };
@@ -24,7 +23,7 @@ let
   '';
 in
 {
-  options.settings = {
+  options = {
     tools.go-task = {
       enable = lib.mkEnableOption "Enable go-task integration";
       package = lib.mkPackageOption toolsPkgs "go-task" { pkgsText = "toolsPkgs"; };
@@ -58,7 +57,7 @@ in
           propagatedBuildInputs = [ wrappedPackage ];
         } ./go-task-setup-hook.sh)
       ];
-      settings.tools = {
+      tools = {
         # The default output format of interleaved does not do line-buffering. As a result,
         # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
         # terminal codes confusing the terminal.

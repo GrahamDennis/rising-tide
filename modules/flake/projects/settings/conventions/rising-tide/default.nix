@@ -12,7 +12,7 @@
     ./root-project.nix
   ];
   config = {
-    settings.tools = {
+    tools = {
       clang-format.config = {
         header = {
           BasedOnStyle = "Google";

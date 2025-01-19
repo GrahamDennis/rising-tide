@@ -6,12 +6,12 @@
   ...
 }:
 let
-  enabledIn = projectConfig: projectConfig.settings.languages.cpp.enable;
+  enabledIn = projectConfig: projectConfig.languages.cpp.enable;
   ifEnabled = lib.mkIf (enabledIn config);
 in
 lib.mkMerge [
   {
-    settings.tools = ifEnabled {
+    tools = ifEnabled {
       clang-format.enable = true;
       clang-tidy.enable = true;
       cmake-format.enable = true;
@@ -19,7 +19,7 @@ lib.mkMerge [
     };
   }
   (lib.mkIf config.isRootProject {
-    settings.tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+    tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
       recommendedExtensions = {
         "ms-vscode.cpptools-extension-pack" = true;
         "matepek.vscode-catch2-test-adapter" = true;

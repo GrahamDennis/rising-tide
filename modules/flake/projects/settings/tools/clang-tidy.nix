@@ -7,12 +7,12 @@
   ...
 }:
 let
-  cfg = config.settings.tools.clang-tidy;
+  cfg = config.tools.clang-tidy;
   settingsFormat = toolsPkgs.formats.yaml { };
   clangTidyExe = lib.getExe' cfg.package "clang-tidy";
 in
 {
-  options.settings = {
+  options = {
     tools.clang-tidy = {
       enable = lib.mkEnableOption "Enable clang-tidy integration";
       package = lib.mkPackageOption toolsPkgs "clang-tools" { pkgsText = "toolsPkgs"; };
@@ -32,7 +32,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         nixago.requests = ifEnabled ([
           {
             data = cfg.config;

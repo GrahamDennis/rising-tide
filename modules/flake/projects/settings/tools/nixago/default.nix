@@ -7,7 +7,6 @@
 }:
 let
   inherit (lib) types;
-
 in
 # project context
 {
@@ -17,10 +16,10 @@ in
   ...
 }:
 let
-  cfg = config.settings.tools.nixago;
+  cfg = config.tools.nixago;
 in
 {
-  options.settings = {
+  options = {
     tools.nixago = {
       requests = lib.mkOption {
         description = ''

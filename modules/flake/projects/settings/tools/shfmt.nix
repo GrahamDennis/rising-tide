@@ -8,11 +8,11 @@
 }:
 let
   inherit (lib) types;
-  cfg = config.settings.tools.shfmt;
+  cfg = config.tools.shfmt;
   shfmtExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.shfmt = {
       enable = lib.mkEnableOption "Enable shfmt integration";
       package = lib.mkPackageOption toolsPkgs "shfmt" { pkgsText = "toolsPkgs"; };
@@ -33,7 +33,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         treefmt = ifEnabled {
           enable = true;
           config = {

@@ -11,11 +11,11 @@
   ...
 }:
 let
-  cfg = config.settings.tools.uv;
+  cfg = config.tools.uv;
   bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
 in
 {
-  options.settings = {
+  options = {
     tools.uv = {
       enable = lib.mkEnableOption "Enable uv integration";
       package = lib.mkPackageOption toolsPkgs "uv" { pkgsText = "toolsPkgs"; };

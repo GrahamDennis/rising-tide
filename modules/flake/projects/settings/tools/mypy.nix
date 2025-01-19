@@ -8,14 +8,14 @@
 }:
 let
   inherit (lib) types;
-  getCfg = projectConfig: projectConfig.settings.tools.mypy;
+  getCfg = projectConfig: projectConfig.tools.mypy;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.toml { };
   mypyExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.mypy = {
       enable = lib.mkEnableOption "Enable mypy integration";
       package = lib.mkPackageOption toolsPkgs "mypy" { pkgsText = "toolsPkgs"; };
@@ -86,7 +86,7 @@ in
     in
     lib.mkMerge [
       {
-        settings.tools = {
+        tools = {
           go-task = ifEnabled {
             enable = true;
             taskfile.tasks =
@@ -110,7 +110,7 @@ in
         };
       }
       {
-        settings.tools = lib.mkIf config.isRootProject {
+        tools = lib.mkIf config.isRootProject {
           mypy.perModuleOverrides = lib.mkMerge (
             builtins.map (projectConfig: (getCfg projectConfig).perModuleOverrides) config.subprojectsList
           );

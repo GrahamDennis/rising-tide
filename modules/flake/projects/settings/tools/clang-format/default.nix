@@ -13,13 +13,12 @@
 }:
 let
   inherit (lib) types;
-
-  cfg = config.settings.tools.clang-format;
+  cfg = config.tools.clang-format;
   settingsFormat = toolsPkgs.formats.yaml { };
   clangFormatExe = lib.getExe' cfg.package "clang-format";
 in
 {
-  options.settings = {
+  options = {
     tools.clang-format = {
       enable = lib.mkEnableOption "Enable clang-format integration";
       package = lib.mkPackageOption toolsPkgs "clang-tools" { pkgsText = "toolsPkgs"; };
@@ -48,7 +47,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         nixago.requests = ifEnabled ([
           {
             data = cfg.config;

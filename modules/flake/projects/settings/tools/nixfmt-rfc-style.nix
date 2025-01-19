@@ -7,13 +7,13 @@
   ...
 }:
 let
-  getCfg = projectConfig: projectConfig.settings.tools.nixfmt-rfc-style;
+  getCfg = projectConfig: projectConfig.tools.nixfmt-rfc-style;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   cfg = getCfg config;
   nixfmtExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.nixfmt-rfc-style = {
       enable = lib.mkEnableOption "Enable nixfmt-rfc-style integration";
       package = lib.mkPackageOption toolsPkgs "nixfmt-rfc-style" { pkgsText = "toolsPkgs"; };
@@ -26,7 +26,7 @@ in
     in
     lib.mkMerge [
       {
-        settings.tools = {
+        tools = {
           treefmt = ifEnabled {
             enable = true;
             config = {
@@ -49,7 +49,7 @@ in
       }
 
       (lib.mkIf config.isRootProject {
-        settings.tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+        tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
           # FIXME: This uses the root project's nixfmt not what has been configured on child projects
           "nix.formatterPath" = nixfmtExe;
           "nix.serverSettings" = {

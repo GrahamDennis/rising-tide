@@ -10,7 +10,7 @@
   ...
 }:
 let
-  getCfg = projectConfig: projectConfig.settings.tools.pytest;
+  getCfg = projectConfig: projectConfig.tools.pytest;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.toml { };
@@ -22,7 +22,7 @@ let
   };
 in
 {
-  options.settings = {
+  options = {
     tools.pytest = {
       enable = lib.mkEnableOption "Enable pytest integration";
       config = lib.mkOption {
@@ -58,61 +58,59 @@ in
     in
     lib.mkMerge [
       {
-        settings = {
-          tools = {
-            pytest.config = ifEnabled (
-              lib.mkMerge [
-                {
-                  addopts = [
-                    "--showlocals"
-                    "--maxfail=1"
-                  ];
-                }
-                (lib.mkIf cfg.coverage.enable {
-                  addopts = [
-                    "--cov"
-                    "--cov-config=${toString coverageConfigFile}"
-                  ];
-                })
-              ]
-            );
+        tools = {
+          pytest.config = ifEnabled (
+            lib.mkMerge [
+              {
+                addopts = [
+                  "--showlocals"
+                  "--maxfail=1"
+                ];
+              }
+              (lib.mkIf cfg.coverage.enable {
+                addopts = [
+                  "--cov"
+                  "--cov-config=${toString coverageConfigFile}"
+                ];
+              })
+            ]
+          );
 
-            go-task = ifEnabled {
-              enable = true;
-              taskfile = {
-                tasks =
-                  let
-                    callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
-                  in
-                  lib.mkMerge [
-                    {
-                      test.deps = [ "test:pytest" ];
-                      "test:pytest" = {
-                        desc = "Run pytest";
-                        cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
+          go-task = ifEnabled {
+            enable = true;
+            taskfile = {
+              tasks =
+                let
+                  callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
+                in
+                lib.mkMerge [
+                  {
+                    test.deps = [ "test:pytest" ];
+                    "test:pytest" = {
+                      desc = "Run pytest";
+                      cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
+                    };
+                    "tool:pytest" = {
+                      desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
+                      cmds = [ (callPytest "{{.CLI_ARGS}}") ];
+                    };
+                  }
+                  (lib.mkIf cfg.coverage.enable {
+                    "tool:coverage" = {
+                      desc = "Run python coverage tool.";
+                      cmds = [ "coverage {{.CLI_ARGS}}" ];
+                      env = {
+                        COVERAGE_RCFILE = builtins.toString coverageConfigFile;
                       };
-                      "tool:pytest" = {
-                        desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
-                        cmds = [ (callPytest "{{.CLI_ARGS}}") ];
-                      };
-                    }
-                    (lib.mkIf cfg.coverage.enable {
-                      "tool:coverage" = {
-                        desc = "Run python coverage tool.";
-                        cmds = [ "coverage {{.CLI_ARGS}}" ];
-                        env = {
-                          COVERAGE_RCFILE = builtins.toString coverageConfigFile;
-                        };
-                      };
-                    })
-                  ];
-              };
+                    };
+                  })
+                ];
             };
           };
         };
       }
       (lib.mkIf config.isRootProject {
-        settings.tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+        tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
           settings = {
             "python.testing.pytestEnabled" = true;
             "python.testing.unittestEnabled" = false;

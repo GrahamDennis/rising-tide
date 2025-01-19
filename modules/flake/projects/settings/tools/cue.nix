@@ -7,11 +7,11 @@
   ...
 }:
 let
-  cfg = config.settings.tools.cue;
+  cfg = config.tools.cue;
   cueExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.cue = {
       enable = lib.mkEnableOption "Enable cue integration";
       package = lib.mkPackageOption toolsPkgs "cue" { pkgsText = "toolsPkgs"; };
@@ -23,7 +23,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         treefmt = ifEnabled {
           enable = true;
           config = {

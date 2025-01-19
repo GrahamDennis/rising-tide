@@ -13,12 +13,11 @@
 }:
 let
   inherit (lib) types;
-
-  enabledIn = projectConfig: projectConfig.settings.tools.direnv.enable;
-  cfg = config.settings.tools.direnv;
+  enabledIn = projectConfig: projectConfig.tools.direnv.enable;
+  cfg = config.tools.direnv;
 in
 {
-  options.settings = {
+  options = {
     tools.direnv = {
       enable = lib.mkEnableOption "Enable direnv integration";
       content = lib.mkOption {
@@ -34,7 +33,7 @@ in
 
   config = lib.mkMerge [
     {
-      settings.tools = {
+      tools = {
         nixago.requests = lib.mkIf (enabledIn config) [
           {
             data = { inherit (cfg) content; };
@@ -56,7 +55,7 @@ in
     }
 
     (lib.mkIf config.isRootProject {
-      settings.tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+      tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
         settings."direnv.path.executable" = lib.getExe cfg.package;
         recommendedExtensions."mkhl.direnv" = true;
       };

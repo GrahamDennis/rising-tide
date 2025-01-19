@@ -10,13 +10,13 @@
   ...
 }:
 let
-  cfg = config.settings.tools.treefmt;
+  cfg = config.tools.treefmt;
   settingsFormat = toolsPkgs.formats.toml { };
   configFile = settingsFormat.generate "treefmt.toml" cfg.config;
   treefmtExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.treefmt = {
       enable = lib.mkEnableOption "Enable treefmt integration";
       package = lib.mkPackageOption toolsPkgs "treefmt" { pkgsText = "toolsPkgs"; };
@@ -37,7 +37,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools.go-task = ifEnabled {
+      tools.go-task = ifEnabled {
         enable = true;
         taskfile.tasks =
           let

@@ -21,7 +21,7 @@
         project = rising-tide.lib.mkProject system {
           name = "treefmt-integration-test";
           relativePaths.toRoot = "./.";
-          settings.tools.treefmt = {
+          tools.treefmt = {
             enable = true;
           };
         };

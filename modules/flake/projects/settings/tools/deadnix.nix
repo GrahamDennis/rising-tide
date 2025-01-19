@@ -8,12 +8,11 @@
 }:
 let
   inherit (lib) types;
-
-  cfg = config.settings.tools.deadnix;
+  cfg = config.tools.deadnix;
   deadnixExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.deadnix = {
       enable = lib.mkEnableOption "Enable deadnix integration";
       package = lib.mkPackageOption toolsPkgs "deadnix" { pkgsText = "toolsPkgs"; };
@@ -29,7 +28,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools = {
+      tools = {
         treefmt = ifEnabled {
           enable = true;
           config = {

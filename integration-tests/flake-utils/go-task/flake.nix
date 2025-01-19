@@ -20,7 +20,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         project = rising-tide.lib.mkProject system {
           name = "go-task-integration-test";
-          settings.tools.go-task = {
+          tools.go-task = {
             enable = true;
             taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
           };

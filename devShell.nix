@@ -18,7 +18,7 @@ let
   project = risingTideLib.mkProject system {
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
-    settings.tools = {
+    tools = {
       cue.enable = true;
       nix-unit.enable = true;
       go-task = {

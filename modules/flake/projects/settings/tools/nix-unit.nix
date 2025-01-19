@@ -7,11 +7,11 @@
   ...
 }:
 let
-  cfg = config.settings.tools.nix-unit;
+  cfg = config.tools.nix-unit;
   nix-unitExe = lib.getExe cfg.package;
 in
 {
-  options.settings = {
+  options = {
     tools.nix-unit = {
       enable = lib.mkEnableOption "Enable nix-unit integration";
       package = lib.mkPackageOption toolsPkgs "nix-unit" { pkgsText = "toolsPkgs"; };
@@ -28,7 +28,7 @@ in
       ifEnabled = lib.mkIf cfg.enable;
     in
     {
-      settings.tools.go-task = ifEnabled {
+      tools.go-task = ifEnabled {
         enable = true;
         taskfile.tasks = {
           test.deps = [ "test:nix-unit" ];
