@@ -96,12 +96,14 @@ let
           default = builtins.concatMap (subprojectConfig: subprojectConfig.allProjectsList) (
             builtins.attrValues config.subprojects
           );
+          defaultText = lib.literalMD "a list containing all subproject configurations recursively.";
         };
 
         allProjectsList = lib.mkOption {
           readOnly = true;
           type = types.listOf types.attrs;
           default = config.subprojectsList ++ [ config ];
+          defaultText = lib.literalMD "a list containing this project's configuration and subproject configurations recursively.";
         };
 
         allTools = lib.mkOption {
