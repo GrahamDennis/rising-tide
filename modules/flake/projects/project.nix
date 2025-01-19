@@ -17,8 +17,6 @@ let
       ...
     }:
     {
-      _file = ./project.nix;
-
       imports =
         (injector.injectModules [
           ./settings
@@ -138,6 +136,21 @@ let
           default = { };
           visible = "shallow";
         };
+
+        subprojectsList = lib.mkOption {
+          readOnly = true;
+          type = types.listOf types.attrs;
+          default = builtins.concatMap (subprojectConfig: subprojectConfig.allProjectsList) (
+            builtins.attrValues config.subprojects
+          );
+        };
+
+        allProjectsList = lib.mkOption {
+          readOnly = true;
+          type = types.listOf types.attrs;
+          default = config.subprojectsList ++ [ config ];
+        };
+
         allTools = lib.mkOption {
           description = ''
             An list of tools to be used by this project. This is typically included in
@@ -160,6 +173,7 @@ let
       config = {
         _module.args = {
           toolsPkgs = config.toolsPkgs;
+          inherit (config) subprojectsList allProjectsList;
         };
       };
     };

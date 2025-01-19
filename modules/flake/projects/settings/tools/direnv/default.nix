@@ -9,6 +9,7 @@
 {
   config,
   system,
+  allProjectsList,
   ...
 }:
 let
@@ -38,6 +39,7 @@ in
           output = ".envrc";
           format = "text";
           hook.mode = "copy";
+          # FIXME: replace this with a simple file copy
           engine = inputs.nixago.engines.${system}.cue {
             flags = {
               expression = "rendered";
@@ -48,12 +50,16 @@ in
           };
         }
       ];
-    };
 
-    rootProjectSettings.tools = lib.mkIf cfg.enable {
-      vscode.recommendedExtensions = {
-        "mkhl.direnv" = true;
-      };
+      vscode.recommendedExtensions =
+        lib.mkIf
+          (
+            config.isRootProject
+            && (builtins.any (project: project.settings.tools.direnv.enable) allProjectsList)
+          )
+          {
+            "mkhl.direnv" = true;
+          };
     };
   };
 }
