@@ -1,17 +1,24 @@
 # rising-tide flake context
-{ injector, ... }:
+{ injector, lib, ... }:
 # project context
 {
   config,
   ...
 }:
+let
+  cfg = config.conventions.risingTide;
+in
 {
   imports = injector.injectModules [
     ./cpp.nix
     ./python.nix
     ./root-project.nix
   ];
-  config = {
+  options.conventions.risingTide = {
+    enable = lib.mkEnableOption "Enable rising-tide conventions";
+  };
+
+  config = lib.mkIf cfg.enable {
     tools = {
       clang-format.config = {
         header = {

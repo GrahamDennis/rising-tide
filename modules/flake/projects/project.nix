@@ -19,7 +19,9 @@ let
     {
       imports =
         (injector.injectModules [
-          ./settings
+          ./conventions
+          ./languages
+          ./tools
         ])
         ++ projectModules;
 
