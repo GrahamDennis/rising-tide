@@ -71,11 +71,11 @@ let
                 {
                   imports =
                     # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
-                    (lib.mapAttrsToList (
-                      _subprojectName: subprojectConfig: subprojectConfig.parentProjectSettings
-                    ) projectConfig.subprojects)
-                    # Apply root project settings from child projects if this is the root project
-                    ++ (lib.optional (projectConfig.relativePaths.toRoot == "./.") (projectConfig.rootProjectSettings));
+                    (
+                      lib.mapAttrsToList (
+                        _subprojectName: subprojectConfig: subprojectConfig.parentProjectSettings
+                      ) projectConfig.subprojects
+                    );
                   config = {
                     # FIXME: Can this be removed?
                     _module.args = {
@@ -94,17 +94,6 @@ let
         parentProjectSettings = lib.mkOption {
           description = "Settings that a child project requests to be applied to its parent project";
           type = types.deferredModule;
-          default = { };
-        };
-        rootProjectSettings = lib.mkOption {
-          description = ''
-            Settings that a child project requests to be applied to the root project.
-          '';
-          type = types.deferredModuleWith {
-            staticModules = lib.mapAttrsToList (
-              _subprojectName: subprojectConfig: subprojectConfig.rootProjectSettings
-            ) config.subprojects;
-          };
           default = { };
         };
         subprojects = lib.mkOption {
@@ -173,7 +162,6 @@ let
       config = {
         _module.args = {
           toolsPkgs = config.toolsPkgs;
-          inherit (config) subprojectsList allProjectsList;
         };
       };
     };

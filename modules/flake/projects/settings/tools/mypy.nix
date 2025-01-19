@@ -9,7 +9,9 @@
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
   inherit (lib) types;
-  cfg = config.settings.tools.mypy;
+  getCfg = projectConfig: projectConfig.settings.tools.mypy;
+  cfg = getCfg config;
+  enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.toml { };
   mypyExe = lib.getExe cfg.package;
 in
@@ -80,48 +82,51 @@ in
 
   config =
     let
-      ifEnabled = lib.mkIf cfg.enable;
+      ifEnabled = lib.mkIf (enabledIn config);
+      ifEnabledInAny = lib.mkIf (builtins.any enabledIn config.allProjectsList);
     in
-    {
-      settings.tools = {
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks =
-            let
-              callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
-            in
-            {
-              # Mypy must run after treefmt, so we run it as a command not a dependency
-              # (as dependencies run in parallel)
-              check.cmds = [ { task = "check:mypy"; } ];
-              "check:mypy" = {
-                desc = "Run mypy type checker";
-                cmds = [ (callMypy "src tests") ];
+    lib.mkMerge [
+      {
+        settings.tools = {
+          go-task = ifEnabled {
+            enable = true;
+            taskfile.tasks =
+              let
+                callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
+              in
+              {
+                # Mypy must run after treefmt, so we run it as a command not a dependency
+                # (as dependencies run in parallel)
+                check.cmds = [ { task = "check:mypy"; } ];
+                "check:mypy" = {
+                  desc = "Run mypy type checker";
+                  cmds = [ (callMypy "src tests") ];
+                };
+                "tool:mypy" = {
+                  desc = "Run mypy. Additional CLI arguments after `--` are forwarded to mypy";
+                  cmds = [ (callMypy "{{.CLI_ARGS}}") ];
+                };
               };
-              "tool:mypy" = {
-                desc = "Run mypy. Additional CLI arguments after `--` are forwarded to mypy";
-                cmds = [ (callMypy "{{.CLI_ARGS}}") ];
-              };
-            };
-        };
-        # FIXME: Also only enable if any child project uses mypy
-        # Or alternatively set in a non-mergeable manner: See how pytest does this
-        vscode = lib.mkIf (cfg.vscode.enable && config.isRootProject) {
-          settings = {
-            "mypy-type-checker.path" = [
-              mypyExe
-            ];
-            "mypy-type-checker.args" = [
-              "--config-file=${toString cfg.configFile}"
-            ];
           };
-          recommendedExtensions."ms-python.mypy-type-checker" = true;
         };
-      };
-      # FIXME: This doesn't preserve priority. Should it?
-      rootProjectSettings.tools.mypy = lib.mkIf (cfg.enable && !config.isRootProject) {
-        perModuleOverrides = cfg.perModuleOverrides;
-        vscode.enable = cfg.vscode.enable;
-      };
-    };
+      }
+      {
+        settings.tools = lib.mkIf config.isRootProject {
+          mypy.perModuleOverrides = lib.mkMerge (
+            builtins.map (projectConfig: (getCfg projectConfig).perModuleOverrides) config.subprojectsList
+          );
+          vscode = ifEnabledInAny {
+            settings = {
+              "mypy-type-checker.path" = [
+                mypyExe
+              ];
+              "mypy-type-checker.args" = [
+                "--config-file=${toString cfg.configFile}"
+              ];
+            };
+            recommendedExtensions."ms-python.mypy-type-checker" = true;
+          };
+        };
+      }
+    ];
 }

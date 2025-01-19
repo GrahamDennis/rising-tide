@@ -2,7 +2,6 @@
 {
   lib,
   flake-parts-lib,
-  risingTideLib,
   ...
 }:
 # project context
@@ -12,9 +11,10 @@
   ...
 }:
 let
-  inherit (lib) types;
   inherit (flake-parts-lib) mkSubmoduleOptions;
-  cfg = config.settings.tools.pytest;
+  getCfg = projectConfig: projectConfig.settings.tools.pytest;
+  cfg = getCfg config;
+  enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.toml { };
   configFile = settingsFormat.generate "pytest.toml" {
     tool.pytest.ini_options = cfg.config;
@@ -51,17 +51,6 @@ in
           default = { };
         };
       };
-      vscode = {
-        configFile = lib.mkOption {
-          internal = true;
-          type = types.pathInStore;
-        };
-        testPaths = lib.mkOption {
-          internal = true;
-          type = types.listOf risingTideLib.types.subpath;
-          default = [ ];
-        };
-      };
     };
   };
 
@@ -69,77 +58,80 @@ in
     let
       ifEnabled = lib.mkIf cfg.enable;
     in
-    {
-      settings = {
-        tools = {
-          pytest.config = ifEnabled (
-            lib.mkMerge [
-              {
-                addopts = [
-                  "--showlocals"
-                  "--maxfail=1"
-                ];
-              }
-              (lib.mkIf cfg.coverage.enable {
-                addopts = [
-                  "--cov"
-                  "--cov-config=${toString coverageConfigFile}"
-                ];
-              })
-            ]
-          );
+    lib.mkMerge [
+      {
+        settings = {
+          tools = {
+            pytest.config = ifEnabled (
+              lib.mkMerge [
+                {
+                  addopts = [
+                    "--showlocals"
+                    "--maxfail=1"
+                  ];
+                }
+                (lib.mkIf cfg.coverage.enable {
+                  addopts = [
+                    "--cov"
+                    "--cov-config=${toString coverageConfigFile}"
+                  ];
+                })
+              ]
+            );
 
-          go-task = ifEnabled {
-            enable = true;
-            taskfile = {
-              tasks =
-                let
-                  callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
-                in
-                lib.mkMerge [
-                  {
-                    test.deps = [ "test:pytest" ];
-                    "test:pytest" = {
-                      desc = "Run pytest";
-                      cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
-                    };
-                    "tool:pytest" = {
-                      desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
-                      cmds = [ (callPytest "{{.CLI_ARGS}}") ];
-                    };
-                  }
-                  (lib.mkIf cfg.coverage.enable {
-                    "tool:coverage" = {
-                      desc = "Run python coverage tool.";
-                      cmds = [ "coverage {{.CLI_ARGS}}" ];
-                      env = {
-                        COVERAGE_RCFILE = builtins.toString coverageConfigFile;
+            go-task = ifEnabled {
+              enable = true;
+              taskfile = {
+                tasks =
+                  let
+                    callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
+                  in
+                  lib.mkMerge [
+                    {
+                      test.deps = [ "test:pytest" ];
+                      "test:pytest" = {
+                        desc = "Run pytest";
+                        cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
                       };
-                    };
-                  })
-                ];
+                      "tool:pytest" = {
+                        desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
+                        cmds = [ (callPytest "{{.CLI_ARGS}}") ];
+                      };
+                    }
+                    (lib.mkIf cfg.coverage.enable {
+                      "tool:coverage" = {
+                        desc = "Run python coverage tool.";
+                        cmds = [ "coverage {{.CLI_ARGS}}" ];
+                        env = {
+                          COVERAGE_RCFILE = builtins.toString coverageConfigFile;
+                        };
+                      };
+                    })
+                  ];
+              };
             };
           };
-
-          # This doesn't live in rootProjectSettings because we need the pytestArguments array to not just accumulate
-          # for every single python project. The pytest configuration options must be the same.
-          vscode.settings = lib.mkIf ((cfg.vscode.testPaths != [ ]) && (config.isRootProject)) {
+        };
+      }
+      (lib.mkIf config.isRootProject {
+        settings.tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+          settings = {
             "python.testing.pytestEnabled" = true;
             "python.testing.unittestEnabled" = false;
-            "python.testing.pytestArgs" = [
-              "--config-file=${cfg.vscode.configFile}"
-              "--override-ini=consider_namespace_packages=true"
-              "--override-ini=pythonpath=."
-              "--rootdir=."
-            ] ++ cfg.vscode.testPaths;
+            "python.testing.pytestArgs" =
+              [
+                "--config-file=${toString configFile}"
+                "--override-ini=consider_namespace_packages=true"
+                "--override-ini=pythonpath=."
+                "--rootdir=."
+                # FIXME: this only makes sense if coverage is enabled somewhere
+                "--no-cov"
+              ]
+              ++ (builtins.map (projectConfig: "${projectConfig.relativePaths.toRoot}/tests") (
+                builtins.filter enabledIn config.allProjectsList
+              ));
           };
         };
-      };
-      rootProjectSettings = {
-        tools.pytest.vscode = ifEnabled {
-          inherit configFile;
-          testPaths = [ "${config.relativePaths.toRoot}/tests" ];
-        };
-      };
-    };
+      })
+    ];
 }

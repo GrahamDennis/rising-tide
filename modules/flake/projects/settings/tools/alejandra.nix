@@ -8,6 +8,7 @@
 }:
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
+  enabledIn = projectConfig: projectConfig.settings.tools.alejandra.enable;
   cfg = config.settings.tools.alejandra;
   alejandraExe = lib.getExe cfg.package;
 in
@@ -21,38 +22,42 @@ in
 
   config =
     let
-      ifEnabled = lib.mkIf cfg.enable;
+      ifEnabled = lib.mkIf (enabledIn config);
     in
-    {
-      settings.tools = {
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.alejandra = {
-              command = alejandraExe;
-              includes = [ "*.nix" ];
+    lib.mkMerge [
+      {
+        settings.tools = {
+          treefmt = ifEnabled {
+            enable = true;
+            config = {
+              formatter.alejandra = {
+                command = alejandraExe;
+                includes = [ "*.nix" ];
+              };
+            };
+          };
+          go-task = ifEnabled {
+            enable = true;
+            taskfile.tasks = {
+              "tool:alejandra" = {
+                desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
+                cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
+              };
             };
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:alejandra" = {
-              desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
-              cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
+      }
+      (lib.mkIf config.isRootProject {
+        settings.tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+          "nix.formatterPath" = alejandraExe;
+          "nix.serverSettings" = {
+            "nil" = {
+              "formatting" = {
+                "command" = [ alejandraExe ];
+              };
             };
           };
         };
-      };
-      rootProjectSettings.tools.vscode.settings = ifEnabled {
-        "nix.formatterPath" = alejandraExe;
-        "nix.serverSettings" = {
-          "nil" = {
-            "formatting" = {
-              "command" = [ alejandraExe ];
-            };
-          };
-        };
-      };
-    };
+      })
+    ];
 }

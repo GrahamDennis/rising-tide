@@ -9,12 +9,12 @@
 {
   config,
   system,
-  allProjectsList,
   ...
 }:
 let
   inherit (lib) types;
   inherit (flake-parts-lib) mkSubmoduleOptions;
+  enabledIn = projectConfig: projectConfig.settings.tools.direnv.enable;
   cfg = config.settings.tools.direnv;
 in
 {
@@ -31,35 +31,37 @@ in
     };
   };
 
-  config = {
-    settings.tools = {
-      nixago.requests = lib.mkIf cfg.enable [
-        {
-          data = { inherit (cfg) content; };
-          output = ".envrc";
-          format = "text";
-          hook.mode = "copy";
-          # FIXME: replace this with a simple file copy
-          engine = inputs.nixago.engines.${system}.cue {
-            flags = {
-              expression = "rendered";
-              out = "text";
+  config = lib.mkMerge [
+    {
+      settings.tools = {
+        nixago.requests = lib.mkIf (enabledIn config) [
+          {
+            data = { inherit (cfg) content; };
+            output = ".envrc";
+            format = "text";
+            hook.mode = "copy";
+            # FIXME: replace this with a simple file copy
+            engine = inputs.nixago.engines.${system}.cue {
+              flags = {
+                expression = "rendered";
+                out = "text";
+              };
+
+              files = [ ./envrc.cue ];
             };
+          }
+        ];
 
-            files = [ ./envrc.cue ];
-          };
-        }
-      ];
+      };
+    }
 
-      vscode.recommendedExtensions =
-        lib.mkIf
-          (
-            config.isRootProject
-            && (builtins.any (project: project.settings.tools.direnv.enable) allProjectsList)
-          )
+    (lib.mkIf config.isRootProject {
+      settings.tools.vscode.recommendedExtensions =
+        lib.mkIf (builtins.any enabledIn config.allProjectsList)
           {
             "mkhl.direnv" = true;
           };
-    };
-  };
+
+    })
+  ];
 }
