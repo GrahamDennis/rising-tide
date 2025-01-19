@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,13 +7,12 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   enabledIn = projectConfig: projectConfig.settings.tools.alejandra.enable;
   cfg = config.settings.tools.alejandra;
   alejandraExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.alejandra = {
       enable = lib.mkEnableOption "Enable alejandra integration";
       package = lib.mkPackageOption toolsPkgs "alejandra" { pkgsText = "toolsPkgs"; };

@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -8,12 +8,12 @@
 }:
 let
   inherit (lib) types;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
+
   cfg = config.settings.tools.deadnix;
   deadnixExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.deadnix = {
       enable = lib.mkEnableOption "Enable deadnix integration";
       package = lib.mkPackageOption toolsPkgs "deadnix" { pkgsText = "toolsPkgs"; };
@@ -35,7 +35,7 @@ in
           config = {
             formatter.deadnix = {
               command = deadnixExe;
-              options = cfg.arguments ++ [ "--fail" ];
+              options = cfg.arguments ++ [ "--edit" ];
               includes = [
                 "*.nix"
               ];

@@ -2,7 +2,6 @@
 {
   lib,
   inputs,
-  flake-parts-lib,
   ...
 }:
 # project context
@@ -14,7 +13,7 @@
 }:
 let
   inherit (lib) types;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
+
   getCfg = projectConfig: projectConfig.settings.tools.go-task;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
@@ -25,7 +24,7 @@ let
   '';
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.go-task = {
       enable = lib.mkEnableOption "Enable go-task integration";
       package = lib.mkPackageOption toolsPkgs "go-task" { pkgsText = "toolsPkgs"; };

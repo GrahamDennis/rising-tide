@@ -1,7 +1,6 @@
 # rising-tide flake context
 {
   lib,
-  flake-parts-lib,
   inputs,
   ...
 }:
@@ -14,13 +13,13 @@
 }:
 let
   inherit (lib) types;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
+
   cfg = config.settings.tools.clang-format;
   settingsFormat = toolsPkgs.formats.yaml { };
   clangFormatExe = lib.getExe' cfg.package "clang-format";
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.clang-format = {
       enable = lib.mkEnableOption "Enable clang-format integration";
       package = lib.mkPackageOption toolsPkgs "clang-tools" { pkgsText = "toolsPkgs"; };

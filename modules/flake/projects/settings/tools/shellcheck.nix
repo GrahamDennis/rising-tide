@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,14 +7,13 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.shellcheck;
   settingsFormat = toolsPkgs.formats.keyValue { };
   configFile = settingsFormat.generate "shellcheckrc" cfg.config;
   shellCheckExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.shellcheck = {
       enable = lib.mkEnableOption "Enable shellcheck integration";
       package = lib.mkPackageOption toolsPkgs "shellcheck" { pkgsText = "toolsPkgs"; };

@@ -2,7 +2,6 @@
 {
   risingTideLib,
   lib,
-  flake-parts-lib,
   ...
 }:
 # project context
@@ -12,12 +11,11 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.uv;
   bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.uv = {
       enable = lib.mkEnableOption "Enable uv integration";
       package = lib.mkPackageOption toolsPkgs "uv" { pkgsText = "toolsPkgs"; };

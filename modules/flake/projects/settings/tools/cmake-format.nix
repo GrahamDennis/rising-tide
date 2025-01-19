@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,14 +7,13 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.cmake-format;
   settingsFormat = toolsPkgs.formats.yaml { };
   configFile = settingsFormat.generate "cmake-format.yaml" cfg.config;
   cmakeFormatExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.cmake-format = {
       enable = lib.mkEnableOption "Enable cmake-format integration";
       package = lib.mkPackageOption toolsPkgs "cmake-format" { pkgsText = "toolsPkgs"; };

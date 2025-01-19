@@ -1,7 +1,6 @@
 # rising-tide flake context
 {
   lib,
-  flake-parts-lib,
   ...
 }:
 # project context
@@ -11,7 +10,6 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   getCfg = projectConfig: projectConfig.settings.tools.pytest;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
@@ -24,7 +22,7 @@ let
   };
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.pytest = {
       enable = lib.mkEnableOption "Enable pytest integration";
       config = lib.mkOption {

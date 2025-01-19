@@ -1,7 +1,6 @@
 # rising-tide flake context
 {
   lib,
-  flake-parts-lib,
   ...
 }:
 # project context
@@ -11,14 +10,13 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.treefmt;
   settingsFormat = toolsPkgs.formats.toml { };
   configFile = settingsFormat.generate "treefmt.toml" cfg.config;
   treefmtExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.treefmt = {
       enable = lib.mkEnableOption "Enable treefmt integration";
       package = lib.mkPackageOption toolsPkgs "treefmt" { pkgsText = "toolsPkgs"; };

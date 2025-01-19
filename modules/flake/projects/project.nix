@@ -60,26 +60,6 @@ let
             readOnly = true;
           };
         };
-        settings = lib.mkOption {
-          description = "Settings for the project";
-          type = types.submoduleWith ({
-            modules = [
-              {
-                config = {
-                  # FIXME: Can this be removed?
-                  _module.args = {
-                    inherit system;
-                    inherit (config) toolsPkgs;
-                    project = {
-                      inherit (config) relativePaths name;
-                    };
-                  };
-                };
-              }
-            ];
-          });
-          default = { };
-        };
         subprojects = lib.mkOption {
           description = ''
             An attribute set of child projects where each attribute set is itself a project.

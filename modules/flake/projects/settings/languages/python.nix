@@ -2,20 +2,18 @@
 {
   lib,
   risingTideLib,
-  flake-parts-lib,
   ...
 }:
 # project context
 { config, ... }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   getCfg = projectConfig: projectConfig.settings.languages.python;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
 in
 {
   options = {
-    settings = mkSubmoduleOptions {
+    settings = {
       languages.python = {
         enable = lib.mkEnableOption "Enable python package configuration";
         callPackageFunction = lib.mkOption {

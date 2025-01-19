@@ -3,12 +3,11 @@
   lib,
   inputs,
   risingTideLib,
-  flake-parts-lib,
   ...
 }:
 let
   inherit (lib) types;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
+
 in
 # project context
 {
@@ -21,7 +20,7 @@ let
   cfg = config.settings.tools.nixago;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.nixago = {
       requests = lib.mkOption {
         description = ''

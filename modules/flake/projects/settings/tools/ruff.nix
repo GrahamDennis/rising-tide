@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,14 +7,13 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.ruff;
   settingsFormat = toolsPkgs.formats.toml { };
   configFile = settingsFormat.generate "ruff.toml" cfg.config;
   ruffExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.ruff = {
       enable = lib.mkEnableOption "Enable ruff integration";
       package = lib.mkPackageOption toolsPkgs "ruff" { pkgsText = "toolsPkgs"; };

@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,13 +7,12 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.lefthook;
   settingsFormat = toolsPkgs.formats.yaml { };
   lefthookExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.lefthook = {
       enable = lib.mkEnableOption "Enable left-hook integration";
       package = lib.mkPackageOption toolsPkgs "lefthook" { pkgsText = "toolsPkgs"; };

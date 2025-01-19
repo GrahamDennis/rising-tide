@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,14 +7,13 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   getCfg = projectConfig: projectConfig.settings.tools.nixfmt-rfc-style;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   cfg = getCfg config;
   nixfmtExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.nixfmt-rfc-style = {
       enable = lib.mkEnableOption "Enable nixfmt-rfc-style integration";
       package = lib.mkPackageOption toolsPkgs "nixfmt-rfc-style" { pkgsText = "toolsPkgs"; };

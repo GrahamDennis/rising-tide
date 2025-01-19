@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,13 +7,12 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.clang-tidy;
   settingsFormat = toolsPkgs.formats.yaml { };
   clangTidyExe = lib.getExe' cfg.package "clang-tidy";
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.clang-tidy = {
       enable = lib.mkEnableOption "Enable clang-tidy integration";
       package = lib.mkPackageOption toolsPkgs "clang-tools" { pkgsText = "toolsPkgs"; };

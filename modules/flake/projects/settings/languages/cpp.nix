@@ -2,17 +2,13 @@
 {
   lib,
   risingTideLib,
-  flake-parts-lib,
   ...
 }:
 # project context
 { ... }:
-let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
-in
 {
   options = {
-    settings = mkSubmoduleOptions {
+    settings = {
       languages.cpp = {
         enable = lib.mkEnableOption "Enable C++ package configuration";
         callPackageFunction = lib.mkOption {

@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,7 +7,6 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.settings.tools.mypy;
   cfg = getCfg config;
@@ -16,7 +15,7 @@ let
   mypyExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.mypy = {
       enable = lib.mkEnableOption "Enable mypy integration";
       package = lib.mkPackageOption toolsPkgs "mypy" { pkgsText = "toolsPkgs"; };

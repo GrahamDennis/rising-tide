@@ -2,7 +2,6 @@
 {
   lib,
   inputs,
-  flake-parts-lib,
   ...
 }:
 # project context
@@ -14,12 +13,12 @@
 }:
 let
   inherit (lib) types;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
+
   enabledIn = projectConfig: projectConfig.settings.tools.direnv.enable;
   cfg = config.settings.tools.direnv;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.direnv = {
       enable = lib.mkEnableOption "Enable direnv integration";
       content = lib.mkOption {

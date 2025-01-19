@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,12 +7,11 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.cue;
   cueExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.cue = {
       enable = lib.mkEnableOption "Enable cue integration";
       package = lib.mkPackageOption toolsPkgs "cue" { pkgsText = "toolsPkgs"; };

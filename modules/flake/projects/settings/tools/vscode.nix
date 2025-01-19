@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -7,13 +7,12 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   inherit (lib) types;
   cfg = config.settings.tools.vscode;
   settingsFormat = toolsPkgs.formats.json { };
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.vscode = {
       enable = lib.mkEnableOption "Enable VSCode settings";
       settings = lib.mkOption {

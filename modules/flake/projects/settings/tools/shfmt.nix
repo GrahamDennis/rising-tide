@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project context
 {
   config,
@@ -8,12 +8,11 @@
 }:
 let
   inherit (lib) types;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.shfmt;
   shfmtExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.shfmt = {
       enable = lib.mkEnableOption "Enable shfmt integration";
       package = lib.mkPackageOption toolsPkgs "shfmt" { pkgsText = "toolsPkgs"; };

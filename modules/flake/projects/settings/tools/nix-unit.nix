@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, flake-parts-lib, ... }:
+{ lib, ... }:
 # project tools context
 {
   config,
@@ -7,12 +7,11 @@
   ...
 }:
 let
-  inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.settings.tools.nix-unit;
   nix-unitExe = lib.getExe cfg.package;
 in
 {
-  options.settings = mkSubmoduleOptions {
+  options.settings = {
     tools.nix-unit = {
       enable = lib.mkEnableOption "Enable nix-unit integration";
       package = lib.mkPackageOption toolsPkgs "nix-unit" { pkgsText = "toolsPkgs"; };
