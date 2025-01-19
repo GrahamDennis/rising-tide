@@ -63,10 +63,14 @@ in
         # terminal codes confusing the terminal.
         go-task.taskfile = {
           output = ifEnabled (lib.mkDefault "prefixed");
-          includes = builtins.mapAttrs (_name: subprojectConfig: {
-            taskfile = subprojectConfig.relativePaths.toParentProject;
-            dir = subprojectConfig.relativePaths.toParentProject;
-          }) enabledSubprojects;
+          includes = lib.mkMerge (
+            lib.mapAttrsToList (name: subprojectConfig: {
+              "${name}" = {
+                taskfile = subprojectConfig.relativePaths.toParentProject;
+                dir = subprojectConfig.relativePaths.toParentProject;
+              };
+            }) enabledSubprojects
+          );
           tasks = lib.mkMerge (
             lib.mapAttrsToList (
               _name: subprojectConfig:

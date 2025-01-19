@@ -73,9 +73,6 @@ in
         type = types.pathInStore;
         default = settingsFormat.generate "mypy.toml" cfg.mergedConfig;
       };
-      vscode.enable = (lib.mkEnableOption "Enable VSCode integration") // {
-        default = cfg.enable;
-      };
     };
   };
 

@@ -20,7 +20,6 @@ rec {
     mkBaseProject
       {
         projectModules = [
-          self.modules.flake.risingTideConventions
           { conventions.risingTide.enable = true; }
         ];
       }

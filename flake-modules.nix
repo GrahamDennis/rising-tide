@@ -9,7 +9,6 @@
   flake = {
     modules.flake = injector.injectModules {
       project = ./modules/flake/projects/project.nix;
-      risingTideConventions = ./modules/flake/projects/conventions/rising-tide;
     };
     modules.configFormats = injector.inject ./modules/config-formats;
     lib = risingTideLib;
