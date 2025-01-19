@@ -45,7 +45,11 @@ rec {
       };
       argsWithInjector = args // additionalInjectorArgs;
       inject = fn: callWithLazyArgs (parentInjector.inject fn) argsWithInjector getLazyArg;
-      injectModule = modulePath: lib.setDefaultModuleLocation modulePath (inject modulePath);
+      injectModule = modulePath: {
+        _file = modulePath;
+        key = modulePath;
+        imports = [ (inject modulePath) ];
+      };
       injectModules =
         modules:
         if builtins.isAttrs modules then

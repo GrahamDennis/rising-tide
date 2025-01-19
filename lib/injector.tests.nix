@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ risingTideLib, ... }:
+{ risingTideLib, lib, ... }:
 let
   inherit (risingTideLib) mkInjector;
 in
@@ -88,6 +88,7 @@ in
       };
       expectedModule = {
         _file = ./test-module.nix;
+        key = ./test-module.nix;
         imports = [ { foo = 1; } ];
       };
     in
@@ -147,7 +148,45 @@ in
               expr = (injector.inject fn) { foo = 1; };
               expectedError.msg = expectedErrorMessages.fnCalledWithoutBar;
             };
-          # FIXME: Add tests for injected module errors
+          "test error raised due to conflicts mentions the injected file name" =
+            let
+              injector = mkInjector "injector" { };
+            in
+            {
+              expr =
+                (lib.evalModules {
+                  modules = injector.injectModules [
+                    ./test-conflicts-module-1.nix
+                    ./test-conflicts-module-2.nix
+                  ];
+                }).config;
+              expectedError.msg = ".*test-conflicts-module.*";
+            };
         };
     };
+
+  injectModuleWithDuplicates =
+    let
+      injector = mkInjector "injector" {
+        args = {
+        };
+      };
+      expected = {
+        foo = 42;
+      };
+    in
+    {
+      # Validate that despite injectModules, the two module imports get deduplicated
+      "test injectModule" = {
+        expr =
+          (lib.evalModules {
+            modules = injector.injectModules [
+              ./test-duplicates-module.nix
+              ./test-duplicates-module.nix
+            ];
+          }).config;
+        inherit expected;
+      };
+    };
+
 }
