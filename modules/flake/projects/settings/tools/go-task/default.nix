@@ -15,7 +15,9 @@
 let
   inherit (lib) types;
   inherit (flake-parts-lib) mkSubmoduleOptions;
-  cfg = config.settings.tools.go-task;
+  getCfg = projectConfig: projectConfig.settings.tools.go-task;
+  cfg = getCfg config;
+  enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.yaml { };
   wrappedPackage = toolsPkgs.writeScriptBin "task" ''
     # Temporary workaround until go-task >3.40.1 is available in nixpkgs
@@ -48,6 +50,7 @@ in
   config =
     let
       ifEnabled = lib.mkIf cfg.enable;
+      enabledSubprojects = lib.filterAttrs (_name: enabledIn) config.subprojects;
     in
     {
       allTools = ifEnabled [
@@ -60,7 +63,21 @@ in
         # The default output format of interleaved does not do line-buffering. As a result,
         # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
         # terminal codes confusing the terminal.
-        go-task.taskfile.output = ifEnabled (lib.mkDefault "prefixed");
+        go-task.taskfile = {
+          output = ifEnabled (lib.mkDefault "prefixed");
+          includes = builtins.mapAttrs (_name: subprojectConfig: {
+            taskfile = subprojectConfig.relativePaths.toParentProject;
+            dir = subprojectConfig.relativePaths.toParentProject;
+          }) enabledSubprojects;
+          tasks = lib.mkMerge (
+            lib.mapAttrsToList (
+              _name: subprojectConfig:
+              lib.genAttrs (getCfg subprojectConfig).inheritedTasks (taskName: {
+                deps = [ "${subprojectConfig.name}:${taskName}" ];
+              })
+            ) enabledSubprojects
+          );
+        };
         nixago.requests = ifEnabled (
           lib.mkIf (cfg.taskfile != { }) [
             {
@@ -73,18 +90,6 @@ in
             }
           ]
         );
-      };
-
-      parentProjectSettings = ifEnabled {
-        tools.go-task.taskfile = {
-          includes.${config.name} = {
-            taskfile = config.relativePaths.toParentProject;
-            dir = config.relativePaths.toParentProject;
-          };
-          tasks = lib.genAttrs cfg.inheritedTasks (taskName: {
-            deps = [ "${config.name}:${taskName}" ];
-          });
-        };
       };
     };
 }

@@ -62,45 +62,27 @@ let
         };
         settings = lib.mkOption {
           description = "Settings for the project";
-          type =
-            let
-              projectConfig = config;
-            in
-            types.submoduleWith ({
-              modules = [
-                {
-                  imports =
-                    # Apply parent project settings from child projects (child projects may not support the same systems as the parent)
-                    (
-                      lib.mapAttrsToList (
-                        _subprojectName: subprojectConfig: subprojectConfig.parentProjectSettings
-                      ) projectConfig.subprojects
-                    );
-                  config = {
-                    # FIXME: Can this be removed?
-                    _module.args = {
-                      inherit system;
-                      inherit (config) toolsPkgs;
-                      project = {
-                        inherit (config) relativePaths name;
-                      };
+          type = types.submoduleWith ({
+            modules = [
+              {
+                config = {
+                  # FIXME: Can this be removed?
+                  _module.args = {
+                    inherit system;
+                    inherit (config) toolsPkgs;
+                    project = {
+                      inherit (config) relativePaths name;
                     };
                   };
-                }
-              ];
-            });
-          default = { };
-        };
-        parentProjectSettings = lib.mkOption {
-          description = "Settings that a child project requests to be applied to its parent project";
-          type = types.deferredModule;
+                };
+              }
+            ];
+          });
           default = { };
         };
         subprojects = lib.mkOption {
           description = ''
             An attribute set of child projects where each attribute set is itself a project.
-
-            Child projects' `parentProjectSettings` are applied to this project.
           '';
           type = types.attrsOf (
             types.submoduleWith {

@@ -9,7 +9,9 @@
 { config, ... }:
 let
   inherit (flake-parts-lib) mkSubmoduleOptions;
-  cfg = config.settings.languages.python;
+  getCfg = projectConfig: projectConfig.settings.languages.python;
+  cfg = getCfg config;
+  enabledIn = projectConfig: (getCfg projectConfig).enable;
 in
 {
   options = {
@@ -56,17 +58,24 @@ in
     let
       ifEnabled = lib.mkIf cfg.enable;
     in
-    {
-      settings = {
-        languages.python.pythonOverlay = ifEnabled (
-          lib.mkDefault (
-            python-final: _python-prev: {
-              ${config.name} = python-final.callPackage cfg.callPackageFunction { };
-            }
+    lib.mkMerge [
+      {
+        settings = {
+          languages.python.pythonOverlay = ifEnabled (
+            lib.mkDefault (
+              python-final: _python-prev: {
+                ${config.name} = python-final.callPackage cfg.callPackageFunction { };
+              }
+            )
+          );
+        };
+      }
+      (lib.mkIf config.isRootProject {
+        settings.languages.python.pythonOverlay = lib.mkMerge (
+          builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay) (
+            builtins.filter enabledIn config.subprojectsList
           )
         );
-
-      };
-      parentProjectSettings.languages.python.pythonOverlay = ifEnabled cfg.pythonOverlay;
-    };
+      })
+    ];
 }

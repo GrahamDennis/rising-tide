@@ -9,6 +9,7 @@
 {
   config,
   system,
+  toolsPkgs,
   ...
 }:
 let
@@ -28,6 +29,7 @@ in
           use flake
         '';
       };
+      package = lib.mkPackageOption toolsPkgs "direnv" { pkgsText = "toolsPkgs"; };
     };
   };
 
@@ -51,17 +53,14 @@ in
             };
           }
         ];
-
       };
     }
 
     (lib.mkIf config.isRootProject {
-      settings.tools.vscode.recommendedExtensions =
-        lib.mkIf (builtins.any enabledIn config.allProjectsList)
-          {
-            "mkhl.direnv" = true;
-          };
-
+      settings.tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+        settings."direnv.path.executable" = lib.getExe cfg.package;
+        recommendedExtensions."mkhl.direnv" = true;
+      };
     })
   ];
 }
