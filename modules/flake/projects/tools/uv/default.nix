@@ -22,20 +22,16 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      allTools = ifEnabled [
-        (toolsPkgs.makeSetupHook {
-          name = "uv-shell-hook.sh";
-          propagatedBuildInputs = [ cfg.package ];
-          substitutions = {
-            name = bashSafeName;
-            relativePathToRoot = config.relativePaths.toRoot;
-          };
-        } ./uv-shell-hook.sh)
-      ];
-    };
+  config = lib.mkIf cfg.enable {
+    allTools = [
+      (toolsPkgs.makeSetupHook {
+        name = "uv-shell-hook.sh";
+        propagatedBuildInputs = [ cfg.package ];
+        substitutions = {
+          name = bashSafeName;
+          relativePathToRoot = config.relativePaths.toRoot;
+        };
+      } ./uv-shell-hook.sh)
+    ];
+  };
 }

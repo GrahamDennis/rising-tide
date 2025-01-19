@@ -23,33 +23,29 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      tools = {
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.deadnix = {
-              command = deadnixExe;
-              options = cfg.arguments ++ [ "--edit" ];
-              includes = [
-                "*.nix"
-              ];
-            };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.deadnix = {
+            command = deadnixExe;
+            options = cfg.arguments ++ [ "--edit" ];
+            includes = [
+              "*.nix"
+            ];
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:deadnix" = {
-              desc = "Run deadnix. Additional CLI arguments after `--` are forwarded to deadnix";
-              cmds = [ "${deadnixExe} ${lib.concatStringsSep " " cfg.arguments} {{.CLI_ARGS}}" ];
-            };
+      };
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:deadnix" = {
+            desc = "Run deadnix. Additional CLI arguments after `--` are forwarded to deadnix";
+            cmds = [ "${deadnixExe} ${lib.concatStringsSep " " cfg.arguments} {{.CLI_ARGS}}" ];
           };
         };
       };
     };
+  };
 }

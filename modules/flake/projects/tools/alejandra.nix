@@ -19,44 +19,40 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf (enabledIn config);
-    in
-    lib.mkMerge [
-      {
-        tools = {
-          treefmt = ifEnabled {
-            enable = true;
-            config = {
-              formatter.alejandra = {
-                command = alejandraExe;
-                includes = [ "*.nix" ];
-              };
-            };
-          };
-          go-task = ifEnabled {
-            enable = true;
-            taskfile.tasks = {
-              "tool:alejandra" = {
-                desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
-                cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
-              };
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      tools = {
+        treefmt = {
+          enable = true;
+          config = {
+            formatter.alejandra = {
+              command = alejandraExe;
+              includes = [ "*.nix" ];
             };
           };
         };
-      }
-      (lib.mkIf config.isRootProject {
-        tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
-          "nix.formatterPath" = alejandraExe;
-          "nix.serverSettings" = {
-            "nil" = {
-              "formatting" = {
-                "command" = [ alejandraExe ];
-              };
+        go-task = {
+          enable = true;
+          taskfile.tasks = {
+            "tool:alejandra" = {
+              desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
+              cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
             };
           };
         };
-      })
-    ];
+      };
+    })
+    (lib.mkIf config.isRootProject {
+      tools.vscode.settings = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+        "nix.formatterPath" = alejandraExe;
+        "nix.serverSettings" = {
+          "nil" = {
+            "formatting" = {
+              "command" = [ alejandraExe ];
+            };
+          };
+        };
+      };
+    })
+  ];
 }

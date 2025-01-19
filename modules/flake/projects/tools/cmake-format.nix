@@ -28,38 +28,34 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      tools = {
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.cmake-format = {
-              command = cmakeFormatExe;
-              options = [
-                "--config-files"
-                configFile
-                "--in-place"
-              ];
-              includes = [
-                "*.cmake"
-                "CMakeLists.txt"
-              ];
-            };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.cmake-format = {
+            command = cmakeFormatExe;
+            options = [
+              "--config-files"
+              configFile
+              "--in-place"
+            ];
+            includes = [
+              "*.cmake"
+              "CMakeLists.txt"
+            ];
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:cmake-format" = {
-              desc = "Run cmake-format. Additional CLI arguments after `--` are forwarded to cmake-format";
-              cmds = [ "${cmakeFormatExe} --config-files ${configFile} {{.CLI_ARGS}}" ];
-            };
+      };
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:cmake-format" = {
+            desc = "Run cmake-format. Additional CLI arguments after `--` are forwarded to cmake-format";
+            cmds = [ "${cmakeFormatExe} --config-files ${configFile} {{.CLI_ARGS}}" ];
           };
         };
       };
     };
+  };
 }

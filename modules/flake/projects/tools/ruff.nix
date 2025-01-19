@@ -28,51 +28,47 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      tools = {
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.ruff-lint = {
-              command = ruffExe;
-              options = [
-                "--config"
-                (toString configFile)
-                "check"
-                "--fix"
-              ];
-              includes = [
-                "*.py"
-                "*.pyi"
-              ];
-            };
-            formatter.ruff-format = {
-              command = ruffExe;
-              options = [
-                "--config"
-                (toString configFile)
-                "format"
-              ];
-              includes = [
-                "*.py"
-                "*.pyi"
-              ];
-            };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.ruff-lint = {
+            command = ruffExe;
+            options = [
+              "--config"
+              (toString configFile)
+              "check"
+              "--fix"
+            ];
+            includes = [
+              "*.py"
+              "*.pyi"
+            ];
+          };
+          formatter.ruff-format = {
+            command = ruffExe;
+            options = [
+              "--config"
+              (toString configFile)
+              "format"
+            ];
+            includes = [
+              "*.py"
+              "*.pyi"
+            ];
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:ruff" = {
-              desc = "Run ruff. Additional CLI arguments after `--` are forwarded to ruff";
-              cmds = [ "${ruffExe} --config ${toString configFile} {{.CLI_ARGS}}" ];
-            };
+      };
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:ruff" = {
+            desc = "Run ruff. Additional CLI arguments after `--` are forwarded to ruff";
+            cmds = [ "${ruffExe} --config ${toString configFile} {{.CLI_ARGS}}" ];
           };
         };
       };
     };
+  };
 }

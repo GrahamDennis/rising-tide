@@ -47,11 +47,10 @@ in
 
   config =
     let
-      ifEnabled = lib.mkIf cfg.enable;
       enabledSubprojects = lib.filterAttrs (_name: enabledIn) config.subprojects;
     in
-    {
-      allTools = ifEnabled [
+    lib.mkIf cfg.enable {
+      allTools = [
         (toolsPkgs.makeSetupHook {
           name = "go-task-setup-hook.sh";
           propagatedBuildInputs = [ wrappedPackage ];
@@ -62,7 +61,7 @@ in
         # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
         # terminal codes confusing the terminal.
         go-task.taskfile = {
-          output = ifEnabled (lib.mkDefault "prefixed");
+          output = (lib.mkDefault "prefixed");
           includes = lib.mkMerge (
             lib.mapAttrsToList (name: subprojectConfig: {
               "${name}" = {
@@ -80,7 +79,7 @@ in
             ) enabledSubprojects
           );
         };
-        nixago.requests = ifEnabled (
+        nixago.requests = (
           lib.mkIf (cfg.taskfile != { }) [
             {
               data = cfg.taskfile;

@@ -52,82 +52,78 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    lib.mkMerge [
-      {
-        tools = {
-          pytest.config = ifEnabled (
-            lib.mkMerge [
-              {
-                addopts = [
-                  "--showlocals"
-                  "--maxfail=1"
-                ];
-              }
-              (lib.mkIf cfg.coverage.enable {
-                addopts = [
-                  "--cov"
-                  "--cov-config=${toString coverageConfigFile}"
-                ];
-              })
-            ]
-          );
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      tools = {
+        pytest.config = (
+          lib.mkMerge [
+            {
+              addopts = [
+                "--showlocals"
+                "--maxfail=1"
+              ];
+            }
+            (lib.mkIf cfg.coverage.enable {
+              addopts = [
+                "--cov"
+                "--cov-config=${toString coverageConfigFile}"
+              ];
+            })
+          ]
+        );
 
-          go-task = ifEnabled {
-            enable = true;
-            taskfile = {
-              tasks =
-                let
-                  callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
-                in
-                lib.mkMerge [
-                  {
-                    test.deps = [ "test:pytest" ];
-                    "test:pytest" = {
-                      desc = "Run pytest";
-                      cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
+        go-task = {
+          enable = true;
+          taskfile = {
+            tasks =
+              let
+                callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
+              in
+              lib.mkMerge [
+                {
+                  test.deps = [ "test:pytest" ];
+                  "test:pytest" = {
+                    desc = "Run pytest";
+                    cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
+                  };
+                  "tool:pytest" = {
+                    desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
+                    cmds = [ (callPytest "{{.CLI_ARGS}}") ];
+                  };
+                }
+                (lib.mkIf cfg.coverage.enable {
+                  "tool:coverage" = {
+                    desc = "Run python coverage tool.";
+                    cmds = [ "coverage {{.CLI_ARGS}}" ];
+                    env = {
+                      COVERAGE_RCFILE = builtins.toString coverageConfigFile;
                     };
-                    "tool:pytest" = {
-                      desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
-                      cmds = [ (callPytest "{{.CLI_ARGS}}") ];
-                    };
-                  }
-                  (lib.mkIf cfg.coverage.enable {
-                    "tool:coverage" = {
-                      desc = "Run python coverage tool.";
-                      cmds = [ "coverage {{.CLI_ARGS}}" ];
-                      env = {
-                        COVERAGE_RCFILE = builtins.toString coverageConfigFile;
-                      };
-                    };
-                  })
-                ];
-            };
+                  };
+                })
+              ];
           };
         };
-      }
-      (lib.mkIf config.isRootProject {
-        tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
-          settings = {
-            "python.testing.pytestEnabled" = true;
-            "python.testing.unittestEnabled" = false;
-            "python.testing.pytestArgs" =
-              [
-                "--config-file=${toString configFile}"
-                "--override-ini=consider_namespace_packages=true"
-                "--override-ini=pythonpath=."
-                "--rootdir=."
-                # FIXME: this only makes sense if coverage is enabled somewhere
-                "--no-cov"
-              ]
-              ++ (builtins.map (projectConfig: "${projectConfig.relativePaths.toRoot}/tests") (
-                builtins.filter enabledIn config.allProjectsList
-              ));
-          };
+      };
+    })
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tools.vscode = {
+        settings = {
+          "python.testing.pytestEnabled" = true;
+          "python.testing.unittestEnabled" = false;
+          "python.testing.pytestArgs" =
+            [
+              "--config-file=${toString configFile}"
+              "--override-ini=consider_namespace_packages=true"
+              "--override-ini=pythonpath=."
+              "--rootdir=."
+              # FIXME: this only makes sense if coverage is enabled somewhere
+              "--no-cov"
+            ]
+            ++ (builtins.map (projectConfig: "${projectConfig.relativePaths.toRoot}/tests") (
+              builtins.filter enabledIn config.allProjectsList
+            ));
         };
-      })
-    ];
+      };
+    })
+  ];
 }

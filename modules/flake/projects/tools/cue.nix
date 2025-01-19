@@ -18,36 +18,32 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      tools = {
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.cue = {
-              command = cueExe;
-              options = [
-                "fmt"
-                "--files"
-              ];
-              includes = [
-                "*.cue"
-              ];
-            };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.cue = {
+            command = cueExe;
+            options = [
+              "fmt"
+              "--files"
+            ];
+            includes = [
+              "*.cue"
+            ];
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:cue" = {
-              desc = "Run cue. Additional CLI arguments after `--` are forwarded to cue";
-              cmds = [ "${cueExe} {{.CLI_ARGS}}" ];
-            };
+      };
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:cue" = {
+            desc = "Run cue. Additional CLI arguments after `--` are forwarded to cue";
+            cmds = [ "${cueExe} {{.CLI_ARGS}}" ];
           };
         };
       };
     };
+  };
 }

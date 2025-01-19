@@ -42,55 +42,51 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      tools = {
-        nixago.requests = ifEnabled ([
-          {
-            data = cfg.config;
-            output = ".clang-format";
-            format = "yaml";
-            engine = inputs.nixago.engines.${system}.cue {
-              flags = {
-                expression = "rendered";
-                out = "text";
-              };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      nixago.requests = [
+        {
+          data = cfg.config;
+          output = ".clang-format";
+          format = "yaml";
+          engine = inputs.nixago.engines.${system}.cue {
+            flags = {
+              expression = "rendered";
+              out = "text";
+            };
 
-              files = [ ./clang-format.cue ];
-            };
-          }
-        ]);
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.clang-format = {
-              command = clangFormatExe;
-              options = [
-                "-i"
-              ];
-              includes = [
-                "*.c"
-                "*.cc"
-                "*.cpp"
-                "*.h"
-                "*.hh"
-                "*.hpp"
-              ];
-            };
+            files = [ ./clang-format.cue ];
+          };
+        }
+      ];
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.clang-format = {
+            command = clangFormatExe;
+            options = [
+              "-i"
+            ];
+            includes = [
+              "*.c"
+              "*.cc"
+              "*.cpp"
+              "*.h"
+              "*.hh"
+              "*.hpp"
+            ];
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:clang-format" = {
-              desc = "Run clang-format. Additional CLI arguments after `--` are forwarded to clang-format";
-              cmds = [ "${clangFormatExe} {{.CLI_ARGS}}" ];
-            };
+      };
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:clang-format" = {
+            desc = "Run clang-format. Additional CLI arguments after `--` are forwarded to clang-format";
+            cmds = [ "${clangFormatExe} {{.CLI_ARGS}}" ];
           };
         };
       };
     };
+  };
 }

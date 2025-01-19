@@ -27,48 +27,44 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    {
-      tools = {
-        nixago.requests = ifEnabled ([
-          {
-            data = cfg.config;
-            output = ".clang-tidy";
-            format = "yaml";
-          }
-        ]);
-        treefmt = ifEnabled {
-          enable = true;
-          config = {
-            formatter.clang-tidy = {
-              command = clangTidyExe;
-              options = [
-                "-p"
-                "build"
-              ];
-              includes = [
-                "*.c"
-                "*.cc"
-                "*.cpp"
-                "*.h"
-                "*.hh"
-                "*.hpp"
-              ];
-            };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      nixago.requests = ([
+        {
+          data = cfg.config;
+          output = ".clang-tidy";
+          format = "yaml";
+        }
+      ]);
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.clang-tidy = {
+            command = clangTidyExe;
+            options = [
+              "-p"
+              "build"
+            ];
+            includes = [
+              "*.c"
+              "*.cc"
+              "*.cpp"
+              "*.h"
+              "*.hh"
+              "*.hpp"
+            ];
           };
         };
-        go-task = ifEnabled {
-          enable = true;
-          taskfile.tasks = {
-            "tool:clang-tidy" = {
-              desc = "Run clang-tidy. Additional CLI arguments after `--` are forwarded to clang-tidy";
-              cmds = [ "${clangTidyExe} {{.CLI_ARGS}}" ];
-            };
+      };
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:clang-tidy" = {
+            desc = "Run clang-tidy. Additional CLI arguments after `--` are forwarded to clang-tidy";
+            cmds = [ "${clangTidyExe} {{.CLI_ARGS}}" ];
           };
         };
       };
     };
+  };
 }

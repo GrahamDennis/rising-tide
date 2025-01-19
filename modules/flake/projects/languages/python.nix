@@ -50,26 +50,20 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf cfg.enable;
-    in
-    lib.mkMerge [
-      {
-        languages.python.pythonOverlay = ifEnabled (
-          lib.mkDefault (
-            python-final: _python-prev: {
-              ${config.name} = python-final.callPackage cfg.callPackageFunction { };
-            }
-          )
-        );
-      }
-      (lib.mkIf config.isRootProject {
-        languages.python.pythonOverlay = lib.mkMerge (
-          builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay) (
-            builtins.filter enabledIn config.subprojectsList
-          )
-        );
-      })
-    ];
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      languages.python.pythonOverlay = lib.mkDefault (
+        python-final: _python-prev: {
+          ${config.name} = python-final.callPackage cfg.callPackageFunction { };
+        }
+      );
+    })
+    (lib.mkIf config.isRootProject {
+      languages.python.pythonOverlay = lib.mkMerge (
+        builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay) (
+          builtins.filter enabledIn config.subprojectsList
+        )
+      );
+    })
+  ];
 }

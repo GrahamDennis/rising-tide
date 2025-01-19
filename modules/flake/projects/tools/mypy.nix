@@ -76,53 +76,48 @@ in
     };
   };
 
-  config =
-    let
-      ifEnabled = lib.mkIf (enabledIn config);
-      ifEnabledInAny = lib.mkIf (builtins.any enabledIn config.allProjectsList);
-    in
-    lib.mkMerge [
-      {
-        tools = {
-          go-task = ifEnabled {
-            enable = true;
-            taskfile.tasks =
-              let
-                callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
-              in
-              {
-                # Mypy must run after treefmt, so we run it as a command not a dependency
-                # (as dependencies run in parallel)
-                check.cmds = [ { task = "check:mypy"; } ];
-                "check:mypy" = {
-                  desc = "Run mypy type checker";
-                  cmds = [ (callMypy "src tests") ];
-                };
-                "tool:mypy" = {
-                  desc = "Run mypy. Additional CLI arguments after `--` are forwarded to mypy";
-                  cmds = [ (callMypy "{{.CLI_ARGS}}") ];
-                };
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      tools = {
+        go-task = {
+          enable = true;
+          taskfile.tasks =
+            let
+              callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
+            in
+            {
+              # Mypy must run after treefmt, so we run it as a command not a dependency
+              # (as dependencies run in parallel)
+              check.cmds = [ { task = "check:mypy"; } ];
+              "check:mypy" = {
+                desc = "Run mypy type checker";
+                cmds = [ (callMypy "src tests") ];
               };
-          };
-        };
-      }
-      {
-        tools = lib.mkIf config.isRootProject {
-          mypy.perModuleOverrides = lib.mkMerge (
-            builtins.map (projectConfig: (getCfg projectConfig).perModuleOverrides) config.subprojectsList
-          );
-          vscode = ifEnabledInAny {
-            settings = {
-              "mypy-type-checker.path" = [
-                mypyExe
-              ];
-              "mypy-type-checker.args" = [
-                "--config-file=${toString cfg.configFile}"
-              ];
+              "tool:mypy" = {
+                desc = "Run mypy. Additional CLI arguments after `--` are forwarded to mypy";
+                cmds = [ (callMypy "{{.CLI_ARGS}}") ];
+              };
             };
-            recommendedExtensions."ms-python.mypy-type-checker" = true;
-          };
         };
-      }
-    ];
+      };
+    })
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tools = {
+        mypy.perModuleOverrides = lib.mkMerge (
+          builtins.map (projectConfig: (getCfg projectConfig).perModuleOverrides) config.subprojectsList
+        );
+        vscode = {
+          settings = {
+            "mypy-type-checker.path" = [
+              mypyExe
+            ];
+            "mypy-type-checker.args" = [
+              "--config-file=${toString cfg.configFile}"
+            ];
+          };
+          recommendedExtensions."ms-python.mypy-type-checker" = true;
+        };
+      };
+    })
+  ];
 }
