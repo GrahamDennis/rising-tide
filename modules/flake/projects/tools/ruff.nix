@@ -7,9 +7,9 @@
   ...
 }:
 let
+  enabledIn = projectConfig: projectConfig.tools.ruff.enable;
   cfg = config.tools.ruff;
   settingsFormat = toolsPkgs.formats.toml { };
-  configFile = settingsFormat.generate "ruff.toml" cfg.config;
   ruffExe = lib.getExe cfg.package;
 in
 {
@@ -28,47 +28,63 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    tools = {
-      treefmt = {
-        enable = true;
-        config = {
-          formatter.ruff-lint = {
-            command = ruffExe;
-            options = [
-              "--config"
-              (toString configFile)
-              "check"
-              "--fix"
-            ];
-            includes = [
-              "*.py"
-              "*.pyi"
-            ];
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      tools = {
+        nixago.requests = [
+          {
+            data = cfg.config;
+            output = ".ruff.toml";
+            format = "toml";
+          }
+        ];
+        treefmt = {
+          enable = true;
+          config = {
+            formatter.ruff-lint = {
+              command = ruffExe;
+              options = [
+                "check"
+                "--fix"
+              ];
+              includes = [
+                "*.py"
+                "*.pyi"
+              ];
+            };
+            formatter.ruff-format = {
+              command = ruffExe;
+              options = [
+                "format"
+              ];
+              includes = [
+                "*.py"
+                "*.pyi"
+              ];
+            };
           };
-          formatter.ruff-format = {
-            command = ruffExe;
-            options = [
-              "--config"
-              (toString configFile)
-              "format"
-            ];
-            includes = [
-              "*.py"
-              "*.pyi"
-            ];
+        };
+        go-task = {
+          enable = true;
+          taskfile.tasks = {
+            "tool:ruff" = {
+              desc = "Run ruff. Additional CLI arguments after `--` are forwarded to ruff";
+              cmds = [ "${ruffExe} {{.CLI_ARGS}}" ];
+            };
           };
         };
       };
-      go-task = {
-        enable = true;
-        taskfile.tasks = {
-          "tool:ruff" = {
-            desc = "Run ruff. Additional CLI arguments after `--` are forwarded to ruff";
-            cmds = [ "${ruffExe} --config ${toString configFile} {{.CLI_ARGS}}" ];
-          };
+    })
+
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tools.vscode = {
+        recommendedExtensions = {
+          "charliermarsh.ruff" = true;
+        };
+        settings = {
+          "ruff.path" = [ ruffExe ];
         };
       };
-    };
-  };
+    })
+  ];
 }

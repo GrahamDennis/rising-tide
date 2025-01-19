@@ -79,18 +79,16 @@ in
             ) enabledSubprojects
           );
         };
-        nixago.requests = (
-          lib.mkIf (cfg.taskfile != { }) [
-            {
-              data = cfg.taskfile;
-              output = "taskfile.yml";
-              format = "yaml";
-              engine = inputs.nixago.engines.${system}.cue {
-                files = [ ./taskfile.cue ];
-              };
-            }
-          ]
-        );
+        nixago.requests = lib.mkIf (cfg.taskfile != { }) [
+          {
+            data = cfg.taskfile;
+            output = "taskfile.yml";
+            format = "yaml";
+            engine = inputs.nixago.engines.${system}.cue {
+              files = [ ./taskfile.cue ];
+            };
+          }
+        ];
       };
     };
 }
