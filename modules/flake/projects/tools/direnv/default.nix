@@ -32,9 +32,9 @@ in
   };
 
   config = lib.mkMerge [
-    {
+    (lib.mkIf cfg.enable {
       tools = {
-        nixago.requests = lib.mkIf (enabledIn config) [
+        nixago.requests = [
           {
             data = { inherit (cfg) content; };
             output = ".envrc";
@@ -52,10 +52,10 @@ in
           }
         ];
       };
-    }
+    })
 
-    (lib.mkIf config.isRootProject {
-      tools.vscode = lib.mkIf (builtins.any enabledIn config.allProjectsList) {
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tools.vscode = {
         settings."direnv.path.executable" = lib.getExe cfg.package;
         recommendedExtensions."mkhl.direnv" = true;
       };

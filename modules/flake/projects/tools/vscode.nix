@@ -48,26 +48,24 @@ in
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     tools = {
-      nixago.requests = lib.mkIf cfg.enable (
-        lib.mkMerge [
-          (lib.mkIf (cfg.settings != { }) [
-            {
-              data = cfg.settings;
-              output = ".vscode/settings.json";
-              format = "json";
-            }
-          ])
-          (lib.mkIf (cfg.extensions != { }) [
-            {
-              data = cfg.extensions;
-              output = ".vscode/extensions.json";
-              format = "json";
-            }
-          ])
-        ]
-      );
+      nixago.requests = lib.mkMerge [
+        (lib.mkIf (cfg.settings != { }) [
+          {
+            data = cfg.settings;
+            output = ".vscode/settings.json";
+            format = "json";
+          }
+        ])
+        (lib.mkIf (cfg.extensions != { }) [
+          {
+            data = cfg.extensions;
+            output = ".vscode/extensions.json";
+            format = "json";
+          }
+        ])
+      ];
     };
   };
 }
