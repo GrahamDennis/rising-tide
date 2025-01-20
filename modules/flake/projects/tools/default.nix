@@ -5,7 +5,7 @@
 }:
 # project context
 {
-  imports = builtins.map injector.injectModule [
+  imports = injector.injectModules [
     ./alejandra.nix
     ./clang-format
     ./clang-tidy.nix

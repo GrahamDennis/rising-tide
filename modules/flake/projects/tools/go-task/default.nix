@@ -61,7 +61,7 @@ in
         # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
         # terminal codes confusing the terminal.
         go-task.taskfile = {
-          output = (lib.mkDefault "prefixed");
+          output = lib.mkDefault "prefixed";
           includes = lib.mkMerge (
             lib.mapAttrsToList (name: subprojectConfig: {
               "${name}" = {

@@ -12,7 +12,22 @@ in
       name = "example-project";
       relativePaths.toRoot = "./.";
       subprojects = { };
-      tools = { };
+      subprojectsList = [ ];
+      tools.go-task = {
+        enable = true;
+        taskfile = {
+          output = "prefixed";
+          tasks = {
+            check.deps = [ "check:treefmt" ];
+            "check:treefmt" = { };
+            "tool:deadnix" = { };
+            "tool:nixfmt-rfc-style" = { };
+            "tool:shellcheck" = { };
+            "tool:shfmt" = { };
+            "tool:treefmt" = { };
+          };
+        };
+      };
     };
   };
 }
