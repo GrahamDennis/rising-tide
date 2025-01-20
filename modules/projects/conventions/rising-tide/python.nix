@@ -7,7 +7,8 @@
 }:
 let
   cfg = config.conventions.risingTide.python;
-  pythonEnabledIn = projectConfig: projectConfig.languages.python.enable;
+  getLangCfg = projectConfig: projectConfig.languages.python;
+  pythonEnabledIn = projectConfig: (getLangCfg projectConfig).enable;
 in
 {
   imports = injector.injectModules [ ./common.nix ];
@@ -92,7 +93,7 @@ in
         tools = {
           mypy.enable = true;
           pytest = {
-            enable = true;
+            enable = (getLangCfg config).testRoots != [ ];
             coverage.enable = true;
           };
           ruff.enable = true;

@@ -84,7 +84,10 @@ in
                   test.deps = [ "test:pytest" ];
                   "test:pytest" = {
                     desc = "Run pytest";
-                    cmds = [ (callPytest "--junitxml=./build/test.xml ./tests") ];
+                    # Only run pytest if there is a test directory
+                    cmds = [
+                      (callPytest "--junitxml=./build/test.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
+                    ];
                   };
                   "tool:pytest" = {
                     desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
@@ -119,9 +122,16 @@ in
               # FIXME: this only makes sense if coverage is enabled somewhere
               "--no-cov"
             ]
-            ++ (builtins.map (projectConfig: "${projectConfig.relativePaths.toRoot}/tests") (
-              builtins.filter enabledIn config.allProjectsList
-            ));
+            ++ (builtins.concatMap (
+              projectConfig:
+              builtins.map (
+                testRoot:
+                lib.path.subpath.join [
+                  projectConfig.relativePaths.toRoot
+                  testRoot
+                ]
+              ) projectConfig.languages.python.testRoots
+            ) (builtins.filter enabledIn config.allProjectsList));
         };
       };
     })

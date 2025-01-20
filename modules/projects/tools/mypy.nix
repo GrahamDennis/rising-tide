@@ -91,7 +91,13 @@ in
               check.cmds = [ { task = "check:mypy"; } ];
               "check:mypy" = {
                 desc = "Run mypy type checker";
-                cmds = [ (callMypy "src tests") ];
+                cmds = [
+                  (callMypy (
+                    builtins.concatStringsSep " " (
+                      config.languages.python.sourceRoots ++ config.languages.python.testRoots
+                    )
+                  ))
+                ];
               };
               "tool:mypy" = {
                 desc = "Run mypy. Additional CLI arguments after `--` are forwarded to mypy";

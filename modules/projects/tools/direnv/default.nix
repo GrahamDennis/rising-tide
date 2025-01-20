@@ -56,7 +56,11 @@ in
 
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode = {
-        settings."direnv.path.executable" = lib.getExe cfg.package;
+        settings = {
+          "direnv.path.executable" = lib.getExe cfg.package;
+          "direnv.watchForChanges" = false;
+        };
+
         recommendedExtensions."mkhl.direnv" = true;
       };
     })

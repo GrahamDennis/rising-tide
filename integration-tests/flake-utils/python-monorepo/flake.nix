@@ -56,6 +56,7 @@
               relativePaths.toParentProject = "projects/package-3-with-no-tests";
               languages.python = {
                 enable = true;
+                testRoots = [ ];
                 callPackageFunction = (
                   import ./projects/package-3-with-no-tests { project = project.subprojects.package-3; }
                 );

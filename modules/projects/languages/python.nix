@@ -7,6 +7,7 @@
 # project context
 { config, ... }:
 let
+  inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.python;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
@@ -46,6 +47,18 @@ in
           ```
         '';
         type = risingTideLib.types.overlay;
+      };
+
+      sourceRoots = lib.mkOption {
+        description = ''Project subpaths that contain python source'';
+        type = types.listOf risingTideLib.types.subpath;
+        default = [ "src" ];
+      };
+
+      testRoots = lib.mkOption {
+        description = ''Project subpaths that contain python test sources'';
+        type = types.listOf risingTideLib.types.subpath;
+        default = [ "tests" ];
       };
     };
   };

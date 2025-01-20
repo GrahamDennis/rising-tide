@@ -1,3 +1,4 @@
 
 # nixago: ignore-linked-files
+/taskfile.yml
 /.ruff.toml
