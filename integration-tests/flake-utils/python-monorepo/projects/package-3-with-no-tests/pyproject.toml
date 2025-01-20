@@ -1,5 +1,5 @@
 [project]
-name = "package-2"
+name = "package-3"
 version = "0.1.0"
 description = "Add your description here"
 authors = [
@@ -8,12 +8,6 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [ "package-1" ]
 
-[project.optional-dependencies]
-dev = [ "pytest", "pytest-cov"]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[project.scripts]
-package-2-hello = "package_2:cli"

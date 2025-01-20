@@ -52,17 +52,27 @@
                 callPackageFunction = (import ./projects/package-2 { project = project.subprojects.package-2; });
               };
             };
+            package-3 = {
+              relativePaths.toParentProject = "projects/package-3-with-no-tests";
+              languages.python = {
+                enable = true;
+                callPackageFunction = (
+                  import ./projects/package-3-with-no-tests { project = project.subprojects.package-3; }
+                );
+              };
+            };
           };
         };
       in
       rec {
         inherit project;
-        packages = { inherit (pythonPackages) package-1 package-2; };
+        packages = { inherit (pythonPackages) package-1 package-2 package-3; };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [
             packages.package-1
             packages.package-2
+            packages.package-3
           ];
           nativeBuildInputs = project.allTools;
         };

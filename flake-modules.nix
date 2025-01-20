@@ -8,7 +8,7 @@
 {
   flake = {
     modules.flake = injector.injectModules {
-      project = ./modules/flake/projects/project.nix;
+      project = ./modules/projects/project.nix;
     };
     modules.configFormats = injector.inject ./modules/config-formats;
     lib = risingTideLib;
