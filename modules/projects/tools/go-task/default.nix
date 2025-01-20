@@ -17,10 +17,6 @@ let
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.yaml { };
-  wrappedPackage = toolsPkgs.writeScriptBin "task" ''
-    # Temporary workaround until go-task >3.40.1 is available in nixpkgs
-    exec ${cfg.package}/bin/task --concurrency 1 "$@"
-  '';
 in
 {
   options = {
@@ -53,7 +49,7 @@ in
       allTools = [
         (toolsPkgs.makeSetupHook {
           name = "go-task-setup-hook.sh";
-          propagatedBuildInputs = [ wrappedPackage ];
+          propagatedBuildInputs = [ cfg.package ];
         } ./go-task-setup-hook.sh)
       ];
       tools = {
