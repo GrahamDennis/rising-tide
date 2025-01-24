@@ -20,7 +20,6 @@
       pkgs,
       injector',
       config,
-      system,
       ...
     }:
     {
@@ -29,17 +28,22 @@
         pkgs.callPackage (injector.inject ./packages/project-module-docs.nix)
           { };
       packages.lib-docs = pkgs.callPackage (injector.inject ./packages/lib-docs.nix) { };
-      packages.all-checks = pkgs.linkFarm "all-checks" config.checks;
+      packages.all-checks = pkgs.linkFarm "all-checks" (
+        risingTideLib.flattenAttrsRecursiveCond (v: !(lib.isDerivation v)) config.legacyPackages.checks
+      );
 
       devShells.default = injector'.inject ./devShell.nix;
 
-      checks =
+      legacyPackages =
         let
-          updateDerivationNames = builtins.mapAttrs (
-            name: drv: drv.overrideAttrs { name = "checks.${system}.${name}"; }
-          );
-          flatten = risingTideLib.flattenAttrsRecursiveCond (as: !(lib.isDerivation as));
+          overrideDerivationName =
+            path: drv: drv.overrideAttrs { name = "checks.${builtins.concatStringsSep "." path}"; };
         in
-        updateDerivationNames (flatten (injector'.inject ./checks));
+        {
+          checks = lib.mapAttrsRecursiveCond (value: !(lib.isDerivation value)) overrideDerivationName (
+            injector'.inject ./checks
+          );
+        };
+
     };
 }
