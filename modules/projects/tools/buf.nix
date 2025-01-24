@@ -38,12 +38,24 @@ in
         treefmt = {
           enable = true;
           config = {
-            formatter.buf = {
+            formatter.buf-lint = {
               command = bufExe;
               options = [
                 "lint"
                 "--config"
                 cfg.configFile
+              ];
+              includes = [
+                "*.proto"
+              ];
+            };
+            formatter.buf-format = {
+              command = bufExe;
+              options = [
+                "format"
+                "--config"
+                cfg.configFile
+                "--write"
               ];
               includes = [
                 "*.proto"
