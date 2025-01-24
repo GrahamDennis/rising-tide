@@ -15,7 +15,11 @@ in
 {
   options = {
     tools.ruff = {
-      enable = lib.mkEnableOption "Enable ruff integration";
+      enable = lib.mkEnableOption "Enable ruff integration" // {
+        default = cfg.lint.enable || cfg.format.enable;
+      };
+      lint.enable = lib.mkEnableOption "Enable ruff lint";
+      format.enable = lib.mkEnableOption "Enable ruff format";
       package = lib.mkPackageOption toolsPkgs "ruff" { pkgsText = "toolsPkgs"; };
       config = lib.mkOption {
         description = ''
@@ -41,7 +45,7 @@ in
         treefmt = {
           enable = true;
           config = {
-            formatter.ruff-lint = {
+            formatter.ruff-lint = lib.mkIf cfg.lint.enable {
               command = ruffExe;
               options = [
                 "check"
@@ -52,7 +56,7 @@ in
                 "*.pyi"
               ];
             };
-            formatter.ruff-format = {
+            formatter.ruff-format = lib.mkIf cfg.format.enable {
               command = ruffExe;
               options = [
                 "format"

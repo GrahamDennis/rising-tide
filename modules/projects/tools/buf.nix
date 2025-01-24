@@ -8,14 +8,18 @@
 }:
 let
   inherit (lib) types;
-  cfg = config.tools.protolint;
+  cfg = config.tools.buf;
   settingsFormat = toolsPkgs.formats.yaml { };
   bufExe = lib.getExe cfg.package;
 in
 {
   options = {
     tools.buf = {
-      enable = lib.mkEnableOption "Enable buf tool";
+      enable = lib.mkEnableOption "Enable buf tool" // {
+        default = cfg.lint.enable || cfg.format.enable;
+      };
+      lint.enable = lib.mkEnableOption "Enable buf lint tool";
+      format.enable = lib.mkEnableOption "Enable buf format tool";
       package = lib.mkPackageOption toolsPkgs "buf" { pkgsText = "toolsPkgs"; };
       config = lib.mkOption {
         description = ''
@@ -35,10 +39,13 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       tools = {
+        buf.config = {
+          version = lib.mkDefault "v2";
+        };
         treefmt = {
           enable = true;
           config = {
-            formatter.buf-lint = {
+            formatter.buf-lint = lib.mkIf cfg.lint.enable {
               command = bufExe;
               options = [
                 "lint"
@@ -49,7 +56,7 @@ in
                 "*.proto"
               ];
             };
-            formatter.buf-format = {
+            formatter.buf-format = lib.mkIf cfg.format.enable {
               command = bufExe;
               options = [
                 "format"

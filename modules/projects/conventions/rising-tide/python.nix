@@ -96,7 +96,8 @@ in
             enable = (getLangCfg config).testRoots != [ ];
             coverage.enable = true;
           };
-          ruff.enable = true;
+          ruff.lint.enable = true;
+          ruff.format.enable = true;
           uv.enable = true;
         };
       })
