@@ -1,6 +1,7 @@
 # rising-tide flake context
 {
   risingTideLib,
+  lib,
   ...
 }:
 # rising-tide perSystem context
@@ -15,6 +16,7 @@ let
     p.bats-assert
     p.bats-file
   ]);
+  batsExe = lib.getExe' batsWithLibraries "bats";
   project = risingTideLib.mkProject system {
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
@@ -49,7 +51,7 @@ let
             cmds = [
               ''
                 cd "integration-tests/{{.INTEGRATION_TEST}}"
-                nix develop --no-write-lock-file --show-trace --command ./test.bats
+                nix develop --no-write-lock-file --show-trace --command ${batsExe} ./test.bats
               ''
             ];
           };

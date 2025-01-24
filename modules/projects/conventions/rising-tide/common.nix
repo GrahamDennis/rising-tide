@@ -16,7 +16,10 @@ in
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       {
-        tools.go-task.enable = true;
+        tools.go-task = {
+          enable = true;
+          taskfile.run = "when_changed";
+        };
       }
       (lib.mkIf config.isRootProject {
         tools.vscode.enable = true;

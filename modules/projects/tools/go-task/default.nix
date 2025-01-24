@@ -93,7 +93,8 @@ in
         };
         nixago.requests = lib.mkIf (cfg.taskfile != { }) [
           {
-            data = cfg.taskfile;
+            data = cfg.configFile;
+            output = "taskfile.yml";
             engine = risingTideLib.nixagoEngines.noop;
           }
         ];
