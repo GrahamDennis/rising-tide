@@ -20,6 +20,7 @@
     ./nix-unit.nix
     ./nixago
     ./nixfmt-rfc-style.nix
+    ./protolint.nix
     ./pytest.nix
     ./ruff.nix
     ./shellcheck.nix
