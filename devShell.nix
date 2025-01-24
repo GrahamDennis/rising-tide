@@ -51,7 +51,7 @@ let
             cmds = [
               ''
                 cd "integration-tests/{{.INTEGRATION_TEST}}"
-                nix develop --no-write-lock-file --show-trace --command ${batsExe} ./test.bats
+                nix develop --show-trace --command ${batsExe} ./test.bats
               ''
             ];
           };

@@ -24,6 +24,10 @@ tasks:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-deadnix-1.2.1/bin/deadnix  {{.CLI_ARGS}}
     desc: Run deadnix. Additional CLI arguments after `--` are forwarded to deadnix
+  tool:nil:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-nil-2024-08-06/bin/nil {{.CLI_ARGS}}
+    desc: Run nil. Additional CLI arguments after `--` are forwarded
   tool:nixfmt-rfc-style:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-nixfmt-unstable-2024-12-04/bin/nixfmt {{.CLI_ARGS}}

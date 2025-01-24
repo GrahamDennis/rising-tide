@@ -18,6 +18,7 @@
     ./go-task
     ./lefthook.nix
     ./mypy.nix
+    ./nil.nix
     ./nix-unit.nix
     ./nixago
     ./nixfmt-rfc-style.nix

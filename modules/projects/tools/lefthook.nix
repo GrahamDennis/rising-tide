@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (lib) types;
   cfg = config.tools.lefthook;
   settingsFormat = toolsPkgs.formats.yaml { };
   lefthookExe = lib.getExe cfg.package;
@@ -24,6 +25,10 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      configFile = lib.mkOption {
+        type = types.pathInStore;
+        default = settingsFormat.generate "lefthook.yml" cfg.config;
+      };
     };
   };
 
@@ -38,12 +43,11 @@ in
       );
       nixago.requests = ([
         {
-          data = cfg.config;
+          data = cfg.configFile;
           hook.extra = ''
             ${lefthookExe} install
           '';
           output = ".lefthook.yml";
-          format = "yaml";
         }
       ]);
 

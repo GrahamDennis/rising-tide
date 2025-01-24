@@ -39,6 +39,25 @@ in
           default = { };
         };
       };
+      configFile = lib.mkOption {
+        description = "The clang-format configuration file to use";
+        type = types.pathInStore;
+        default =
+          inputs.nixago.engines.${system}.cue
+            {
+              flags = {
+                expression = "rendered";
+                out = "text";
+              };
+
+              files = [ ./clang-format.cue ];
+            }
+            {
+              data = cfg.config;
+              output = "clang-format.yaml";
+              format = "yaml";
+            };
+      };
     };
   };
 
@@ -46,17 +65,8 @@ in
     tools = {
       nixago.requests = [
         {
-          data = cfg.config;
+          data = cfg.configFile;
           output = ".clang-format";
-          format = "yaml";
-          engine = inputs.nixago.engines.${system}.cue {
-            flags = {
-              expression = "rendered";
-              out = "text";
-            };
-
-            files = [ ./clang-format.cue ];
-          };
         }
       ];
       treefmt = {

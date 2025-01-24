@@ -45,6 +45,16 @@ in
           );
         };
       };
+      settingsFile = lib.mkOption {
+        description = "The VSCode settings file to use";
+        type = types.pathInStore;
+        default = settingsFormat.generate "settings.json" cfg.settings;
+      };
+      extensionsFile = lib.mkOption {
+        description = "The VSCode extensions file to use";
+        type = types.pathInStore;
+        default = settingsFormat.generate "extensions.json" cfg.extensions;
+      };
     };
   };
 
@@ -53,16 +63,14 @@ in
       nixago.requests = lib.mkMerge [
         (lib.mkIf (cfg.settings != { }) [
           {
-            data = cfg.settings;
+            data = cfg.settingsFile;
             output = ".vscode/settings.json";
-            format = "json";
           }
         ])
         (lib.mkIf (cfg.extensions != { }) [
           {
-            data = cfg.extensions;
+            data = cfg.extensionsFile;
             output = ".vscode/extensions.json";
-            format = "json";
           }
         ])
       ];

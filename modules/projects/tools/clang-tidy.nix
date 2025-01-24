@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (lib) types;
   cfg = config.tools.clang-tidy;
   settingsFormat = toolsPkgs.formats.yaml { };
   clangTidyExe = lib.getExe' cfg.package "clang-tidy";
@@ -24,6 +25,10 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      configFile = lib.mkOption {
+        type = types.pathInStore;
+        default = settingsFormat.generate "clang-tidy.yaml" cfg.config;
+      };
     };
   };
 
@@ -31,9 +36,8 @@ in
     tools = {
       nixago.requests = ([
         {
-          data = cfg.config;
+          data = cfg.configFile;
           output = ".clang-tidy";
-          format = "yaml";
         }
       ]);
       treefmt = {

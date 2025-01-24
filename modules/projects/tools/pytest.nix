@@ -36,6 +36,7 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      # FIXME: This should be separated out into perhaps 2 separate tools: coverage-py and pytest-cov
       coverage = {
         enable = lib.mkEnableOption "Enable pytest-cov integration";
         config = lib.mkOption {

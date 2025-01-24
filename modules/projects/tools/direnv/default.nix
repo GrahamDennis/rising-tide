@@ -1,13 +1,11 @@
 # rising-tide flake context
 {
   lib,
-  inputs,
   ...
 }:
 # project context
 {
   config,
-  system,
   toolsPkgs,
   ...
 }:
@@ -20,12 +18,10 @@ in
   options = {
     tools.direnv = {
       enable = lib.mkEnableOption "Enable direnv integration";
-      content = lib.mkOption {
-        type = types.str;
-        description = "Content of the .envrc file";
-        default = ''
-          use flake
-        '';
+      configFile = lib.mkOption {
+        type = types.path;
+        description = "The .envrc file to generate";
+        default = ./envrc;
       };
       package = lib.mkPackageOption toolsPkgs "direnv" { pkgsText = "toolsPkgs"; };
     };
@@ -36,19 +32,9 @@ in
       tools = {
         nixago.requests = [
           {
-            data = { inherit (cfg) content; };
+            data = cfg.configFile;
             output = ".envrc";
-            format = "text";
             hook.mode = "copy";
-            # FIXME: replace this with a simple file copy
-            engine = inputs.nixago.engines.${system}.cue {
-              flags = {
-                expression = "rendered";
-                out = "text";
-              };
-
-              files = [ ./envrc.cue ];
-            };
           }
         ];
       };

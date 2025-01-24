@@ -6,6 +6,12 @@ setup() {
   bats_load_library bats-file
 }
 
+@test "Using task 3.41" {
+  run which task
+  assert_success
+  assert_output --partial "3.41.0"
+}
+
 @test "can import and run package_1" {
   run python -c "import package_1; print(package_1.hello())"
   assert_success

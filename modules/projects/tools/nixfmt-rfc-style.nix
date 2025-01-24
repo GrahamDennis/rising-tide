@@ -23,6 +23,7 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       tools = {
+        nil.enable = true;
         treefmt = {
           enable = true;
           config = {

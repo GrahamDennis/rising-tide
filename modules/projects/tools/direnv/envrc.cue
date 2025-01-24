@@ -1,3 +1,0 @@
-content: string
-
-rendered: content

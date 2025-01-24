@@ -22,13 +22,7 @@ in
         tools = {
           direnv = {
             enable = true;
-            content = ''
-              if ! has nix_direnv_version || ! nix_direnv_version 3.0.6; then
-                source_url "https://raw.githubusercontent.com/nix-community/nix-direnv/3.0.6/direnvrc" "sha256-RYcUJaRMf8oF5LznDrlCXbkOQrywm0HDv1VjYGaJGdM="
-              fi
-
-              use flake
-            '';
+            configFile = ./envrc;
           };
           deadnix.enable = true;
           nixfmt-rfc-style.enable = true;
@@ -56,6 +50,9 @@ in
               "--case-indent"
               "--binary-next-line"
             ];
+          };
+          vscode.recommendedExtensions = {
+            "jnoortheen.nix-ide" = true;
           };
         };
       };

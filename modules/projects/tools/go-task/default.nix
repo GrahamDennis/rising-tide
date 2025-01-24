@@ -2,7 +2,6 @@
 {
   lib,
   inputs,
-  risingTideLib,
   ...
 }:
 # project context
@@ -95,7 +94,6 @@ in
           {
             data = cfg.configFile;
             output = "taskfile.yml";
-            engine = risingTideLib.nixagoEngines.noop;
           }
         ];
       };

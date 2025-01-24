@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (lib) types;
   enabledIn = projectConfig: projectConfig.tools.ruff.enable;
   cfg = config.tools.ruff;
   settingsFormat = toolsPkgs.formats.toml { };
@@ -29,6 +30,10 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      configFile = lib.mkOption {
+        type = types.pathInStore;
+        default = settingsFormat.generate "ruff.toml" cfg.config;
+      };
     };
   };
 
@@ -37,9 +42,8 @@ in
       tools = {
         nixago.requests = [
           {
-            data = cfg.config;
+            data = cfg.configFile;
             output = ".ruff.toml";
-            format = "toml";
           }
         ];
         treefmt = {
