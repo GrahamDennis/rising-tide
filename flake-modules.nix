@@ -10,7 +10,6 @@
     modules.flake = injector.injectModules {
       project = ./modules/projects/project.nix;
     };
-    modules.configFormats = injector.inject ./modules/config-formats;
     lib = risingTideLib;
 
     tests = injector.inject ./tests;
@@ -41,8 +40,6 @@
           );
           flatten = risingTideLib.flattenAttrsRecursiveCond (as: !(lib.isDerivation as));
         in
-        updateDerivationNames (flatten {
-          config-formats = injector'.inject ./modules/config-formats/checks;
-        });
+        updateDerivationNames (flatten (injector'.inject ./checks));
     };
 }

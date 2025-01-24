@@ -20,7 +20,7 @@ rec {
     mkBaseProject
       {
         projectModules = [
-          { conventions.risingTide.enable = true; }
+          { conventions.risingTide.enable = lib.mkDefault true; }
         ];
       }
       system

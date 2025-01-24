@@ -2,6 +2,7 @@
 {
   lib,
   inputs,
+  risingTideLib,
   ...
 }:
 # project context
@@ -37,6 +38,21 @@ in
           builtins.attrNames (cfg.taskfile.tasks or { })
         );
         defaultText = lib.literalMD "All tasks that do not contain a colon in their name";
+      };
+      configFile = lib.mkOption {
+        description = "The go-task configuration file to use";
+        type = types.pathInStore;
+        default = (
+          inputs.nixago.engines.${system}.cue
+            {
+              files = [ ./taskfile.cue ];
+            }
+            {
+              data = cfg.taskfile;
+              output = "taskfile.yml";
+              format = "yaml";
+            }
+        );
       };
     };
   };
@@ -78,11 +94,7 @@ in
         nixago.requests = lib.mkIf (cfg.taskfile != { }) [
           {
             data = cfg.taskfile;
-            output = "taskfile.yml";
-            format = "yaml";
-            engine = inputs.nixago.engines.${system}.cue {
-              files = [ ./taskfile.cue ];
-            };
+            engine = risingTideLib.nixagoEngines.noop;
           }
         ];
       };

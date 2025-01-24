@@ -3,12 +3,20 @@
 # rising-tide per-system flake context
 { system, ... }:
 let
-  mkConfig = risingTideLib.configFormats.mypy system;
+  mkMypyConfig =
+    mypyConfig:
+    (risingTideLib.mkProject system {
+      name = "example-project";
+      conventions.risingTide.enable = false;
+      tools.mypy = mypyConfig // {
+        enable = true;
+      };
+    }).tools.mypy.configFile;
 in
 {
   no-overrides = {
-    actual = mkConfig {
-      data = {
+    actual = mkMypyConfig {
+      config = {
         pretty = true;
         strict = true;
         warn_return_any = true;
@@ -16,26 +24,10 @@ in
     };
     expected = ./no-overrides.toml;
   };
-  explicit-overrides = {
-    actual = mkConfig {
-      data = {
-        pretty = true;
-        strict = true;
-        warn_return_any = true;
-        overrides = [
-          {
-            module = "mycode.foo.*";
-            disallow_untyped_defs = false;
-          }
-        ];
-      };
-    };
-    expected = ./explicit-overrides.toml;
-  };
 
   perModuleOverrides = {
-    actual = mkConfig {
-      data = {
+    actual = mkMypyConfig {
+      config = {
         pretty = true;
         strict = true;
         warn_return_any = true;

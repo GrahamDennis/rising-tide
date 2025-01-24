@@ -1,0 +1,20 @@
+output: prefixed
+version: "3"
+tasks:
+  hello:
+    cmds:
+      - echo Hello World!
+    desc: Say hello
+  test:
+    desc: Run all tests
+    internal: true
+  check:
+    desc: Run all checks
+    aliases:
+      - lint
+      - format
+      - fmt
+    internal: true
+  build:
+    desc: Build
+    internal: true

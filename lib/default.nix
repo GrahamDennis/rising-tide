@@ -9,8 +9,8 @@ let
   };
   risingTideLib = {
     attrs = injector.inject ./attrs.nix;
-    configFormats = injector.inject ./config-formats.nix;
     injector = injector.inject ./injector.nix;
+    nixagoEngines = injector.inject ./nixagoEngines.nix;
     project = injector.inject ./project.nix;
     strings = injector.inject ./strings.nix;
     tests = injector.inject ./tests.nix;

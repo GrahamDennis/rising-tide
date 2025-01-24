@@ -1,5 +1,8 @@
 # rising-tide flake context
-{ lib, ... }:
+{
+  lib,
+  ...
+}:
 # rising-tide per-system flake context
 { pkgs, injector', ... }:
 let
@@ -10,8 +13,8 @@ let
   );
 in
 mkDiffChecks (
-  builtins.mapAttrs (_name: checks: injector'.inject checks) {
-    mypy = ./mypy;
-    go-task = ./go-task;
+  lib.mapAttrsRecursive (_name: checks: injector'.inject checks) {
+    modules.projects.tools.go-task = ./modules/projects/tools/go-task;
+    modules.projects.tools.mypy = ./modules/projects/tools/mypy;
   }
 )
