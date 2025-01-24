@@ -1,0 +1,42 @@
+version: "3"
+output: prefixed
+run: when_changed
+tasks:
+  build:
+    desc: Build
+    internal: true
+  check:
+    aliases:
+      - lint
+      - format
+      - fmt
+    deps:
+      - check:treefmt
+    desc: Run all checks
+  check:treefmt:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt-2.1.1/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml {{if .CI}} --ci {{end}} --tree-root . --on-unmatched debug
+    desc: Reformat with treefmt
+  test:
+    desc: Run all tests
+    internal: true
+  tool:deadnix:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-deadnix-1.2.1/bin/deadnix  {{.CLI_ARGS}}
+    desc: Run deadnix. Additional CLI arguments after `--` are forwarded to deadnix
+  tool:nixfmt-rfc-style:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-nixfmt-unstable-2024-12-04/bin/nixfmt {{.CLI_ARGS}}
+    desc: Run nixfmt-rfc-style. Additional CLI arguments after `--` are forwarded
+  tool:shellcheck:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-shellcheck-0.10.0-bin/bin/shellcheck --rcfile /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-shellcheckrc {{.CLI_ARGS}}
+    desc: Run shellcheck. Additional CLI arguments after `--` are forwarded to shellcheck
+  tool:shfmt:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-shfmt-3.10.0/bin/shfmt --simplify --indent 2 --case-indent --binary-next-line {{.CLI_ARGS}}
+    desc: Run shfmt. Additional CLI arguments after `--` are forwarded to shfmt
+  tool:treefmt:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt-2.1.1/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml {{.CLI_ARGS}} --tree-root . --on-unmatched debug
+    desc: Run treefmt. Additional CLI arguments after `--` are forwarded to treefmt

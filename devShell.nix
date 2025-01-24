@@ -67,7 +67,7 @@ let
             vars.PACKAGE = "{{index .MATCH 0}}";
             label = "nix-build:{{.PACKAGE}}";
             prefix = "nix-build:{{.PACKAGE}}";
-            cmds = [ "nix build --show-trace .#{{.PACKAGE}}" ];
+            cmds = [ "nix build --show-trace --print-build-logs .#{{.PACKAGE}}" ];
           };
           "docs:generate" = {
             cmds = [

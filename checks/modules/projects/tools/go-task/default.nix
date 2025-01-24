@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ lib, risingTideLib, ... }:
+{ risingTideLib, ... }:
 # rising-tide per-system flake context
 { system, ... }:
 let
@@ -7,14 +7,14 @@ let
     goTaskConfig:
     (risingTideLib.mkProject system {
       name = "example-project";
-      conventions.risingTide.enable = lib.mkForce false;
+      conventions.risingTide.enable = false;
       tools.go-task = goTaskConfig // {
         enable = true;
       };
     }).tools.go-task.configFile;
 in
 {
-  example = {
+  hello = {
     actual = mkGoTaskConfig {
       taskfile = {
         output = "prefixed";
@@ -24,6 +24,6 @@ in
         };
       };
     };
-    expected = ./example.yml;
+    expected = ./hello.yml;
   };
 }

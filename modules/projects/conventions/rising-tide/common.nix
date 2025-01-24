@@ -19,6 +19,18 @@ in
         tools.go-task = {
           enable = true;
           taskfile.run = "when_changed";
+          taskfile.tasks = {
+            test.desc = "Run all tests";
+            check = {
+              desc = "Run all checks";
+              aliases = [
+                "lint"
+                "format"
+                "fmt"
+              ];
+            };
+            build.desc = "Build";
+          };
         };
       }
       (lib.mkIf config.isRootProject {

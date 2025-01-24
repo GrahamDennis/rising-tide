@@ -32,7 +32,7 @@ in
         default = { };
       };
       inheritedTasks = lib.mkOption {
-        description = "Tasks to publish to the parent project";
+        description = "Tasks that are triggered by running a task of the same name in the parent project";
         type = types.listOf types.str;
         default = builtins.filter (taskName: !(lib.hasInfix ":" taskName)) (
           builtins.attrNames (cfg.taskfile.tasks or { })

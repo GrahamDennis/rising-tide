@@ -1,0 +1,7 @@
+version: "3"
+output: prefixed
+tasks:
+  hello:
+    cmds:
+      - echo Hello World!
+    desc: Say hello

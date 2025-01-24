@@ -14,6 +14,7 @@ let
 in
 mkDiffChecks (
   lib.mapAttrsRecursive (_name: checks: injector'.inject checks) {
+    modules.projects.conventions.rising-tide = ./modules/projects/conventions/rising-tide;
     modules.projects.tools.go-task = ./modules/projects/tools/go-task;
     modules.projects.tools.mypy = ./modules/projects/tools/mypy;
   }
