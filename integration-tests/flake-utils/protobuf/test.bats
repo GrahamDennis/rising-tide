@@ -25,3 +25,10 @@ teardown() {
   assert_failure
   assert_output --partial 'must be within a directory "example/v2"'
 }
+
+@test "check task fails on poorly named messages" {
+  sed -i -e 's/SearchRequest/search_request/' proto-apis/proto/example/v1/hello.proto
+  run task check
+  assert_failure
+  assert_output --partial "should be PascalCase"
+}

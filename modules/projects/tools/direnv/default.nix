@@ -18,10 +18,12 @@ in
   options = {
     tools.direnv = {
       enable = lib.mkEnableOption "Enable direnv integration";
-      configFile = lib.mkOption {
-        type = types.path;
-        description = "The .envrc file to generate";
-        default = ./envrc;
+      contents = lib.mkOption {
+        type = types.str;
+        description = "The contents of the .envrc file to generate";
+        default = ''
+          use flake
+        '';
       };
       package = lib.mkPackageOption toolsPkgs "direnv" { pkgsText = "toolsPkgs"; };
     };
@@ -32,7 +34,7 @@ in
       tools = {
         nixago.requests = [
           {
-            data = cfg.configFile;
+            data = toolsPkgs.writeText "envrc" cfg.contents;
             output = ".envrc";
             hook.mode = "copy";
           }

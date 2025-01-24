@@ -22,7 +22,7 @@ in
     if lib.isDerivation data then
       data
     else
-      assert lib.assertMsg (builtins.isPath data)
-        "risingTideLib.nixagoEngines.noop: The data argument is of type ${builtins.typeOf data} but should either be a derivation or a path";
+      assert lib.assertMsg ((builtins.isPath data) || (builtins.isString data))
+        "risingTideLib.nixagoEngines.noop: The data argument is of type ${builtins.typeOf data} but should be a derivation, path or string path";
       toDerivation data;
 }
