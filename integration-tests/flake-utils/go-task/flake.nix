@@ -2,19 +2,18 @@
   description = "go-task integration test";
 
   inputs = {
+    rising-tide.url = "path:../../../";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
   };
 
   outputs =
     {
+      rising-tide,
       flake-utils,
       nixpkgs,
       ...
     }:
-    let
-      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}";
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let

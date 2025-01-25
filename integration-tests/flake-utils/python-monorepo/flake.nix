@@ -2,19 +2,20 @@
   description = "python-monorepo";
 
   inputs = {
+    rising-tide.url = "path:../../../";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
   };
 
   outputs =
     inputs@{
+      rising-tide,
       flake-utils,
       nixpkgs,
       self,
       ...
     }:
     let
-      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}";
       pythonOverlay =
         python-final: python-previous:
         let
