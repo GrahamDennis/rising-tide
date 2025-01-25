@@ -15,6 +15,7 @@ let
       };
     };
     config = {
+      _module.args.pkgs = pkgs;
       toolsPkgs = pkgs;
       relativePaths.toRoot = "./.";
     };

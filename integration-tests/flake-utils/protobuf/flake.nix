@@ -35,16 +35,27 @@
               };
             };
       in
-      {
+      rec {
         inherit project;
 
         packages.python-generated = pkgs.python3.pkgs.callPackage (./example/python-generated.nix) { };
         packages.fileDescriptorSet =
           project.subprojects.example.languages.protobuf.fileDescriptorSet.package;
         packages.generatedPython = project.subprojects.example.languages.protobuf.python.generated.package;
+        packages.python =
+          pkgs.python3.pkgs.callPackage
+            project.subprojects.example.languages.protobuf.python.callPackageFunction
+            { };
 
         devShells.default = pkgs.mkShell {
-          nativeBuildInputs = project.allTools ++ project.subprojects.example.allTools;
+          # FIXME: Create a uv shell with the protobuf package
+          # inputsFrom = [packages.python];
+          nativeBuildInputs =
+            project.allTools
+            ++ project.subprojects.example.allTools
+            ++ [
+              (pkgs.python3.withPackages (_ps: [ packages.python ]))
+            ];
         };
       }
     );
