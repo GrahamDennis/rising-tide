@@ -13,7 +13,7 @@
       ...
     }:
     let
-      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}?rev=0000000000000000000000000000000000000000";
+      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}";
     in
     flake-utils.lib.eachDefaultSystem (
       system:

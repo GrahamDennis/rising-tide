@@ -2,19 +2,18 @@
   description = "protobuf example";
 
   inputs = {
+    rising-tide.url = "../../..";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
   };
 
   outputs =
     {
+      rising-tide,
       flake-utils,
       nixpkgs,
       ...
     }:
-    let
-      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}?rev=0000000000000000000000000000000000000000";
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let

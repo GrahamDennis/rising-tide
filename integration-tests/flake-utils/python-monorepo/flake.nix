@@ -14,7 +14,7 @@
       ...
     }:
     let
-      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}?rev=0000000000000000000000000000000000000000";
+      rising-tide = builtins.getFlake "path:${builtins.toString ../../..}";
       pythonOverlay =
         python-final: python-previous:
         let
