@@ -2,7 +2,7 @@
   description = "protobuf example";
 
   inputs = {
-    rising-tide.url = "../../..";
+    rising-tide.url = "path:../../../";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
   };
