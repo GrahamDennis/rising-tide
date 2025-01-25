@@ -12,6 +12,9 @@ jobs:
       contents: "read"
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Fetch all history so that protobuf API compatibility can be checked
+          fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@main
       # - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: DeterminateSystems/flake-checker-action@main
