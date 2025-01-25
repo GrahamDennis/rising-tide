@@ -41,8 +41,10 @@ findconfig() {
   echo "Executing @name@PostVenvCreationHook"
   local projectRoot
   projectRoot="$(dirname "$(findconfig flake.nix)")"
-  uv pip install -e "${projectRoot}/@relativePathToRoot@" --no-deps --offline --no-cache --no-build-isolation
-  addToSearchPath PYTHONPATH "${projectRoot}/@relativePathToRoot@/src"
+  if test -f "${projectRoot}/@relativePathToRoot@/pyproject.toml"; then
+    uv pip install -e "${projectRoot}/@relativePathToRoot@" --no-deps --offline --no-cache --no-build-isolation
+    addToSearchPath PYTHONPATH "${projectRoot}/@relativePathToRoot@/src"
+  fi
 }
 
 if [ -z "${postVenvCreationHooks:-}" ]; then

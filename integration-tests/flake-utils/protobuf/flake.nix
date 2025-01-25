@@ -33,12 +33,12 @@
               subprojects = {
                 example = import ./example/project.nix;
               };
+              tools.uv.enable = true;
             };
       in
       rec {
         inherit project;
 
-        packages.python-generated = pkgs.python3.pkgs.callPackage (./example/python-generated.nix) { };
         packages.fileDescriptorSet =
           project.subprojects.example.languages.protobuf.fileDescriptorSet.package;
         packages.generatedPython = project.subprojects.example.languages.protobuf.python.generated.package;
@@ -50,12 +50,7 @@
         devShells.default = pkgs.mkShell {
           # FIXME: Create a uv shell with the protobuf package
           # inputsFrom = [packages.python];
-          nativeBuildInputs =
-            project.allTools
-            ++ project.subprojects.example.allTools
-            ++ [
-              (pkgs.python3.withPackages (_ps: [ packages.python ]))
-            ];
+          nativeBuildInputs = project.allTools ++ project.subprojects.example.allTools ++ [ packages.python ];
         };
       }
     );

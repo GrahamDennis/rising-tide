@@ -39,3 +39,8 @@ teardown() {
   assert_failure
   assert_output --partial 'Previously present field "1" with name "query"'
 }
+
+@test "can import python protobuf bindings" {
+  run python -c "import example.v1.hello_pb2"
+  assert_success
+}

@@ -19,7 +19,6 @@ in
     tools.uv = {
       enable = lib.mkEnableOption "Enable uv integration";
       package = lib.mkPackageOption toolsPkgs "uv" { pkgsText = "toolsPkgs"; };
-      # FIXME: Support adding new packages to a UV virtual environment
     };
   };
 

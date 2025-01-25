@@ -51,37 +51,38 @@ in
         };
         treefmt = {
           enable = true;
-          config = {
-            formatter.buf-lint = lib.mkIf cfg.lint.enable {
-              command = bufExe;
-              options = [
-                "lint"
-                "--config"
-                cfg.configFile
-              ];
-              includes = [
-                "*.proto"
-              ];
+          config =
+            let
+              bufLintExe = lib.getExe (
+                toolsPkgs.writeShellScriptBin "buf-lint" ''
+                  for file in "$@"; do
+                    ${bufExe} lint --config '${cfg.configFile}' "$file"
+                  done
+                ''
+              );
+              bufFormatExe = lib.getExe (
+                toolsPkgs.writeShellScriptBin "buf-format" ''
+                  for file in "$@"; do
+                    ${bufExe} format --config '${cfg.configFile}' --write "$file"
+                  done
+                ''
+              );
+            in
+            {
+              formatter.buf-lint = lib.mkIf cfg.lint.enable {
+                command = bufLintExe;
+                includes = [ "*.proto" ];
+              };
+              formatter.buf-format = lib.mkIf cfg.format.enable {
+                command = bufFormatExe;
+                includes = [ "*.proto" ];
+              };
             };
-            formatter.buf-format = lib.mkIf cfg.format.enable {
-              command = bufExe;
-              options = [
-                "format"
-                "--config"
-                cfg.configFile
-                "--write"
-              ];
-              includes = [
-                "*.proto"
-              ];
-            };
-          };
         };
         go-task = {
           enable = true;
           taskfile.tasks = lib.mkMerge [
             {
-
               "tool:buf" = {
                 desc = "Run buf. Additional CLI arguments after `--` are forwarded to buf";
                 cmds = [ "${bufExe} --config ${cfg.configFile} {{.CLI_ARGS}}" ];
