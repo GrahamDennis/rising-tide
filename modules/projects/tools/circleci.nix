@@ -26,6 +26,7 @@ in
           formatter.circleci = {
             command = circleciExe;
             options = [
+              "--skip-update-check"
               "config"
               "validate"
             ];
