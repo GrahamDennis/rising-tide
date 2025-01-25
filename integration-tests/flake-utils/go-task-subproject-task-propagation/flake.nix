@@ -2,18 +2,20 @@
   description = "go-task-subproject-task-propagation-integration-test";
 
   inputs = {
-    rising-tide.url = "path:../../../";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
   };
 
   outputs =
     {
-      rising-tide,
       flake-utils,
       nixpkgs,
+      self,
       ...
     }:
+    let
+      rising-tide = builtins.getFlake "path:../../..?narHash=${self.narHash}";
+    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let

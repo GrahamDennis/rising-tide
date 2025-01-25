@@ -46,13 +46,11 @@ let
           "integration-test:*" = {
             desc = "Run an integration test";
             vars.INTEGRATION_TEST = "{{index .MATCH 0}}";
+            dir = "integration-tests/{{.INTEGRATION_TEST}}";
             label = "integration-test:{{.INTEGRATION_TEST}}";
             prefix = "integration-test:{{.INTEGRATION_TEST}}";
             cmds = [
-              ''
-                cd "integration-tests/{{.INTEGRATION_TEST}}"
-                nix develop --show-trace --command ${batsExe} ./test.bats
-              ''
+              "nix develop --show-trace --command ${batsExe} ./test.bats"
             ];
           };
           build = {

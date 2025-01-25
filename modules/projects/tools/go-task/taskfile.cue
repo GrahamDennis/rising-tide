@@ -1,4 +1,4 @@
-#Command: string | {cmd: string, task?: _|_, ...} | {task: string, cmd?: _|_, ...}
+#Command: string | {cmd: string, task?: _|_, defer?: _|_, ...} | {task: string, cmd?: _|_, defer?: _|_, ...} | {defer: #Command}
 #Dependency: string | {task: string, ...}
 
 #Task: {
