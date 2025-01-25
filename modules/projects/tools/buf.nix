@@ -20,6 +20,13 @@ in
       };
       lint.enable = lib.mkEnableOption "Enable buf lint tool";
       format.enable = lib.mkEnableOption "Enable buf format tool";
+      breaking = {
+        enable = lib.mkEnableOption "Enable buf breaking tool";
+        against = lib.mkOption {
+          type = types.str;
+          description = "What to compare against";
+        };
+      };
       package = lib.mkPackageOption toolsPkgs "buf" { pkgsText = "toolsPkgs"; };
       config = lib.mkOption {
         description = ''
@@ -72,12 +79,22 @@ in
         };
         go-task = {
           enable = true;
-          taskfile.tasks = {
-            "tool:buf" = {
-              desc = "Run buf. Additional CLI arguments after `--` are forwarded to buf";
-              cmds = [ "${bufExe} {{.CLI_ARGS}}" ];
-            };
-          };
+          taskfile.tasks = lib.mkMerge [
+            {
+
+              "tool:buf" = {
+                desc = "Run buf. Additional CLI arguments after `--` are forwarded to buf";
+                cmds = [ "${bufExe} --config ${cfg.configFile} {{.CLI_ARGS}}" ];
+              };
+            }
+            (lib.mkIf cfg.breaking.enable {
+              check.deps = [ "check:buf-breaking" ];
+              "check:buf-breaking" = lib.mkIf cfg.breaking.enable {
+                desc = "Ensure that there are no breaking changes in the proto files";
+                cmds = [ "${bufExe} breaking --config ${cfg.configFile} --against ${cfg.breaking.against}" ];
+              };
+            })
+          ];
         };
       };
     })

@@ -32,3 +32,10 @@ teardown() {
   assert_failure
   assert_output --partial "should be PascalCase"
 }
+
+@test "check task fails on breaking change" {
+  sed -i -e 's/string query = 1;//' proto-apis/proto/example/v1/hello.proto
+  run task check
+  assert_failure
+  assert_output --partial 'Previously present field "1" with name "query"'
+}

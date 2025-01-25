@@ -57,6 +57,13 @@ in
               "--binary-next-line"
             ];
           };
+          vscode.settings = {
+            # See https://github.com/nix-community/vscode-nix-ide/pull/417
+            "nix.hiddenLanguageServerErrors" = [
+              "textDocument/definition"
+              "textDocument/documentSymbol"
+            ];
+          };
           vscode.recommendedExtensions = {
             "jnoortheen.nix-ide" = true;
           };
