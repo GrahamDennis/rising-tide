@@ -5,9 +5,14 @@
 let
   stripStorePaths =
     src:
-    pkgs.runCommand "strip-references" { nativeBuildInputs = [ pkgs.nukeReferences ]; } ''
-      cp ${src} $out
-      nuke-refs $out
+    pkgs.runCommand "strip-store-paths" { } ''
+      # Replace store paths with a fixed string such that
+      # /nix/store/....-name-1.2.3/... -> /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/...
+      # /nix/store/....-foo.xyz -> /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-foo.xyz
+      sed -E \
+        -e 's|/nix/store/[^/ ]+/|/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/|g' \
+        -e 's|/nix/store/[^-/ ]+-|/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-|g' \
+        ${src} > $out
     '';
   mkGoTaskConfig =
     goTaskConfig:
