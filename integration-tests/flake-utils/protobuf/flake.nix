@@ -25,7 +25,7 @@
         project = rising-tide.lib.mkProject system {
           name = "protobuf-root";
           subprojects = {
-            proto-apis = import ./proto-apis/project.nix;
+            example = import ./example/project.nix;
           };
         };
       in
@@ -33,7 +33,7 @@
         inherit project;
 
         devShells.default = pkgs.mkShell {
-          nativeBuildInputs = project.allTools ++ project.subprojects.proto-apis.allTools;
+          nativeBuildInputs = project.allTools ++ project.subprojects.example.allTools;
         };
       }
     );

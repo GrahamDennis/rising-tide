@@ -3,7 +3,7 @@
   ...
 }:
 {
-  relativePaths.toParentProject = "proto-apis";
+  relativePaths.toParentProject = "example";
   languages.protobuf.enable = true;
   tools.buf.breaking = {
     # FIXME: This is awful to have to hardcode the path to the root of the project

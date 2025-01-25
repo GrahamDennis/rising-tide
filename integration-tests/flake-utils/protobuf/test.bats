@@ -6,12 +6,12 @@ setup() {
   bats_load_library bats-file
 
   mkdir -p build
-  cp -r proto-apis/ build/
+  cp -r example/ build/
 }
 
 teardown() {
-  rm -rf proto-apis/
-  mv build/proto-apis .
+  rm -rf example/
+  mv build/example .
 }
 
 @test "check task succeeds" {
@@ -20,22 +20,22 @@ teardown() {
 }
 
 @test "check task fails if a package definition is wrong" {
-  sed -i -e 's/package example.v1;/package example.v2;/' proto-apis/proto/example/v1/hello.proto
-  run task proto-apis:check:treefmt
+  sed -i -e 's/package example.v1;/package example.v2;/' example/proto/example/v1/hello.proto
+  run task example:check:treefmt
   assert_failure
   assert_output --partial 'must be within a directory "example/v2"'
 }
 
 @test "check task fails on poorly named messages" {
-  sed -i -e 's/SearchRequest/search_request/' proto-apis/proto/example/v1/hello.proto
-  run task proto-apis:check:treefmt
+  sed -i -e 's/SearchRequest/search_request/' example/proto/example/v1/hello.proto
+  run task example:check:treefmt
   assert_failure
   assert_output --partial "should be PascalCase"
 }
 
 @test "check task fails on breaking change" {
-  sed -i -e 's/string query = 1;//' proto-apis/proto/example/v1/hello.proto
-  run task proto-apis:check:buf-breaking
+  sed -i -e 's/string query = 1;//' example/proto/example/v1/hello.proto
+  run task example:check:buf-breaking
   assert_failure
   assert_output --partial 'Previously present field "1" with name "query"'
 }
