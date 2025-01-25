@@ -21,6 +21,7 @@ let
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
     tools = {
+      circleci.enable = true;
       cue.enable = true;
       nix-unit.enable = true;
       go-task = {

@@ -8,6 +8,7 @@
   imports = injector.injectModules [
     ./alejandra.nix
     ./buf.nix
+    ./circleci.nix
     ./clang-format
     ./clang-tidy.nix
     ./cmake-format.nix
