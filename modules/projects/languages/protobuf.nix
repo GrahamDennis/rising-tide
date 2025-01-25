@@ -169,6 +169,7 @@ in
         sources = [ "src" ];
       };
       tool.hatch.build.targets.sdist = {
+        include = [ "src" ];
         sources = [ "src" ];
       };
       build-system = {
