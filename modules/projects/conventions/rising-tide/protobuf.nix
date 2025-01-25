@@ -29,6 +29,7 @@ in
       }
       # Enable protobuf tools in protobuf projects
       (lib.mkIf (protobufEnabledIn config) {
+        languages.protobuf.src = lib.path.append config.absolutePath "./proto";
         tools = {
           buf.lint.enable = true;
           buf.format.enable = true;

@@ -22,15 +22,26 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        project = rising-tide.lib.mkProject system {
-          name = "protobuf-root";
-          subprojects = {
-            example = import ./example/project.nix;
-          };
-        };
+        project =
+          rising-tide.lib.project.mkProjectWith
+            {
+              inherit pkgs;
+              root = ./.;
+            }
+            {
+              name = "protobuf-root";
+              subprojects = {
+                example = import ./example/project.nix;
+              };
+            };
       in
-      rec {
+      {
         inherit project;
+
+        packages.python-generated = pkgs.python3.pkgs.callPackage (./example/python-generated.nix) { };
+        packages.fileDescriptorSet =
+          project.subprojects.example.languages.protobuf.fileDescriptorSet.package;
+        packages.generatedPython = project.subprojects.example.languages.protobuf.python.generated.package;
 
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = project.allTools ++ project.subprojects.example.allTools;

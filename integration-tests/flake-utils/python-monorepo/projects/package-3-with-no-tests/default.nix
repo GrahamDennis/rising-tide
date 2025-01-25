@@ -3,7 +3,7 @@
 }:
 # python packages context
 { pythonPackages, lib }:
-pythonPackages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage {
   name = "package-3";
   pyproject = true;
   src = ./.;

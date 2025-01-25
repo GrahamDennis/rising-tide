@@ -62,6 +62,10 @@ let
             readOnly = true;
           };
         };
+        absolutePath = lib.mkOption {
+          description = "The absolute path to the project";
+          type = types.path;
+        };
         subprojects = lib.mkOption {
           description = ''
             An attribute set of child projects where each attribute set is itself a project.
@@ -77,10 +81,11 @@ let
                   projectModule
                   # child project context
                   (
-                    { name, ... }:
+                    { name, config, ... }:
                     {
                       inherit name;
                       relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
+                      absolutePath = lib.path.append parentProjectConfig.absolutePath config.relativePaths.toParentProject;
                     }
                   )
                 ];
