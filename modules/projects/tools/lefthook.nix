@@ -34,14 +34,12 @@ in
 
   config = lib.mkIf cfg.enable {
     tools = {
-      lefthook.config.rc = (
-        lib.mkOptionDefault (
-          toolsPkgs.writeShellScript "export-lefthook-path" ''
-            export LEFTHOOK_BIN=${lefthookExe}
-          ''
-        )
+      lefthook.config.rc = lib.mkOptionDefault (
+        toolsPkgs.writeShellScript "export-lefthook-path" ''
+          export LEFTHOOK_BIN=${lefthookExe}
+        ''
       );
-      nixago.requests = ([
+      nixago.requests = [
         {
           data = cfg.configFile;
           hook.extra = ''
@@ -49,7 +47,7 @@ in
           '';
           output = ".lefthook.yml";
         }
-      ]);
+      ];
 
     };
   };

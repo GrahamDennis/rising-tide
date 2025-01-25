@@ -56,22 +56,20 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       tools = {
-        pytest.config = (
-          lib.mkMerge [
-            {
-              addopts = [
-                "--showlocals"
-                "--maxfail=1"
-              ];
-            }
-            (lib.mkIf cfg.coverage.enable {
-              addopts = [
-                "--cov"
-                "--cov-config=${toString coverageConfigFile}"
-              ];
-            })
-          ]
-        );
+        pytest.config = lib.mkMerge [
+          {
+            addopts = [
+              "--showlocals"
+              "--maxfail=1"
+            ];
+          }
+          (lib.mkIf cfg.coverage.enable {
+            addopts = [
+              "--cov"
+              "--cov-config=${toString coverageConfigFile}"
+            ];
+          })
+        ];
 
         go-task = {
           enable = true;

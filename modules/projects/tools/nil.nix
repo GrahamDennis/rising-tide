@@ -34,7 +34,7 @@ in
       };
     })
 
-    (lib.mkIf (config.isRootProject) {
+    (lib.mkIf config.isRootProject {
       tools.vscode.settings = {
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = nilExe;

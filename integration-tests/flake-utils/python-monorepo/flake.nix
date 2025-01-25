@@ -30,12 +30,10 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = (
-          import nixpkgs {
-            overlays = [ nixpkgsOverlay ];
-            inherit system;
-          }
-        );
+        pkgs = import nixpkgs {
+          overlays = [ nixpkgsOverlay ];
+          inherit system;
+        };
         pythonPackages = pkgs.python3.pkgs;
         project = rising-tide.lib.mkProject system {
           name = "python-monorepo-root";
@@ -50,7 +48,7 @@
               relativePaths.toParentProject = "projects/package-2";
               languages.python = {
                 enable = true;
-                callPackageFunction = (import ./projects/package-2 { project = project.subprojects.package-2; });
+                callPackageFunction = import ./projects/package-2 { project = project.subprojects.package-2; };
               };
             };
             package-3 = {
@@ -58,9 +56,9 @@
               languages.python = {
                 enable = true;
                 testRoots = [ ];
-                callPackageFunction = (
-                  import ./projects/package-3-with-no-tests { project = project.subprojects.package-3; }
-                );
+                callPackageFunction = import ./projects/package-3-with-no-tests {
+                  project = project.subprojects.package-3;
+                };
               };
             };
           };

@@ -27,6 +27,7 @@
     ./ruff.nix
     ./shellcheck.nix
     ./shfmt.nix
+    ./statix.nix
     ./treefmt.nix
     ./uv
     ./vscode.nix

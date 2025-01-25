@@ -10,7 +10,7 @@ pythonPackages.buildPythonPackage rec {
 
   dependencies = with pythonPackages; [ package-1 ];
 
-  nativeCheckInputs = (lib.optionals (project != null) project.allTools);
+  nativeCheckInputs = lib.optionals (project != null) project.allTools;
 
   build-system = with pythonPackages; [ hatchling ];
 }

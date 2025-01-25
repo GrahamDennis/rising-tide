@@ -6,7 +6,7 @@
   relativePaths.toParentProject = "projects/package-1";
   languages.python = {
     enable = true;
-    callPackageFunction = (
+    callPackageFunction =
       { pythonPackages }:
       pythonPackages.buildPythonPackage rec {
         name = config.name;
@@ -21,10 +21,9 @@
           ];
         };
 
-        nativeCheckInputs = config.allTools ++ (optional-dependencies.dev);
+        nativeCheckInputs = config.allTools ++ optional-dependencies.dev;
 
         build-system = with pythonPackages; [ hatchling ];
-      }
-    );
+      };
   };
 }

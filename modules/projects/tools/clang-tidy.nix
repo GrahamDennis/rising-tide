@@ -34,12 +34,12 @@ in
 
   config = lib.mkIf cfg.enable {
     tools = {
-      nixago.requests = ([
+      nixago.requests = [
         {
           data = cfg.configFile;
           output = ".clang-tidy";
         }
-      ]);
+      ];
       treefmt = {
         enable = true;
         config = {

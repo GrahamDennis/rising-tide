@@ -3,6 +3,7 @@
 # rising-tide per-system flake context
 { system, pkgs, ... }:
 let
+  # FIXME: Move this somewhere else... but it's system-specific so it can't obviously go in risingTideLib
   stripStorePaths =
     src:
     pkgs.runCommand "strip-store-paths" { } ''

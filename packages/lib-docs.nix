@@ -5,7 +5,7 @@
 # pkgs context
 { pkgs }:
 let
-  system = pkgs.system;
+  inherit (pkgs) system;
   # FIXME: Remove this once nixdoc > 3.0.8 is available in nixpkgs
   nixdocFlake = builtins.getFlake "github:nix-community/nixdoc?rev=5a469fe9dbb1deabfd16efbbe68ac84568fa0ba7";
   nixdoc = nixdocFlake.packages.${system}.default;

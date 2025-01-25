@@ -29,5 +29,5 @@ rec {
         }).config;
       result = { inherit expr expected; };
     in
-    if filter == true then filterExprToExpected result else result;
+    if filter then filterExprToExpected result else result;
 }

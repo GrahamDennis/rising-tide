@@ -111,7 +111,7 @@ let
             An list of tools to be used by this project. This is typically included in
             the `nativeCheckInputs` of the project's package, or `nativeBuildInputs` of a devShell.
           '';
-          type = (types.listOf types.package);
+          type = types.listOf types.package;
           default = [ ];
         };
         toolsPkgs = lib.mkOption {

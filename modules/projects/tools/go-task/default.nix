@@ -41,7 +41,7 @@ in
       configFile = lib.mkOption {
         description = "The go-task configuration file to use";
         type = types.pathInStore;
-        default = (
+        default =
           inputs.nixago.engines.${system}.cue
             {
               files = [ ./taskfile.cue ];
@@ -50,8 +50,7 @@ in
               data = cfg.taskfile;
               output = "taskfile.yml";
               format = "yaml";
-            }
-        );
+            };
       };
     };
   };

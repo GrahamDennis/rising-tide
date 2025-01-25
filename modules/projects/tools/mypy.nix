@@ -61,11 +61,11 @@ in
               # base configuration
               checkedBaseConfig
               # per module overrides
-              (lib.mkIf (cfg.perModuleOverrides != { }) ({
+              (lib.mkIf (cfg.perModuleOverrides != { }) {
                 overrides = lib.mapAttrsToList (
                   module: override: override // { inherit module; }
                 ) cfg.perModuleOverrides;
-              }))
+              })
             ];
           };
       };
