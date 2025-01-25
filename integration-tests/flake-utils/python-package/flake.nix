@@ -14,7 +14,9 @@
       ...
     }:
     let
-      rising-tide = builtins.getFlake "path:../../..?narHash=${self.narHash}";
+      rising-tide = builtins.getFlake (
+        builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
+      );
     in
     flake-utils.lib.eachDefaultSystem (
       system:

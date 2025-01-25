@@ -14,7 +14,9 @@
       ...
     }:
     let
-      rising-tide = builtins.getFlake "path:../../..?narHash=${self.narHash}";
+      rising-tide = builtins.getFlake (
+        builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
+      );
       pythonOverlay =
         python-final: python-previous:
         let
@@ -79,7 +81,9 @@
       }
     )
     // {
-      inherit inputs;
+      inputs = inputs // {
+        inherit rising-tide;
+      };
       pythonOverlays.default = pythonOverlay;
       overlays.default = nixpkgsOverlay;
     };
