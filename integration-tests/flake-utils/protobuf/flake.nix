@@ -35,6 +35,7 @@
               subprojects = {
                 example = import ./example/project.nix;
                 example-extended = import ./example-extended/project.nix;
+                python-package-1 = import ./python-package-1/project.nix;
               };
               tools.uv.enable = true;
             };
@@ -55,11 +56,14 @@
           python.pkgs.callPackage project.subprojects.example-extended.languages.python.callPackageFunction
             { };
 
+        # FIXME: This is awful, improve this.
         devShells.default = pkgs.mkShell {
+          inputsFrom = [ packages.example-extended-python ];
           nativeBuildInputs =
             project.allTools
             ++ project.subprojects.example.allTools
             ++ project.subprojects.example-extended.allTools
+            ++ project.subprojects.python-package-1.allTools
             ++ [ packages.python ];
         };
       }
