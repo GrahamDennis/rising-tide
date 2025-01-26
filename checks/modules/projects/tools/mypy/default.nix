@@ -5,7 +5,7 @@
 let
   mkMypyConfig =
     mypyConfig:
-    (risingTideLib.mkProject system {
+    (risingTideLib.mkProject { inherit system; } {
       name = "example-project";
       conventions.risingTide.enable = false;
       tools.mypy = mypyConfig // {

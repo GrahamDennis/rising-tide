@@ -5,7 +5,7 @@
 let
   mkGoTaskConfig =
     goTaskConfig:
-    (risingTideLib.mkProject system {
+    (risingTideLib.mkProject { inherit system; } {
       name = "example-project";
       conventions.risingTide.enable = false;
       tools.go-task = goTaskConfig // {

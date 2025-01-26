@@ -35,7 +35,7 @@
           inherit system;
         };
         pythonPackages = pkgs.python3.pkgs;
-        project = rising-tide.lib.mkProject system {
+        project = rising-tide.lib.mkProject { inherit system; } {
           name = "python-monorepo-root";
           subprojects = {
             # package-1 and package-2 demonstrate two different ways to integrate.

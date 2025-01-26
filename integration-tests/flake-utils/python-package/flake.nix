@@ -23,7 +23,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         pythonPackages = pkgs.python3.pkgs;
-        project = rising-tide.lib.mkProject system {
+        project = rising-tide.lib.mkProject { inherit system; } {
           name = "python-package";
           languages.python.enable = true;
         };

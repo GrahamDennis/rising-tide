@@ -23,7 +23,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         project =
-          rising-tide.lib.project.mkProjectWith
+          rising-tide.lib.mkProject
             {
               inherit pkgs;
               root = ./.;

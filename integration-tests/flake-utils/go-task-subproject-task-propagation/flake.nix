@@ -22,7 +22,7 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        project = rising-tide.lib.mkProject system {
+        project = rising-tide.lib.mkProject { inherit system; } {
           name = "go-task-subproject-task-propagation-integration-test";
           relativePaths.toRoot = "./.";
           subprojects.subproject = {

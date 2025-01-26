@@ -17,7 +17,7 @@ let
     p.bats-file
   ]);
   batsExe = lib.getExe' batsWithLibraries "bats";
-  project = risingTideLib.mkProject system {
+  project = risingTideLib.mkProject { inherit system; } {
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
     tools = {

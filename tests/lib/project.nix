@@ -5,7 +5,7 @@ let
 in
 {
   "test defaults" = risingTideLib.tests.filterExprToExpected {
-    expr = mkProject "x86_64-linux" {
+    expr = mkProject { system = "x86_64-linux"; } {
       name = "example-project";
     };
     expected = {

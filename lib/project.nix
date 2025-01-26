@@ -4,33 +4,6 @@ rec {
   mkBaseProject =
     {
       projectModules ? [ ],
-    }:
-    system: projectModule:
-    (lib.evalModules {
-      specialArgs = { inherit system projectModules; };
-      modules = [
-        self.modules.flake.project
-        projectModule
-        { relativePaths.toRoot = lib.mkDefault "./."; }
-      ];
-    }).config;
-
-  mkProject =
-    system: projectModule:
-    mkBaseProject
-      {
-        projectModules = [
-          { conventions.risingTide.enable = lib.mkDefault true; }
-        ];
-      }
-      system
-      {
-        imports = [ projectModule ];
-      };
-
-  mkBaseProjectWith =
-    {
-      projectModules ? [ ],
       system ? null,
       pkgs ? null,
       root ? null,
@@ -52,12 +25,12 @@ rec {
       ];
     }).config;
 
-  mkProjectWith =
+  mkProject =
     args@{
       projectModules ? [ ],
       ...
     }:
-    mkBaseProjectWith (
+    mkBaseProject (
       args
       // {
         projectModules = projectModules ++ [

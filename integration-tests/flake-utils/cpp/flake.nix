@@ -22,7 +22,7 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        project = rising-tide.lib.mkProject system {
+        project = rising-tide.lib.mkProject { inherit system; } {
           name = "cpp-package";
           languages.cpp.enable = true;
           tools.go-task.enable = true;

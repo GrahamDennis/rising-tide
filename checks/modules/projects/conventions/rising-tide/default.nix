@@ -18,7 +18,7 @@ let
   mkGoTaskConfig =
     goTaskConfig:
     stripStorePaths
-      (risingTideLib.mkProject system {
+      (risingTideLib.mkProject { inherit system; } {
         name = "example-project";
         tools.go-task = goTaskConfig;
       }).tools.go-task.configFile;
