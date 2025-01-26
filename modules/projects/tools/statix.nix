@@ -11,13 +11,12 @@ let
   cfg = config.tools.statix;
   settingsFormat = toolsPkgs.formats.toml { };
   # statix doesn't support multiple file targets
-  statixFixExe = lib.getExe (
-    toolsPkgs.writeShellScriptBin "statix-fix" ''
-      for file in "$@"; do
-        ${statixExe} fix --config '${cfg.configFile}' "$file"
-      done
-    ''
-  );
+  statixFixExe = toolsPkgs.writeShellScript "statix-fix" ''
+    set -o errexit
+    for file in "$@"; do
+      ${statixExe} fix --config '${cfg.configFile}' "$file"
+    done
+  '';
 
   statixExe = lib.getExe cfg.package;
 in

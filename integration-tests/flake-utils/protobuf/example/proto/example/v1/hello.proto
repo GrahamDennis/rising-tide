@@ -2,8 +2,11 @@ syntax = "proto3";
 
 package example.v1;
 
+import "google/protobuf/timestamp.proto";
+
 message SearchRequest {
   string query = 1;
   int32 page_number = 2;
   int32 results_per_page = 3;
+  google.protobuf.Timestamp timestamp = 5;
 }

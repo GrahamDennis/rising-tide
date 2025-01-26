@@ -5,13 +5,19 @@ setup() {
   bats_load_library bats-assert
   bats_load_library bats-file
 
+  rm -rf build
+}
+
+restore_src_in_teardown() {
   mkdir -p build
-  cp -r src tests build/
+  cp -r {src,tests} build/
 }
 
 teardown() {
-  rm -rf src tests
-  mv build/{src,tests} .
+  if [ -d build/src ]; then
+    rm -rf {src,tests}
+    mv build/{src,tests} .
+  fi
 }
 
 @test "can import and run python_package" {
@@ -37,6 +43,7 @@ teardown() {
 }
 
 @test "check task fails on poorly named functions" {
+  restore_src_in_teardown
   sed -i -e 's/def bar/def bAr/' src/python_package/__init__.py
   run task check
   assert_failure
@@ -44,6 +51,7 @@ teardown() {
 }
 
 @test "check fails on incorrect type hints" {
+  restore_src_in_teardown
   sed -i -e 's/def hello() -> str:/def hello() -> int:/' src/python_package/__init__.py
   run task check
   assert_failure
@@ -51,6 +59,7 @@ teardown() {
 }
 
 @test "check fails on missing type hints" {
+  restore_src_in_teardown
   sed -i -e 's/def hello() -> str:/def hello():/' src/python_package/__init__.py
   run task check
   assert_failure
@@ -63,6 +72,7 @@ teardown() {
 }
 
 @test "test fails on test failure" {
+  restore_src_in_teardown
   sed -i -e 's/Hello from/Goodbye from/g' tests/test_trivial.py
   run task test
   assert_failure

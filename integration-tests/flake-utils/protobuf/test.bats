@@ -5,13 +5,19 @@ setup() {
   bats_load_library bats-assert
   bats_load_library bats-file
 
+  rm -rf build
+}
+
+restore_src_in_teardown() {
   mkdir -p build
   cp -r example/ build/
 }
 
 teardown() {
-  rm -rf example/
-  mv build/example .
+  if [ -d build/example ]; then
+    rm -rf example/
+    mv build/example .
+  fi
 }
 
 @test "check task succeeds" {
@@ -20,13 +26,16 @@ teardown() {
 }
 
 @test "check task fails if a package definition is wrong" {
+  restore_src_in_teardown
   sed -i -e 's/package example.v1;/package example.v2;/' example/proto/example/v1/hello.proto
+  cat example/proto/example/v1/hello.proto
   run task example:check:treefmt
   assert_failure
   assert_output --partial 'must be within a directory "example/v2"'
 }
 
 @test "check task fails on poorly named messages" {
+  restore_src_in_teardown
   sed -i -e 's/SearchRequest/search_request/' example/proto/example/v1/hello.proto
   run task example:check:treefmt
   assert_failure
@@ -34,6 +43,7 @@ teardown() {
 }
 
 @test "check task fails on breaking change" {
+  restore_src_in_teardown
   sed -i -e 's/string query = 1;//' example/proto/example/v1/hello.proto
   run task example:check:buf-breaking
   assert_failure

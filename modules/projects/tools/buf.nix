@@ -53,20 +53,18 @@ in
           enable = true;
           config =
             let
-              bufLintExe = lib.getExe (
-                toolsPkgs.writeShellScriptBin "buf-lint" ''
-                  for file in "$@"; do
-                    ${bufExe} lint --config '${cfg.configFile}' "$file"
-                  done
-                ''
-              );
-              bufFormatExe = lib.getExe (
-                toolsPkgs.writeShellScriptBin "buf-format" ''
-                  for file in "$@"; do
-                    ${bufExe} format --config '${cfg.configFile}' --write "$file"
-                  done
-                ''
-              );
+              bufLintExe = toolsPkgs.writeShellScript "buf-lint" ''
+                set -o errexit
+                for file in "$@"; do
+                  ${bufExe} lint --config '${cfg.configFile}' "$file"
+                done
+              '';
+              bufFormatExe = toolsPkgs.writeShellScript "buf-format" ''
+                set -o errexit
+                for file in "$@"; do
+                  ${bufExe} format --config '${cfg.configFile}' --write "$file"
+                done
+              '';
             in
             {
               formatter.buf-lint = lib.mkIf cfg.lint.enable {
