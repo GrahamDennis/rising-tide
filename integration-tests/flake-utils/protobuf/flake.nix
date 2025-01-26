@@ -32,6 +32,7 @@
               name = "protobuf-root";
               subprojects = {
                 example = import ./example/project.nix;
+                example-extended = import ./example-extended/project.nix;
               };
               tools.uv.enable = true;
             };
@@ -46,13 +47,14 @@
         packages.pythonGeneratedSources =
           project.subprojects.example.languages.protobuf.python.generatedSources.package;
         packages.python =
+          pkgs.python3.pkgs.callPackage project.subprojects.example.languages.python.callPackageFunction
+            { };
+        packages.example-extended-python =
           pkgs.python3.pkgs.callPackage
-            project.subprojects.example.languages.protobuf.python.callPackageFunction
+            project.subprojects.example-extended.languages.python.callPackageFunction
             { };
 
         devShells.default = pkgs.mkShell {
-          # FIXME: Create a uv shell with the protobuf package
-          # inputsFrom = [packages.python];
           nativeBuildInputs = project.allTools ++ project.subprojects.example.allTools ++ [ packages.python ];
         };
       }

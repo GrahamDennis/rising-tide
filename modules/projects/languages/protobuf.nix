@@ -133,12 +133,28 @@ in
             '';
             type = risingTideLib.types.callPackageFunction;
             default =
+              let
+                protoFiles = lib.fileset.toList (lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src);
+                pythonModules = builtins.map (lib.flip lib.pipe [
+                  # Strip the absolute path prefix containing the protobuf files,
+                  # e.g. /nix/store/eeeeee-source/my-subproject/proto/foo/bar.proto => "./foo/bar.proto"
+                  (lib.path.removePrefix cfg.src)
+                  # Strip the relative path prefix "./" to get a path like "foo/bar.proto"
+                  (lib.removePrefix "./")
+                  # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.bar_pb2"
+                  (builtins.replaceStrings [ ".proto" "/" ] [ "_pb2" "." ])
+                ]) protoFiles;
+              in
               { pythonPackages }:
               pythonPackages.buildPythonPackage {
                 name = cfg.python.packageName;
                 pyproject = true;
                 src = cfg.python.generatedSources.package;
 
+                # Validate that all generated protobuf files are importable
+                pythonImportsCheck = pythonModules;
+
+                # FIXME: This may need additional dependencies for protobuf package dependencies
                 dependencies =
                   (with pythonPackages; [
                     protobuf
@@ -188,28 +204,34 @@ in
         };
     };
   };
-  config.languages.protobuf = {
-    python.pyproject = {
-      project = {
-        name = cfg.python.packageName;
-        version = "0.1.0";
-        description = "Generated protobuf bindings for ${cfg.python.packageName}";
-        dependencies = [
-          "protobuf"
-          "types-protobuf"
-        ] ++ (lib.optionals cfg.grpc.enable [ "grpcio" ]);
-      };
-      tool.hatch.build.targets.wheel = {
-        include = [ "src" ];
-        sources = [ "src" ];
-      };
-      tool.hatch.build.targets.sdist = {
-        include = [ "src" ];
-        sources = [ "src" ];
-      };
-      build-system = {
-        requires = [ "hatchling" ];
-        build-backend = "hatchling.build";
+  config = lib.mkIf cfg.enable {
+    languages.python = {
+      enable = true;
+      callPackageFunction = cfg.python.callPackageFunction;
+    };
+    languages.protobuf = {
+      python.pyproject = {
+        project = {
+          name = cfg.python.packageName;
+          version = "0.1.0";
+          description = "Generated protobuf bindings for ${cfg.python.packageName}";
+          dependencies = [
+            "protobuf"
+            "types-protobuf"
+          ] ++ (lib.optionals cfg.grpc.enable [ "grpcio" ]);
+        };
+        tool.hatch.build.targets.wheel = {
+          include = [ "src" ];
+          sources = [ "src" ];
+        };
+        tool.hatch.build.targets.sdist = {
+          include = [ "src" ];
+          sources = [ "src" ];
+        };
+        build-system = {
+          requires = [ "hatchling" ];
+          build-backend = "hatchling.build";
+        };
       };
     };
   };
