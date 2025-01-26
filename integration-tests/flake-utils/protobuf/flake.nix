@@ -41,7 +41,10 @@
 
         packages.fileDescriptorSet =
           project.subprojects.example.languages.protobuf.fileDescriptorSet.package;
-        packages.generatedPython = project.subprojects.example.languages.protobuf.python.generated.package;
+        packages.cppGeneratedSources =
+          project.subprojects.example.languages.protobuf.cpp.generatedSources.package;
+        packages.pythonGeneratedSources =
+          project.subprojects.example.languages.protobuf.python.generatedSources.package;
         packages.python =
           pkgs.python3.pkgs.callPackage
             project.subprojects.example.languages.protobuf.python.callPackageFunction

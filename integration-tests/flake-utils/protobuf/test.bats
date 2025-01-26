@@ -44,3 +44,8 @@ teardown() {
   run python -c "import example.v1.hello_pb2"
   assert_success
 }
+
+@test "can build all generated sources" {
+  run nix build .#fileDescriptorSet .#cppGeneratedSources .#pythonGeneratedSources
+  assert_success
+}

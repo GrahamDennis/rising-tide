@@ -39,6 +39,41 @@ in
         '';
         type = types.path;
       };
+      cpp = {
+        generatedSources = {
+          callPackageFunction = lib.mkOption {
+            description = ''
+              A `callPackage` function for the generated sources for the C++ protobuf bindings. This is expected to be called like:
+
+              ```
+              pkgs.callPackage callPackageFunction {}
+              ```
+            '';
+            type = risingTideLib.types.callPackageFunction;
+            default =
+              { pkgs, stdenvNoCC, ... }:
+              stdenvNoCC.mkDerivation {
+                name = "${config.name}-protobuf-cpp-generated-src";
+                src = cfg.src;
+                nativeBuildInputs = [
+                  pkgs.protobuf
+                ];
+
+                installPhase = ''
+                  mkdir -p $out/src
+                  ${protoc} \
+                    --cpp_out=$out/src \
+                    ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_cpp=${pkgs.grpc}/bin/grpc_cpp_plugin --grpc_cpp_out=$out/src"}
+                '';
+              };
+          };
+          package = lib.mkOption {
+            type = types.package;
+            default = pkgs.callPackage cfg.cpp.generatedSources.callPackageFunction { };
+            defaultText = lib.literalMD "A package containing generated sources for the C++ protobuf bindings.";
+          };
+        };
+      };
       fileDescriptorSet = {
         callPackageFunction = lib.mkOption {
           description = ''
@@ -102,7 +137,7 @@ in
               pythonPackages.buildPythonPackage {
                 name = cfg.python.packageName;
                 pyproject = true;
-                src = cfg.python.generated.package;
+                src = cfg.python.generatedSources.package;
 
                 dependencies =
                   (with pythonPackages; [
@@ -114,10 +149,10 @@ in
                 build-system = [ pythonPackages.hatchling ];
               };
           };
-          generated = {
+          generatedSources = {
             callPackageFunction = lib.mkOption {
               description = ''
-                The function to call to build the python protobuf bindings. This is expected to be called like:
+                A `callPackage` function for the generated sources for the Python protobuf bindings. This is expected to be called like:
 
                 ```
                 pkgs.callPackage callPackageFunction {}
@@ -146,8 +181,8 @@ in
             };
             package = lib.mkOption {
               type = types.package;
-              default = pkgs.callPackage cfg.python.generated.callPackageFunction { };
-              defaultText = lib.literalMD "A package containing the protoc-generated python protobuf bindings";
+              default = pkgs.callPackage cfg.python.generatedSources.callPackageFunction { };
+              defaultText = lib.literalMD "A package containing generated sources for the Python protobuf bindings.";
             };
           };
         };
