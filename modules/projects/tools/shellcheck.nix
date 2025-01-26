@@ -16,7 +16,10 @@ in
   options = {
     tools.shellcheck = {
       enable = lib.mkEnableOption "Enable shellcheck integration";
-      package = lib.mkPackageOption toolsPkgs "shellcheck" { pkgsText = "toolsPkgs"; };
+      # Use a smaller shellcheck package that doesn't depend on pandoc
+      package = (lib.mkPackageOption toolsPkgs "shellcheck" { pkgsText = "toolsPkgs"; }) // {
+        default = toolsPkgs.haskell.lib.compose.justStaticExecutables toolsPkgs.shellcheck.unwrapped;
+      };
       config = lib.mkOption {
         description = ''
           The shellcheck configuration file (`shellcheckrc`) to generate.
