@@ -17,7 +17,7 @@ let
   protoc = ''
     protoc \
       --proto_path=$src \
-      ${lib.concatMapStringsSep " " (path: "--proto_path=${path}") cfg.importPaths} \
+      ${lib.concatMapAttrsStringSep " " (_name: path: "--proto_path=${path}") cfg.importPaths} \
       @<(find $src -name '*.proto') \
   '';
 in
@@ -30,8 +30,8 @@ in
         description = ''
           Search paths for proto imports
         '';
-        type = types.listOf types.path;
-        default = [ ];
+        type = types.attrsOf types.path;
+        default = { };
       };
       src = lib.mkOption {
         description = ''
@@ -160,10 +160,19 @@ in
                     protobuf
                     types-protobuf
                   ])
-                  ++ (lib.optionals cfg.grpc.enable (with pythonPackages; [ grpcio ]));
+                  ++ (lib.optionals cfg.grpc.enable (with pythonPackages; [ grpcio ]))
+                  ++ (cfg.python.extraDependencies pythonPackages);
 
                 build-system = [ pythonPackages.hatchling ];
               };
+          };
+          extraDependencies = lib.mkOption {
+            description = ''
+              A function from `pythonPackages` to a list of additional dependencies
+              for the generated python package.
+            '';
+            type = types.functionTo (types.listOf types.package);
+            default = _pythonPackages: [ ];
           };
           generatedSources = {
             callPackageFunction = lib.mkOption {

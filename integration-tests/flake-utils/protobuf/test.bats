@@ -5,18 +5,18 @@ setup() {
   bats_load_library bats-assert
   bats_load_library bats-file
 
-  rm -rf build
+  rm -rf build/bats
 }
 
 restore_src_in_teardown() {
-  mkdir -p build
-  cp -r example/ build/
+  mkdir -p build/bats
+  cp -r example/ build/bats
 }
 
 teardown() {
-  if [ -d build/example ]; then
+  if [ -d build/bats/example ]; then
     rm -rf example/
-    mv build/example .
+    mv build/bats/example .
   fi
 }
 

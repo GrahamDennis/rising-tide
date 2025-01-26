@@ -22,6 +22,8 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        python = pkgs.python3.override { packageOverrides = project.languages.python.pythonOverlay; };
+
         project =
           rising-tide.lib.mkProject
             {
@@ -47,15 +49,18 @@
         packages.pythonGeneratedSources =
           project.subprojects.example.languages.protobuf.python.generatedSources.package;
         packages.python =
-          pkgs.python3.pkgs.callPackage project.subprojects.example.languages.python.callPackageFunction
+          python.pkgs.callPackage project.subprojects.example.languages.python.callPackageFunction
             { };
         packages.example-extended-python =
-          pkgs.python3.pkgs.callPackage
-            project.subprojects.example-extended.languages.python.callPackageFunction
+          python.pkgs.callPackage project.subprojects.example-extended.languages.python.callPackageFunction
             { };
 
         devShells.default = pkgs.mkShell {
-          nativeBuildInputs = project.allTools ++ project.subprojects.example.allTools ++ [ packages.python ];
+          nativeBuildInputs =
+            project.allTools
+            ++ project.subprojects.example.allTools
+            ++ project.subprojects.example-extended.allTools
+            ++ [ packages.python ];
         };
       }
     );
