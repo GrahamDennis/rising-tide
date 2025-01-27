@@ -191,7 +191,7 @@ in
                   src = cfg.src;
                   nativeBuildInputs = [
                     pkgs.protobuf
-                    pkgs.mypy-protobuf
+                    toolsPkgs.mypy-protobuf
                   ];
 
                   installPhase = ''
