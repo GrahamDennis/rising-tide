@@ -48,7 +48,7 @@ in
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode.settings = {
         # FIXME: This uses the root project's nixfmt not what has been configured on child projects
-        "nix.formatterPath" = nixfmtExe;
+        "nix.formatterPath" = [ nixfmtExe ];
         "nix.serverSettings" = {
           "nil" = {
             "formatting" = {

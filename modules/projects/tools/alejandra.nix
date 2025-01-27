@@ -45,7 +45,7 @@ in
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode.settings = {
-        "nix.formatterPath" = alejandraExe;
+        "nix.formatterPath" = [ alejandraExe ];
         "nix.serverSettings" = {
           "nil" = {
             "formatting" = {
