@@ -8,6 +8,8 @@ pythonPackages.buildPythonPackage {
   dependencies = with pythonPackages; [
     example
     example-extended
+    protobuf
+    types-protobuf
   ];
 
   build-system = with pythonPackages; [ hatchling ];

@@ -12,7 +12,14 @@ let
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.toml { };
-  mypyExe = lib.getExe cfg.package;
+  emptyGoogleDirectory = toolsPkgs.runCommand "mypy-google-fixups" { } ''
+    mkdir -p $out/google
+  '';
+  mypyExe = toolsPkgs.writeShellScript "mypy" ''
+    # mypy fails to typecheck generated protobuf python bindings imports of google.protobuf
+    # unless the google directory is present in the MYPYPATH. This is a workaround to fix that.
+    MYPYPATH="''${MYPYPATH:+''${MYPYPATH}:}${emptyGoogleDirectory}" ${lib.getExe cfg.package} "$@"
+  '';
 in
 {
   options = {

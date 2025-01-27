@@ -6,7 +6,7 @@ authors = [
     { name = "Graham Dennis", email = "graham.dennis@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = [ "example", "example-extended" ]
+dependencies = [ "example", "example-extended", "google-mypy-fixups" ]
 
 [build-system]
 requires = ["hatchling"]

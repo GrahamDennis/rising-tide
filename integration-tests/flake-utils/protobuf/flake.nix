@@ -64,7 +64,10 @@
             ++ project.subprojects.example.allTools
             ++ project.subprojects.example-extended.allTools
             ++ project.subprojects.python-package-1.allTools
-            ++ [ packages.python ];
+            ++ [
+              packages.python
+              packages.example-extended-python
+            ];
         };
       }
     );

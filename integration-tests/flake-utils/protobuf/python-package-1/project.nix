@@ -7,6 +7,6 @@
   languages.python = {
     enable = true;
     testRoots = [ ];
-    callPackageFunction = import ./default.nix;
+    callPackageFunction = import ./package.nix;
   };
 }
