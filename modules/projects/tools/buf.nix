@@ -21,7 +21,7 @@ in
       };
       lint.enable = lib.mkEnableOption "Enable buf lint tool";
       format.enable = lib.mkEnableOption "Enable buf format tool";
-      breaking = {
+      experimental.breaking = {
         enable = lib.mkEnableOption "Enable buf breaking tool";
         against = lib.mkOption {
           type = types.str;
@@ -99,12 +99,14 @@ in
                 cmds = [ "${bufExe} --config ${cfg.configFile} {{.CLI_ARGS}}" ];
               };
             }
-            (lib.mkIf cfg.breaking.enable {
+            (lib.mkIf cfg.experimental.breaking.enable {
               check.deps = [ "check:buf-breaking" ];
-              "check:buf-breaking" = lib.mkIf cfg.breaking.enable {
+              "check:buf-breaking" = {
                 deps = [ "buf:prepare" ];
                 desc = "Ensure that there are no breaking changes in the proto files";
-                cmds = [ "${bufExe} breaking --config ${cfg.configFile} --against ${cfg.breaking.against}" ];
+                cmds = [
+                  "${bufExe} breaking --config ${cfg.configFile} --against ${cfg.experimental.breaking.against}"
+                ];
               };
             })
           ];
