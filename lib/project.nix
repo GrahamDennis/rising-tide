@@ -4,17 +4,18 @@ rec {
   mkBaseProject =
     {
       projectModules ? [ ],
-      system ? null,
+      system ? pkgs.system,
       pkgs ? null,
       root ? null,
     }:
     rootProjectModule:
     (lib.evalModules {
       specialArgs = {
+        inherit system;
         projectModules = projectModules ++ [
           { config._module.args.pkgs = lib.mkIf (pkgs != null) pkgs; }
         ];
-      } // (if system != null then { inherit system; } else { inherit (pkgs) system; });
+      };
       modules = [
         self.modules.flake.project
         rootProjectModule
@@ -39,4 +40,21 @@ rec {
       }
     );
 
+  mkSystemIndependentOutputs =
+    { rootProjectBySystem }:
+    let
+      pythonOverlays.default =
+        python-final: python-previous:
+        let
+          inherit (python-previous.pkgs) system;
+        in
+        rootProjectBySystem.${system}.languages.python.pythonOverlay python-final python-previous;
+
+      overlays.default = _final: prev: {
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlays.default ];
+      };
+    in
+    {
+      inherit pythonOverlays overlays;
+    };
 }

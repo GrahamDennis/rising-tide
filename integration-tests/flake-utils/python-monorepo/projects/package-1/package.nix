@@ -1,14 +1,8 @@
-{
-  project ? null,
-}:
-# python packages context
-{ pythonPackages, lib }:
+{ pythonPackages }:
 pythonPackages.buildPythonPackage rec {
-  name = "package-2";
+  name = "package-1";
   pyproject = true;
   src = ./.;
-
-  dependencies = with pythonPackages; [ package-1 ];
 
   # FIXME: These should end up in the dev shell automatically
   optional-dependencies = {
@@ -18,7 +12,7 @@ pythonPackages.buildPythonPackage rec {
     ];
   };
 
-  nativeCheckInputs = (lib.optionals (project != null) project.allTools) ++ optional-dependencies.dev;
+  nativeCheckInputs = optional-dependencies.dev;
 
   build-system = with pythonPackages; [ hatchling ];
 }

@@ -17,72 +17,60 @@
       rising-tide = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
       );
-      pythonOverlay =
-        python-final: python-previous:
+      perSystemOutputs = flake-utils.lib.eachDefaultSystem (
+        system:
         let
-          inherit (python-previous.pkgs) system;
-        in
-        self.project.${system}.languages.python.pythonOverlay python-final python-previous;
-      nixpkgsOverlay = _final: prev: {
-        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlay ];
-      };
-    in
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs {
-          overlays = [ nixpkgsOverlay ];
-          inherit system;
-        };
-        pythonPackages = pkgs.python3.pkgs;
-        project = rising-tide.lib.mkProject { inherit system; } {
-          name = "python-monorepo-root";
-          subprojects = {
-            # package-1 and package-2 demonstrate two different ways to integrate.
-            # package-1 defines the project configuration and the callPackage function in a project.nix file.
-            package-1 = import ./projects/package-1/project.nix;
-            # package-2 defines the project configuration in this flake.nix file and defines the callPackage function
-            # in a default.nix file mostly as per normal, but with a wrapping lambda function to pass through the subproject
-            # (and its tools) into the callPackage function.
-            package-2 = {
-              relativePaths.toParentProject = "projects/package-2";
-              languages.python = {
-                enable = true;
-                callPackageFunction = import ./projects/package-2 { project = project.subprojects.package-2; };
-              };
-            };
-            package-3 = {
-              relativePaths.toParentProject = "projects/package-3-with-no-tests";
-              languages.python = {
-                enable = true;
-                testRoots = [ ];
-                callPackageFunction = import ./projects/package-3-with-no-tests {
-                  project = project.subprojects.package-3;
-                };
-              };
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.default ];
+          };
+          pythonPackages = pkgs.python3.pkgs;
+          project = rising-tide.lib.mkProject { inherit system; } {
+            name = "python-monorepo-root";
+            subprojects = {
+              package-1 = import ./projects/package-1/project.nix;
+              package-2 = import ./projects/package-2/project.nix;
+              package-3 = import ./projects/package-3-with-no-tests/project.nix;
             };
           };
-        };
-      in
-      rec {
-        inherit project;
-        packages = { inherit (pythonPackages) package-1 package-2 package-3; };
+        in
+        rec {
+          inherit project;
+          packages = { inherit (pythonPackages) package-1 package-2 package-3; };
 
-        devShells.default = pkgs.mkShell {
-          inputsFrom = [
-            packages.package-1
-            packages.package-2
-            packages.package-3
-          ];
-          nativeBuildInputs = project.allTools;
-        };
-      }
-    )
+          # FIXME: desired output structure:
+          # * devShells.default => root
+          # * devShells."subproject" => subproject
+          # * devShells."subproject/child" => subproject/child
+          # or should we use `:` as a separateor to align with taskfile?
+          devShells.default = pkgs.mkShell {
+            inputsFrom = [
+              # FIXME: how should packages be namespaced?
+              # It should be possible to separate internal project organisation from
+              # external package structure.
+              packages.package-1
+              packages.package-2
+              packages.package-3
+            ];
+            nativeBuildInputs =
+              project.allTools
+              # FIXME: This should be automatic
+              ++ project.subprojects.package-1.allTools
+              ++ project.subprojects.package-2.allTools
+              ++ project.subprojects.package-3.allTools;
+          };
+        }
+      );
+      systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
+        rootProjectBySystem = perSystemOutputs.project;
+      };
+
+    in
+    perSystemOutputs
     // {
+      inherit (systemIndependentOutputs) overlays pythonOverlays;
       inputs = inputs // {
         inherit rising-tide;
       };
-      pythonOverlays.default = pythonOverlay;
-      overlays.default = nixpkgsOverlay;
     };
 }
