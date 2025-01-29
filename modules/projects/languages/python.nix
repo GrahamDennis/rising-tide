@@ -5,7 +5,7 @@
   ...
 }:
 # project context
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.python;
@@ -25,6 +25,17 @@ in
           ```
         '';
         type = risingTideLib.types.callPackageFunction;
+      };
+
+      pythonPackages = lib.mkOption {
+        type = types.attrs;
+        default = pkgs.python3.pkgs;
+        defaultText = lib.literalExpression ''pkgs.python3.pkgs'';
+      };
+
+      package = lib.mkOption {
+        type = types.package;
+        default = cfg.pythonPackages.${config.name};
       };
 
       pythonOverlay = lib.mkOption {
@@ -67,9 +78,12 @@ in
     (lib.mkIf cfg.enable {
       languages.python.pythonOverlay = lib.mkDefault (
         python-final: _python-prev: {
+          # FIXME: It should be possible to configure the output name separately from subproject
+          # name as this is part of the API of the package
           ${config.name} = python-final.callPackage cfg.callPackageFunction { };
         }
       );
+      mkShell.inputsFrom = [ cfg.package ];
     })
     (lib.mkIf config.isRootProject {
       languages.python.pythonOverlay = lib.mkMerge (

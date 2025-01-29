@@ -20,6 +20,8 @@ let
       imports =
         (injector.injectModules [
           ./conventions
+          ./devShells.nix
+          ./mkShell.nix
           ./languages
           ./tools
         ])
