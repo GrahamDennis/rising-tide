@@ -36,6 +36,7 @@ in
       package = lib.mkOption {
         type = types.package;
         default = cfg.pythonPackages.${config.name};
+        defaultText = lib.literalExpression "config.languages.python.pythonPackages.\${config.name}";
       };
 
       pythonOverlay = lib.mkOption {

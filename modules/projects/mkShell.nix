@@ -21,6 +21,7 @@ in
     name = lib.mkOption {
       type = types.str;
       default = config.name;
+      defaultText = lib.literalExpression "config.name";
     };
     stdenv = lib.mkOption {
       type = types.str;
@@ -39,6 +40,7 @@ in
       default = (toolsPkgs.mkShell.override { stdenv = toolsPkgs.${cfg.stdenv}; }) {
         inherit (cfg) name inputsFrom nativeBuildInputs;
       };
+      defaultText = lib.literalMD "A `pkgs.mkShell` package";
     };
   };
   config = {
