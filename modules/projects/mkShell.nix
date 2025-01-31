@@ -45,6 +45,9 @@ in
   };
   config = {
     mkShell = {
+      inputsFrom = builtins.concatMap (
+        projectConfig: projectConfig.mkShell.inputsFrom
+      ) config.subprojectsList;
       nativeBuildInputs = builtins.concatMap (
         projectConfig: projectConfig.allTools
       ) config.allProjectsList;

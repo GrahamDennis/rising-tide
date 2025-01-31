@@ -32,13 +32,6 @@
               package-2 = import ./projects/package-2/project.nix;
               package-3 = import ./projects/package-3-with-no-tests/project.nix;
             };
-
-            # FIXME: This should be automatic.
-            mkShell.inputsFrom = with self.packages.${system}; [
-              package-1
-              package-2
-              package-3
-            ];
           };
         in
         rec {
