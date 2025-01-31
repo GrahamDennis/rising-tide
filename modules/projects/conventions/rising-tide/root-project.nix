@@ -57,6 +57,30 @@ in
               "--binary-next-line"
             ];
           };
+          taplo = {
+            enable = true;
+            config.rule = [
+              {
+                name = "pyproject dependencies";
+                include = [ "**/pyproject.toml" ];
+                keys = [
+                  "project"
+                  "build-system"
+                ];
+                formatting = {
+                  reorder_arrays = true;
+                };
+              }
+              {
+                name = "pyproject scripts";
+                include = [ "**/pyproject.toml" ];
+                keys = [ "project.scripts" ];
+                formatting = {
+                  reorder_keys = true;
+                };
+              }
+            ];
+          };
           vscode.settings = {
             # See https://github.com/nix-community/vscode-nix-ide/pull/417
             "nix.hiddenLanguageServerErrors" = [

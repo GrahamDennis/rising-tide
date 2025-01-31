@@ -5,7 +5,10 @@ pythonPackages.buildPythonPackage {
   pyproject = true;
   src = ./.;
 
-  dependencies = with pythonPackages; [ requests ];
+  dependencies = with pythonPackages; [
+    requests
+    pytest
+  ];
   build-system = with pythonPackages; [ hatchling ];
 
   nativeCheckInputs = with pythonPackages; [ pytestCheckHook ];

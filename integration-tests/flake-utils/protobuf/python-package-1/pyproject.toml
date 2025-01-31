@@ -2,11 +2,9 @@
 name = "python-package-1"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "Graham Dennis", email = "graham.dennis@gmail.com" }
-]
+authors = [{ name = "Graham Dennis", email = "graham.dennis@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = [ "example", "example-extended", "google-mypy-fixups" ]
+dependencies = ["example", "example-extended"]
 
 [build-system]
 requires = ["hatchling"]

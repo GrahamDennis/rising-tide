@@ -2,11 +2,9 @@
 name = "package-3"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "Graham Dennis", email = "graham.dennis@gmail.com" }
-]
+authors = [{ name = "Graham Dennis", email = "graham.dennis@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = [ "package-1" ]
+dependencies = ["package-1"]
 
 [build-system]
 requires = ["hatchling"]

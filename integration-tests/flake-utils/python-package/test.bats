@@ -71,6 +71,11 @@ teardown() {
   assert_success
 }
 
+@test "test check succeeds" {
+  run task check
+  assert_success
+}
+
 @test "test fails on test failure" {
   restore_src_in_teardown
   sed -i -e 's/Hello from/Goodbye from/g' tests/test_trivial.py

@@ -29,6 +29,7 @@
     ./shellcheck.nix
     ./shfmt.nix
     ./statix.nix
+    ./taplo.nix
     ./treefmt.nix
     ./uv
     ./vscode.nix
