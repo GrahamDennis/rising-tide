@@ -77,6 +77,10 @@ teardown() {
   run task test
   assert_failure
   assert_output --partial "assert 'Hello from python-package!' == 'Goodbye from python-package!'"
+
+  run nix build --show-trace --log-lines 500 .#python-package
+  assert_failure
+  assert_output --partial "assert 'Hello from python-package!' == 'Goodbye"
 }
 
 @test "can run script published from package" {
@@ -86,6 +90,6 @@ teardown() {
 }
 
 @test "can build all packages" {
-  run nix build --no-write-lock-file .#
+  run nix build .#python-package
   assert_success
 }

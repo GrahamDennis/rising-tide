@@ -55,6 +55,10 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
+      mkShell.nativeBuildInputs = lib.mkMerge [
+        [ config.languages.python.pythonPackages.pytest ]
+        (lib.mkIf cfg.coverage.enable [ config.languages.python.pythonPackages.pytest-cov ])
+      ];
       tools = {
         pytest.config = lib.mkMerge [
           {

@@ -20,6 +20,8 @@
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
         let
+          # FIXME: Make this really easy to do somehow. Perhaps by letting folks pass a nixpkgs without
+          # the overlay applied to the project
           pkgs = import nixpkgs {
             inherit system;
             overlays = [ self.overlays.default ];
@@ -41,7 +43,6 @@
       systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
         rootProjectBySystem = perSystemOutputs.project;
       };
-
     in
     perSystemOutputs
     // {

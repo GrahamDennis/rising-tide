@@ -17,20 +17,27 @@
       rising-tide = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
       );
+      perSystemOutputs = flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.default ];
+          };
+          project = rising-tide.lib.mkProject { inherit pkgs; } {
+            name = "python-package";
+            languages.python.enable = true;
+            languages.python.callPackageFunction = import ./package.nix;
+          };
+        in
+        {
+          inherit project;
+          inherit (project) packages devShells;
+        }
+      );
+      systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
+        rootProjectBySystem = perSystemOutputs.project;
+      };
     in
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-        pythonPackages = pkgs.python3.pkgs;
-        project = rising-tide.lib.mkProject { inherit system; } {
-          name = "python-package";
-          languages.python.enable = true;
-        };
-        injector = rising-tide.lib.mkInjector "injector" { args = { inherit project system; }; };
-      in
-      {
-        packages.default = pythonPackages.callPackage (injector.inject ./package.nix) { };
-      }
-    );
+    perSystemOutputs // ({ inherit (systemIndependentOutputs) overlays pythonOverlays; });
 }

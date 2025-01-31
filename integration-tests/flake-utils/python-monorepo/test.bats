@@ -41,6 +41,6 @@ setup() {
 }
 
 @test "can build all packages" {
-  run nix build --no-write-lock-file .#package-1 .#package-2
+  run nix build .#package-1 .#package-2 .#package-3
   assert_success
 }
