@@ -85,7 +85,9 @@ in
         }
       );
       mkShell.inputsFrom = [ cfg.package ];
+      packages.${config.name} = cfg.package;
     })
+    # FIXME: Only the root project?
     (lib.mkIf config.isRootProject {
       languages.python.pythonOverlay = lib.mkMerge (
         builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay) (

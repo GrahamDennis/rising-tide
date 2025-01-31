@@ -23,6 +23,7 @@ let
           ./devShells.nix
           ./mkShell.nix
           ./languages
+          ./packages.nix
           ./tools
         ])
         ++ projectModules;
