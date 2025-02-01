@@ -214,6 +214,7 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    mkShell.nativeBuildInputs = [ config.languages.python.package ];
     languages.python = {
       enable = true;
       callPackageFunction = cfg.python.callPackageFunction;

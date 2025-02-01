@@ -44,13 +44,18 @@ in
     };
   };
   config = {
-    mkShell = {
-      inputsFrom = builtins.concatMap (
-        projectConfig: projectConfig.mkShell.inputsFrom
-      ) config.subprojectsList;
-      nativeBuildInputs = builtins.concatMap (
-        projectConfig: projectConfig.allTools
-      ) config.allProjectsList;
-    };
+    mkShell = lib.mkMerge [
+      {
+        nativeBuildInputs = config.allTools;
+      }
+      {
+        inputsFrom = builtins.concatMap (
+          projectConfig: projectConfig.mkShell.inputsFrom
+        ) config.subprojectsList;
+        nativeBuildInputs = builtins.concatMap (
+          projectConfig: projectConfig.mkShell.nativeBuildInputs
+        ) config.subprojectsList;
+      }
+    ];
   };
 }
