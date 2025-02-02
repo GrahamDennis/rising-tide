@@ -9,6 +9,6 @@
     importPaths = {
       example = ../example/proto;
     };
-    python.extraDependencies = pythonPackages: [ pythonPackages.example ];
+    python.extraDependencies = pythonPackages: [ pythonPackages.example-py ];
   };
 }

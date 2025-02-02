@@ -47,13 +47,7 @@
         in
         rec {
           inherit project;
-          inherit (project) devShells;
-
-          packages = project.packages // {
-            pythonGeneratedSources =
-              project.subprojects.example.languages.protobuf.python.generatedSources.package;
-
-          };
+          inherit (project) devShells packages;
         }
       );
       systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {

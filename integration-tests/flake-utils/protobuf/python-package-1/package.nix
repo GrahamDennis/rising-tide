@@ -6,8 +6,8 @@ pythonPackages.buildPythonPackage {
   src = ./.;
 
   dependencies = with pythonPackages; [
-    example
-    example-extended
+    example-py
+    example-extended-py
     protobuf
     types-protobuf
   ];

@@ -79,6 +79,7 @@ in
       ${subprojectNames.fileDescriptorSet} =
         { config, ... }:
         {
+          tools.go-task.enable = lib.mkForce false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -94,14 +95,13 @@ in
       ${subprojectNames.generatedSources.cpp} =
         { config, ... }:
         {
+          tools.go-task.enable = lib.mkForce false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
               inherit (config) name;
               src = cfg.src;
-              nativeBuildInputs = [
-                pkgs.protobuf
-              ];
+              nativeBuildInputs = [ pkgs.protobuf ];
 
               installPhase = ''
                 mkdir -p $out/src
@@ -114,6 +114,7 @@ in
       ${subprojectNames.generatedSources.python} =
         { config, ... }:
         {
+          tools.go-task.enable = lib.mkForce false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -138,7 +139,9 @@ in
       ${subprojectNames.python} =
         { config, ... }:
         {
-          mkShell.nativeBuildInputs = [ config.package ];
+          tools.go-task.enable = lib.mkForce false;
+          tools.ruff.enable = lib.mkForce false;
+          mkShell.nativeBuildInputs = [ config.languages.python.package ];
           languages.python = {
             enable = true;
             callPackageFunction =
@@ -179,7 +182,7 @@ in
     };
 
     languages.protobuf = {
-      # FIXME: Move this to the python subproject itself
+      # FIXME: Move this to the python subproject itself. This probably requires creating a module for buildPythonPackage
       python.pyproject = {
         project = {
           name = cfg.python.packageName;

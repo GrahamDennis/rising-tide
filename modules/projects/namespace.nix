@@ -17,10 +17,14 @@ in
       type = types.listOf types.str;
       default = [ ];
     };
+    packageName = lib.mkOption {
+      type = types.str;
+      default = config.name;
+    };
     fullyQualifiedPackagePath = lib.mkOption {
       readOnly = true;
       type = types.listOf types.str;
-      default = config.namespacePath ++ [ config.name ];
+      default = config.namespacePath ++ [ config.packageName ];
     };
     subprojects = lib.mkOption {
       type = types.attrsOf (
