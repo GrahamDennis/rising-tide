@@ -28,6 +28,8 @@ function @bashSafeName@PreShell() {
   echo "Executing @bashSafeName@ (pre-shell)"
 
   pushd "$(dirname "$(findconfig flake.nix)")" >/dev/null || return
+  # Ensure the subproject exists
+  mkdir -p "@relativePathToRoot@"
   cd "@relativePathToRoot@" || return
   @nixagoHook@
   popd >/dev/null || return
