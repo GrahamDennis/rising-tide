@@ -2,7 +2,6 @@
 {
   lib,
   risingTideLib,
-  injector,
   ...
 }:
 # project context
@@ -20,7 +19,6 @@ let
   pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" cfg.pyproject;
 in
 {
-  imports = injector.injectModules [ ./buildPythonPackage.nix ];
   options = {
     languages.python = {
       enable = lib.mkEnableOption "Enable python package configuration";

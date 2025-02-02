@@ -21,7 +21,6 @@ let
         (injector.injectModules [
           ./conventions
           ./devShells.nix
-          ./mkDerivation.nix
           ./mkShell.nix
           ./languages
           ./namespace.nix
