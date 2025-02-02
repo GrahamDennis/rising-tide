@@ -35,8 +35,7 @@ in
 
       package = lib.mkOption {
         type = types.package;
-        default = cfg.pythonPackages.${config.name};
-        defaultText = lib.literalExpression "config.languages.python.pythonPackages.\${config.name}";
+        defaultText = lib.literalMD "The python package extracted from config.languages.python.pythonPackages";
       };
 
       pythonOverlay = lib.mkOption {
@@ -77,23 +76,25 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
-      languages.python.pythonOverlay = lib.mkDefault (
-        python-final: _python-prev: {
-          # FIXME: It should be possible to configure the output name separately from subproject
-          # name as this is part of the API of the package
-          ${config.name} = python-final.callPackage cfg.callPackageFunction { };
-        }
-      );
+      languages.python.pythonOverlay = risingTideLib.mkOverlay config.fullyQualifiedPackagePath cfg.callPackageFunction;
+      languages.python.package = lib.getAttrFromPath config.fullyQualifiedPackagePath cfg.pythonPackages;
       mkShell.inputsFrom = [ cfg.package ];
       packages.${config.name} = cfg.package;
     })
-    # FIXME: Only the root project?
-    (lib.mkIf config.isRootProject {
+    # Inherit parent python overlays
+    {
       languages.python.pythonOverlay = lib.mkMerge (
-        builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay) (
-          builtins.filter enabledIn config.subprojectsList
-        )
+        lib.pipe config.subprojects [
+          builtins.attrValues
+          (builtins.filter enabledIn)
+          (builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay))
+        ]
       );
+    }
+    (lib.mkIf config.isRootProject {
+      overlay = _final: prev: {
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ cfg.pythonOverlay ];
+      };
     })
   ];
 }

@@ -74,7 +74,7 @@ in
           output = lib.mkDefault "prefixed";
           includes = lib.mkMerge (
             lib.mapAttrsToList (name: subprojectConfig: {
-              "${name}" = {
+              ${name} = {
                 taskfile = subprojectConfig.relativePaths.toParentProject;
                 dir = subprojectConfig.relativePaths.toParentProject;
               };

@@ -7,7 +7,7 @@
   };
 
   outputs =
-    {
+    inputs@{
       flake-utils,
       nixpkgs,
       self,
@@ -33,6 +33,10 @@
               }
               {
                 name = "protobuf-root";
+                # namespacePath = [
+                #   "rising-tide"
+                #   "integration-tests"
+                # ];
                 subprojects = {
                   example = import ./example/project.nix;
                   example-extended = import ./example-extended/project.nix;
@@ -60,6 +64,7 @@
     in
     perSystemOutputs
     // {
+      inherit inputs;
       inherit (systemIndependentOutputs) overlays pythonOverlays;
     };
 }

@@ -11,6 +11,7 @@ let
     attrs = injector.inject ./attrs.nix;
     injector = injector.inject ./injector.nix;
     nixagoEngines = injector.inject ./nixagoEngines.nix;
+    overlays = injector.inject ./overlays.nix;
     project = injector.inject ./project.nix;
     strings = injector.inject ./strings.nix;
     tests = injector.inject ./tests.nix;
@@ -23,6 +24,7 @@ let
       ;
     inherit (risingTideLib.injector) callWithLazyArgs mkInjector getLazyArgFromConfig;
     inherit (risingTideLib.strings) sanitizeBashIdentifier;
+    inherit (risingTideLib.overlays) mkOverlay;
     inherit (risingTideLib.project) mkBaseProject mkProject;
   };
 in

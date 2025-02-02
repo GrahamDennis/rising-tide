@@ -46,13 +46,17 @@ rec {
       pythonOverlays.default =
         python-final: python-previous:
         let
-          inherit (python-previous.pkgs) system;
+          inherit (python-previous.pkgs.stdenv.hostPlatform) system;
         in
         rootProjectBySystem.${system}.languages.python.pythonOverlay python-final python-previous;
 
-      overlays.default = _final: prev: {
-        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ pythonOverlays.default ];
-      };
+      overlays.default = (
+        final: prev:
+        let
+          inherit (prev.stdenv.hostPlatform) system;
+        in
+        rootProjectBySystem.${system}.overlay final prev
+      );
     in
     {
       inherit pythonOverlays overlays;

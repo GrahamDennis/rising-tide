@@ -214,6 +214,24 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    subprojects = {
+      "${config.name}-file-descriptor-set" =
+        { config, ... }:
+        {
+          callPackageFunction =
+            { pkgs, stdenvNoCC, ... }:
+            stdenvNoCC.mkDerivation {
+              inherit (config) name;
+              src = cfg.src;
+              nativeBuildInputs = [ pkgs.protobuf ];
+
+              installPhase = ''
+                ${protoc} --descriptor_set_out=$out
+              '';
+            };
+        };
+    };
+
     mkShell.nativeBuildInputs = [ config.languages.python.package ];
     languages.python = {
       enable = true;

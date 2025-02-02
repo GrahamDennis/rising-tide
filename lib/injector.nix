@@ -41,7 +41,7 @@ rec {
         mkChildInjector = mkInjectorWithParent injector;
       };
       additionalInjectorArgs = {
-        "${name}" = injector;
+        ${name} = injector;
       };
       argsWithInjector = args // additionalInjectorArgs;
       inject = fn: callWithLazyArgs (parentInjector.inject fn) argsWithInjector getLazyArg;

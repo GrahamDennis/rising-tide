@@ -21,8 +21,12 @@ let
         (injector.injectModules [
           ./conventions
           ./devShells.nix
+          ./mkDerivation.nix
           ./mkShell.nix
           ./languages
+          ./namespace.nix
+          ./overlay.nix
+          ./package.nix
           ./packages.nix
           ./tools
         ])
@@ -59,6 +63,7 @@ let
             description = "The path from the project to the parent project";
             type = risingTideLib.types.subpath;
             default = config.name;
+            defaultText = lib.literalMD "The name of this project: `\${config.name}`";
           };
           parentProjectToRoot = lib.mkOption {
             description = "The path from the parent project to the root of the flake";
