@@ -28,6 +28,7 @@ result-*
 build/
 
 # nixago: ignore-linked-files
+/.mdformat.toml
 /.vscode/extensions.json
 /.vscode/settings.json
 /.lefthook.yml

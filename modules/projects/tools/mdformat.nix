@@ -12,13 +12,32 @@ let
   settingsFormat = toolsPkgs.formats.toml { };
   configFile = settingsFormat.generate "mdformat.toml" cfg.config;
   mdformatExe = lib.getExe cfg.package;
+
+  mdformatWithPlugins =
+    selector:
+    toolsPkgs.runCommand "mdformat-wrapped"
+      {
+        inherit (toolsPkgs.python3.pkgs.mdformat) pname version meta;
+
+        nativeBuildInputs = [
+          toolsPkgs.python3.pkgs.wrapPython
+        ];
+
+        plugins = selector toolsPkgs.python3.pkgs;
+      }
+      ''
+        buildPythonPath "$plugins"
+        makeWrapper ${lib.getExe toolsPkgs.python3.pkgs.mdformat} $out/bin/mdformat \
+          --suffix PYTHONPATH : "$program_PYTHONPATH"
+      '';
+
 in
 {
   options = {
     tools.mdformat = {
       enable = lib.mkEnableOption "Enable mdformat integration";
       package = lib.mkPackageOption toolsPkgs "mdformat" { pkgsText = "toolsPkgs"; } // {
-        default = toolsPkgs.mdformat.withPlugins (
+        default = mdformatWithPlugins (
           ps: with ps; [
             mdformat-gfm
             mdformat-frontmatter
