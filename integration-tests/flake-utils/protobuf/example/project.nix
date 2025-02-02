@@ -3,7 +3,6 @@
   ...
 }:
 {
-  relativePaths.toParentProject = "example";
   languages.protobuf = {
     enable = true;
     grpc.enable = true;

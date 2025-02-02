@@ -58,6 +58,7 @@ let
           toParentProject = lib.mkOption {
             description = "The path from the project to the parent project";
             type = risingTideLib.types.subpath;
+            default = config.name;
           };
           parentProjectToRoot = lib.mkOption {
             description = "The path from the parent project to the root of the flake";

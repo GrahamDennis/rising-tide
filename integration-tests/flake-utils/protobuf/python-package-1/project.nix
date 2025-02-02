@@ -3,7 +3,6 @@
   ...
 }:
 {
-  relativePaths.toParentProject = "python-package-1";
   languages.python = {
     enable = true;
     testRoots = [ ];
