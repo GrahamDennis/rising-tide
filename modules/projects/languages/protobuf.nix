@@ -1,13 +1,11 @@
 # rising-tide flake context
 {
   lib,
-  risingTideLib,
   ...
 }:
 # project context
 {
   config,
-  pkgs,
   toolsPkgs,
   ...
 }:
@@ -20,6 +18,16 @@ let
       ${lib.concatMapAttrsStringSep " " (_name: path: "--proto_path=${path}") cfg.importPaths} \
       @<(find $src -name '*.proto') \
   '';
+  pyprojectSettingsFormat = toolsPkgs.formats.toml { };
+  pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" cfg.python.pyproject;
+  subprojectNames = {
+    generatedSources.python = "${config.name}-generated-sources-py";
+    generatedSources.cpp = "${config.name}-generated-sources-cpp";
+    python = "${config.name}-py";
+    cpp = "${config.name}-cpp";
+    fileDescriptorSet = "${config.name}-file-descriptor-set";
+  };
+  subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) subprojectNames;
 in
 {
   options = {
@@ -39,72 +47,101 @@ in
         '';
         type = types.path;
       };
-      cpp = {
-        generatedSources = {
-          callPackageFunction = lib.mkOption {
-            description = ''
-              A `callPackage` function for the generated sources for the C++ protobuf bindings. This is expected to be called like:
-
-              ```
-              pkgs.callPackage callPackageFunction {}
-              ```
-            '';
-            type = risingTideLib.types.callPackageFunction;
-            default =
-              { pkgs, stdenvNoCC, ... }:
-              stdenvNoCC.mkDerivation {
-                name = "${config.name}-protobuf-cpp-generated-src";
-                src = cfg.src;
-                nativeBuildInputs = [
-                  pkgs.protobuf
-                ];
-
-                installPhase = ''
-                  mkdir -p $out/src
-                  ${protoc} \
-                    --cpp_out=$out/src \
-                    ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_cpp=${pkgs.grpc}/bin/grpc_cpp_plugin --grpc_cpp_out=$out/src"}
-                '';
-              };
-          };
-          package = lib.mkOption {
-            type = types.package;
-            default = pkgs.callPackage cfg.cpp.generatedSources.callPackageFunction { };
-            defaultText = lib.literalMD "A package containing generated sources for the C++ protobuf bindings.";
-          };
+      python = {
+        packageName = lib.mkOption {
+          description = ''
+            The name of the python package to generate
+          '';
+          type = types.str;
+          default = config.name;
+          defaultText = lib.literalExpression "config.name";
+        };
+        pyproject = lib.mkOption {
+          description = ''
+            The pyproject.toml file to generate
+          '';
+          type = pyprojectSettingsFormat.type;
+          default = { };
+        };
+        extraDependencies = lib.mkOption {
+          description = ''
+            A function from `pythonPackages` to a list of additional dependencies
+            for the generated python package.
+          '';
+          type = types.functionTo (types.listOf types.package);
+          default = _pythonPackages: [ ];
         };
       };
-      python =
-        let
-          settingsFormat = toolsPkgs.formats.toml { };
-          pyprojectConfigFile = settingsFormat.generate "pyproject.toml" cfg.python.pyproject;
-        in
+    };
+  };
+  config = lib.mkIf cfg.enable {
+    subprojects = {
+      ${subprojectNames.fileDescriptorSet} =
+        { config, ... }:
         {
-          packageName = lib.mkOption {
-            description = ''
-              The name of the python package to generate
-            '';
-            type = types.str;
-            default = config.name;
-            defaultText = lib.literalExpression "config.name";
-          };
-          pyproject = lib.mkOption {
-            description = ''
-              The pyproject.toml file to generate
-            '';
-            type = settingsFormat.type;
-            default = { };
-          };
-          callPackageFunction = lib.mkOption {
-            description = ''
-              The function to call to build the python library. This is expected to be called like:
+          callPackageFunction =
+            { pkgs, stdenvNoCC, ... }:
+            stdenvNoCC.mkDerivation {
+              inherit (config) name;
+              src = cfg.src;
+              nativeBuildInputs = [ pkgs.protobuf ];
 
-              ```
-              pythonPackages.callPackage callPackageFunction {}
-              ```
-            '';
-            type = risingTideLib.types.callPackageFunction;
-            default =
+              installPhase = ''
+                ${protoc} --descriptor_set_out=$out
+              '';
+            };
+        };
+      ${subprojectNames.generatedSources.cpp} =
+        { config, ... }:
+        {
+          callPackageFunction =
+            { pkgs, stdenvNoCC, ... }:
+            stdenvNoCC.mkDerivation {
+              inherit (config) name;
+              src = cfg.src;
+              nativeBuildInputs = [
+                pkgs.protobuf
+              ];
+
+              installPhase = ''
+                mkdir -p $out/src
+                ${protoc} \
+                  --cpp_out=$out/src \
+                  ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_cpp=${pkgs.grpc}/bin/grpc_cpp_plugin --grpc_cpp_out=$out/src"}
+              '';
+            };
+        };
+      ${subprojectNames.generatedSources.python} =
+        { config, ... }:
+        {
+          callPackageFunction =
+            { pkgs, stdenvNoCC, ... }:
+            stdenvNoCC.mkDerivation {
+              inherit (config) name;
+              src = cfg.src;
+
+              nativeBuildInputs = [
+                pkgs.protobuf
+                toolsPkgs.mypy-protobuf
+              ];
+
+              installPhase = ''
+                mkdir -p $out/src
+                ${protoc} \
+                  --python_out=$out/src --mypy_out=$out/src \
+                  ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_python=${pkgs.grpc}/bin/grpc_python_plugin --grpc_python_out=$out/src --mypy_grpc_out=$out/src"}
+                find $out -name '*.py' -execdir touch __init__.py py.typed \;
+                cp ${pyprojectConfigFile} $out/pyproject.toml
+              '';
+            };
+        };
+      ${subprojectNames.python} =
+        { config, ... }:
+        {
+          mkShell.nativeBuildInputs = [ config.package ];
+          languages.python = {
+            enable = true;
+            callPackageFunction =
               let
                 protoFiles = lib.fileset.toList (lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src);
                 pythonModules = builtins.map (lib.flip lib.pipe [
@@ -119,9 +156,9 @@ in
               in
               { pythonPackages }:
               pythonPackages.buildPythonPackage {
-                name = cfg.python.packageName;
+                inherit (config) name;
                 pyproject = true;
-                src = cfg.python.generatedSources.package;
+                src = subprojects.generatedSources.python.package;
 
                 # Validate that all generated protobuf files are importable
                 pythonImportsCheck = pythonModules;
@@ -138,78 +175,11 @@ in
                 build-system = [ pythonPackages.hatchling ];
               };
           };
-          extraDependencies = lib.mkOption {
-            description = ''
-              A function from `pythonPackages` to a list of additional dependencies
-              for the generated python package.
-            '';
-            type = types.functionTo (types.listOf types.package);
-            default = _pythonPackages: [ ];
-          };
-          generatedSources = {
-            callPackageFunction = lib.mkOption {
-              description = ''
-                A `callPackage` function for the generated sources for the Python protobuf bindings. This is expected to be called like:
-
-                ```
-                pkgs.callPackage callPackageFunction {}
-                ```
-              '';
-              type = risingTideLib.types.callPackageFunction;
-              default =
-                { pkgs, stdenvNoCC, ... }:
-                stdenvNoCC.mkDerivation {
-                  name = "${config.name}-protobuf-python-generated-src";
-                  src = cfg.src;
-                  nativeBuildInputs = [
-                    pkgs.protobuf
-                    toolsPkgs.mypy-protobuf
-                  ];
-
-                  installPhase = ''
-                    mkdir -p $out/src
-                    ${protoc} \
-                      --python_out=$out/src --mypy_out=$out/src \
-                      ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_python=${pkgs.grpc}/bin/grpc_python_plugin --grpc_python_out=$out/src --mypy_grpc_out=$out/src"}
-                    find $out -name '*.py' -execdir touch __init__.py py.typed \;
-                    cp ${pyprojectConfigFile} $out/pyproject.toml
-                  '';
-                };
-            };
-            package = lib.mkOption {
-              type = types.package;
-              default = pkgs.callPackage cfg.python.generatedSources.callPackageFunction { };
-              defaultText = lib.literalMD "A package containing generated sources for the Python protobuf bindings.";
-            };
-          };
-        };
-    };
-  };
-  config = lib.mkIf cfg.enable {
-    subprojects = {
-      "${config.name}-file-descriptor-set" =
-        { config, ... }:
-        {
-          callPackageFunction =
-            { pkgs, stdenvNoCC, ... }:
-            stdenvNoCC.mkDerivation {
-              inherit (config) name;
-              src = cfg.src;
-              nativeBuildInputs = [ pkgs.protobuf ];
-
-              installPhase = ''
-                ${protoc} --descriptor_set_out=$out
-              '';
-            };
         };
     };
 
-    mkShell.nativeBuildInputs = [ config.languages.python.package ];
-    languages.python = {
-      enable = true;
-      callPackageFunction = cfg.python.callPackageFunction;
-    };
     languages.protobuf = {
+      # FIXME: Move this to the python subproject itself
       python.pyproject = {
         project = {
           name = cfg.python.packageName;

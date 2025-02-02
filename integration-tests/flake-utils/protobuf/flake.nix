@@ -50,7 +50,6 @@
           inherit (project) devShells;
 
           packages = project.packages // {
-            cppGeneratedSources = project.subprojects.example.languages.protobuf.cpp.generatedSources.package;
             pythonGeneratedSources =
               project.subprojects.example.languages.protobuf.python.generatedSources.package;
 

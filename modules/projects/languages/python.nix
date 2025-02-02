@@ -10,7 +10,6 @@ let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.python;
   cfg = getCfg config;
-  enabledIn = projectConfig: (getCfg projectConfig).enable;
 in
 {
   options = {
@@ -58,6 +57,7 @@ in
           ```
         '';
         type = risingTideLib.types.overlay;
+        default = _final: _prev: { };
       };
 
       sourceRoots = lib.mkOption {
@@ -86,7 +86,6 @@ in
       languages.python.pythonOverlay = lib.mkMerge (
         lib.pipe config.subprojects [
           builtins.attrValues
-          (builtins.filter enabledIn)
           (builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay))
         ]
       );
