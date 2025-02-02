@@ -13,6 +13,7 @@ let
   configFile = settingsFormat.generate "mdformat.toml" cfg.config;
   mdformatExe = lib.getExe cfg.package;
 
+  # Required until https://github.com/NixOS/nixpkgs/pull/378763 merges
   mdformatWithPlugins =
     selector:
     toolsPkgs.runCommand "mdformat-wrapped"
