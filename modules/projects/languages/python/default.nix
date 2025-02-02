@@ -2,16 +2,25 @@
 {
   lib,
   risingTideLib,
+  injector,
   ...
 }:
 # project context
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  toolsPkgs,
+  ...
+}:
 let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.python;
   cfg = getCfg config;
+  pyprojectSettingsFormat = toolsPkgs.formats.toml { };
+  pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" cfg.pyproject;
 in
 {
+  imports = injector.injectModules [ ./buildPythonPackage.nix ];
   options = {
     languages.python = {
       enable = lib.mkEnableOption "Enable python package configuration";
@@ -24,6 +33,17 @@ in
           ```
         '';
         type = risingTideLib.types.callPackageFunction;
+      };
+
+      pyproject = lib.mkOption {
+        description = "Contents of a pyproject.toml file to generate";
+        type = pyprojectSettingsFormat.type;
+        default = { };
+      };
+
+      pyprojectFile = lib.mkOption {
+        type = types.pathInStore;
+        default = pyprojectConfigFile;
       };
 
       pythonPackages = lib.mkOption {

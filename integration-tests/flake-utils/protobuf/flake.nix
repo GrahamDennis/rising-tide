@@ -36,6 +36,7 @@
                 # namespacePath = [
                 #   "rising-tide"
                 #   "integration-tests"
+                #   "protobuf"
                 # ];
                 subprojects = {
                   example = import ./example/project.nix;

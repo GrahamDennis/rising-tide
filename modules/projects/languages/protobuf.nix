@@ -18,8 +18,6 @@ let
       ${lib.concatMapAttrsStringSep " " (_name: path: "--proto_path=${path}") cfg.importPaths} \
       @<(find $src -name '*.proto') \
   '';
-  pyprojectSettingsFormat = toolsPkgs.formats.toml { };
-  pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" cfg.python.pyproject;
   subprojectNames = {
     generatedSources.python = "${config.name}-generated-sources-py";
     generatedSources.cpp = "${config.name}-generated-sources-cpp";
@@ -55,13 +53,6 @@ in
           type = types.str;
           default = config.name;
           defaultText = lib.literalExpression "config.name";
-        };
-        pyproject = lib.mkOption {
-          description = ''
-            The pyproject.toml file to generate
-          '';
-          type = pyprojectSettingsFormat.type;
-          default = { };
         };
         extraDependencies = lib.mkOption {
           description = ''
@@ -115,6 +106,29 @@ in
         { config, ... }:
         {
           tools.go-task.enable = lib.mkForce false;
+          languages.python.pyproject = {
+            project = {
+              name = cfg.python.packageName;
+              version = "0.1.0";
+              description = "Generated protobuf bindings for ${cfg.python.packageName}";
+              dependencies = [
+                "protobuf"
+                "types-protobuf"
+              ] ++ (lib.optionals cfg.grpc.enable [ "grpcio" ]);
+            };
+            tool.hatch.build.targets.wheel = {
+              include = [ "src" ];
+              sources = [ "src" ];
+            };
+            tool.hatch.build.targets.sdist = {
+              include = [ "src" ];
+              sources = [ "src" ];
+            };
+            build-system = {
+              requires = [ "hatchling" ];
+              build-backend = "hatchling.build";
+            };
+          };
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -132,7 +146,7 @@ in
                   --python_out=$out/src --mypy_out=$out/src \
                   ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_python=${pkgs.grpc}/bin/grpc_python_plugin --grpc_python_out=$out/src --mypy_grpc_out=$out/src"}
                 find $out -name '*.py' -execdir touch __init__.py py.typed \;
-                cp ${pyprojectConfigFile} $out/pyproject.toml
+                cp ${config.languages.python.pyprojectFile} $out/pyproject.toml
               '';
             };
         };
@@ -166,7 +180,6 @@ in
                 # Validate that all generated protobuf files are importable
                 pythonImportsCheck = pythonModules;
 
-                # FIXME: This may need additional dependencies for protobuf package dependencies
                 dependencies =
                   (with pythonPackages; [
                     protobuf
@@ -179,33 +192,6 @@ in
               };
           };
         };
-    };
-
-    languages.protobuf = {
-      # FIXME: Move this to the python subproject itself. This probably requires creating a module for buildPythonPackage
-      python.pyproject = {
-        project = {
-          name = cfg.python.packageName;
-          version = "0.1.0";
-          description = "Generated protobuf bindings for ${cfg.python.packageName}";
-          dependencies = [
-            "protobuf"
-            "types-protobuf"
-          ] ++ (lib.optionals cfg.grpc.enable [ "grpcio" ]);
-        };
-        tool.hatch.build.targets.wheel = {
-          include = [ "src" ];
-          sources = [ "src" ];
-        };
-        tool.hatch.build.targets.sdist = {
-          include = [ "src" ];
-          sources = [ "src" ];
-        };
-        build-system = {
-          requires = [ "hatchling" ];
-          build-backend = "hatchling.build";
-        };
-      };
     };
   };
 }
