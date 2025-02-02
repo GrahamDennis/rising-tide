@@ -74,34 +74,6 @@ in
           };
         };
       };
-      fileDescriptorSet = {
-        callPackageFunction = lib.mkOption {
-          description = ''
-            The function to call to build the file descriptor set. This is expected to be called like:
-
-            ```
-            pkgs.callPackage callPackageFunction {}
-            ```
-          '';
-          type = risingTideLib.types.callPackageFunction;
-          default =
-            { pkgs, stdenvNoCC, ... }:
-            stdenvNoCC.mkDerivation {
-              name = "${config.name}-fileDescriptorSet.pb";
-              src = cfg.src;
-              nativeBuildInputs = [ pkgs.protobuf ];
-
-              installPhase = ''
-                ${protoc} --descriptor_set_out=$out
-              '';
-            };
-        };
-        package = lib.mkOption {
-          type = types.package;
-          default = pkgs.callPackage cfg.fileDescriptorSet.callPackageFunction { };
-          defaultText = lib.literalMD "A package containing a single file which is the serialised file descriptor set";
-        };
-      };
       python =
         let
           settingsFormat = toolsPkgs.formats.toml { };

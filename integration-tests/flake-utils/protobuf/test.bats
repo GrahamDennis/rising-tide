@@ -56,6 +56,6 @@ teardown() {
 }
 
 @test "can build all generated sources" {
-  run nix build .#fileDescriptorSet .#cppGeneratedSources .#pythonGeneratedSources
+  run nix build .#example-file-descriptor-set .#cppGeneratedSources .#pythonGeneratedSources
   assert_success
 }
