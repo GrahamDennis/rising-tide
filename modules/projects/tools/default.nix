@@ -18,6 +18,7 @@
     ./direnv
     ./go-task
     ./lefthook.nix
+    ./mdformat.nix
     ./mypy.nix
     ./nil.nix
     ./nix-unit.nix

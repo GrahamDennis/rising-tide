@@ -31,6 +31,7 @@ in
             '';
           };
           deadnix.enable = true;
+          mdformat.enable = true;
           nixfmt-rfc-style.enable = true;
           lefthook = {
             enable = true;
