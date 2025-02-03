@@ -17,7 +17,6 @@ in
     lib.mkMerge [
       {
         tools.go-task = {
-          enable = true;
           taskfile.run = "when_changed";
           taskfile.tasks = {
             test.desc = "Run all tests";

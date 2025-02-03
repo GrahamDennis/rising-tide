@@ -30,7 +30,8 @@ in
           pythonPackages.callPackage callPackageFunction {}
           ```
         '';
-        type = risingTideLib.types.callPackageFunction;
+        type = types.nullOr risingTideLib.types.callPackageFunction;
+        default = null;
       };
 
       pyproject = lib.mkOption {
@@ -51,8 +52,8 @@ in
       };
 
       package = lib.mkOption {
-        type = types.package;
-        defaultText = lib.literalMD "The python package extracted from config.languages.python.pythonPackages";
+        type = types.nullOr types.package;
+        default = null;
       };
 
       pythonOverlay = lib.mkOption {
@@ -93,11 +94,13 @@ in
   };
 
   config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
+    (lib.mkIf (cfg.callPackageFunction != null) {
       languages.python.pythonOverlay = risingTideLib.mkOverlay config.fullyQualifiedPackagePath cfg.callPackageFunction;
       languages.python.package = lib.getAttrFromPath config.fullyQualifiedPackagePath cfg.pythonPackages;
-      mkShell.inputsFrom = [ cfg.package ];
       packages.${config.packageName} = cfg.package;
+    })
+    (lib.mkIf cfg.enable {
+      mkShell.inputsFrom = [ cfg.package ];
     })
     # Inherit parent python overlays
     {

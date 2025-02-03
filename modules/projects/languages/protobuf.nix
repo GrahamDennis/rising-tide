@@ -62,7 +62,6 @@ in
       ${subprojectNames.fileDescriptorSet} =
         { config, ... }:
         {
-          tools.go-task.enable = lib.mkForce false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -78,7 +77,6 @@ in
       ${subprojectNames.generatedSources.cpp} =
         { config, ... }:
         {
-          tools.go-task.enable = lib.mkForce false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -97,7 +95,6 @@ in
       ${subprojectNames.generatedSources.python} =
         { config, ... }:
         {
-          tools.go-task.enable = lib.mkForce false;
           languages.python.pyproject = {
             project = {
               name = config.packageName;
@@ -145,11 +142,8 @@ in
       ${subprojectNames.python} =
         { config, ... }:
         {
-          tools.go-task.enable = lib.mkForce false;
-          tools.ruff.enable = lib.mkForce false;
           mkShell.nativeBuildInputs = [ config.languages.python.package ];
           languages.python = {
-            enable = true;
             callPackageFunction =
               let
                 protoFiles = lib.fileset.toList (lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src);

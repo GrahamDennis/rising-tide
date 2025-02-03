@@ -64,3 +64,11 @@ teardown() {
   run nix build .#example-extended-py-with-custom-name
   assert_success
 }
+
+@test "generated file descriptor sets are self-contained" {
+  run nix build .#example-curl
+  assert_success
+  run ./result list
+  assert_success
+  assert_output "example.v1.GreeterService"
+}
