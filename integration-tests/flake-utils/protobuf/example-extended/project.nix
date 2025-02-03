@@ -9,6 +9,7 @@
     importPaths = {
       example = ../example/proto;
     };
+    cpp.extraDependencies = pkgs: [ pkgs.example-cpp ];
     python.extraDependencies = pythonPackages: [ pythonPackages.example-py ];
   };
   # Demonstrate naming the generated package as something different from the subproject name.

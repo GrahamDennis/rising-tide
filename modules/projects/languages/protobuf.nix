@@ -26,6 +26,18 @@ let
     fileDescriptorSet = "${config.packageName}-file-descriptor-set";
   };
   subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) subprojectNames;
+
+  absoluteProtoPaths = lib.fileset.toList (
+    lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src
+  );
+  relativeProtoPaths = builtins.map (lib.flip lib.pipe [
+    # Strip the absolute path prefix containing the protobuf files,
+    # e.g. /nix/store/eeeeee-source/my-subproject/proto/foo/bar.proto => "./foo/bar.proto"
+    (lib.path.removePrefix cfg.src)
+    # Strip the relative path prefix "./" to get a path like "foo/bar.proto"
+    (lib.removePrefix "./")
+  ]) absoluteProtoPaths;
+
 in
 {
   options = {
@@ -44,6 +56,16 @@ in
           Protobuf sources
         '';
         type = types.path;
+      };
+      cpp = {
+        extraDependencies = lib.mkOption {
+          description = ''
+            A function from `pkgs` to a list of additional dependencies
+            for the generated C++ library.
+          '';
+          type = types.functionTo (types.listOf types.package);
+          default = _pkgs: [ ];
+        };
       };
       python = {
         extraDependencies = lib.mkOption {
@@ -78,18 +100,59 @@ in
         { config, ... }:
         {
           callPackageFunction =
+            let
+              # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.pb.cc"
+              srcFiles = builtins.map (builtins.replaceStrings [ ".proto" ] [ ".pb.cc" ]) relativeProtoPaths;
+              # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.pb.h"
+              headerFiles = builtins.map (builtins.replaceStrings [ ".proto" ] [ ".pb.h" ]) relativeProtoPaths;
+              pathsInSrcDirectory = lib.concatMapStringsSep " " (file: "src/" + file);
+            in
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
               inherit (config) name;
               src = cfg.src;
-              nativeBuildInputs = [ pkgs.protobuf ];
+              nativeBuildInputs = [ pkgs.protobuf ] ++ (cfg.cpp.extraDependencies pkgs);
+
+              cmakeLists = ''
+                PROJECT(${subprojects.cpp.packageName})
+                CMAKE_MINIMUM_REQUIRED (VERSION 3.24)
+
+                set(PROTO_HEADER ${pathsInSrcDirectory headerFiles})
+                set(PROTO_SRC ${pathsInSrcDirectory srcFiles})
+
+                find_package(protobuf CONFIG REQUIRED)
+                add_library(${subprojects.cpp.packageName} SHARED ''${PROTO_HEADER} ''${PROTO_SRC})
+                target_link_libraries(${subprojects.cpp.packageName} PUBLIC protobuf::libprotobuf)
+                target_include_directories(${subprojects.cpp.packageName} PUBLIC src/)
+
+                install(DIRECTORY ./src DESTINATION "include/" FILES_MATCHING PATTERN "*.pb.h")
+                install(TARGETS ${subprojects.cpp.packageName} LIBRARY DESTINATION "lib/")
+              '';
+
+              passAsFile = [ "cmakeLists" ];
 
               installPhase = ''
                 mkdir -p $out/src
+                cp "$cmakeListsPath" $out/CMakeLists.txt
                 ${protoc} \
                   --cpp_out=$out/src \
                   ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_cpp=${pkgs.grpc}/bin/grpc_cpp_plugin --grpc_cpp_out=$out/src"}
               '';
+            };
+        };
+      ${subprojectNames.cpp} =
+        { config, ... }:
+        {
+          callPackageFunction =
+            { pkgs, stdenv, ... }:
+            stdenv.mkDerivation {
+              name = config.packageName;
+              src = subprojects.generatedSources.cpp.package;
+
+              buildInputs = with pkgs; [
+                cmake
+                protobuf
+              ];
             };
         };
       ${subprojectNames.generatedSources.python} =
@@ -97,9 +160,9 @@ in
         {
           languages.python.pyproject = {
             project = {
-              name = config.packageName;
+              name = subprojects.python.name;
               version = "0.1.0";
-              description = "Generated protobuf bindings for ${config.packageName}";
+              description = "Generated protobuf bindings for ${subprojects.python.name}";
               dependencies = [
                 "protobuf"
                 "types-protobuf"
@@ -146,16 +209,16 @@ in
           languages.python = {
             callPackageFunction =
               let
-                protoFiles = lib.fileset.toList (lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src);
-                pythonModules = builtins.map (lib.flip lib.pipe [
-                  # Strip the absolute path prefix containing the protobuf files,
-                  # e.g. /nix/store/eeeeee-source/my-subproject/proto/foo/bar.proto => "./foo/bar.proto"
-                  (lib.path.removePrefix cfg.src)
-                  # Strip the relative path prefix "./" to get a path like "foo/bar.proto"
-                  (lib.removePrefix "./")
-                  # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.bar_pb2"
-                  (builtins.replaceStrings [ ".proto" "/" ] [ "_pb2" "." ])
-                ]) protoFiles;
+                # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.bar_pb2"
+                protobufPythonModules = builtins.map (builtins.replaceStrings
+                  [ ".proto" "/" ]
+                  [ "_pb2" "." ]
+                ) relativeProtoPaths;
+                # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.bar_pb2_grpc"
+                grpcPythonModules = builtins.map (builtins.replaceStrings
+                  [ ".proto" "/" ]
+                  [ "_pb2_grpc" "." ]
+                ) relativeProtoPaths;
               in
               { pythonPackages }:
               pythonPackages.buildPythonPackage {
@@ -164,7 +227,7 @@ in
                 src = subprojects.generatedSources.python.package;
 
                 # Validate that all generated protobuf files are importable
-                pythonImportsCheck = pythonModules;
+                pythonImportsCheck = protobufPythonModules ++ (lib.optionals cfg.grpc.enable grpcPythonModules);
 
                 dependencies =
                   (with pythonPackages; [
