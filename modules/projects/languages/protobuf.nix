@@ -71,7 +71,7 @@ in
               nativeBuildInputs = [ pkgs.protobuf ];
 
               installPhase = ''
-                ${protoc} --descriptor_set_out=$out
+                ${protoc} --include_imports --descriptor_set_out=$out
               '';
             };
         };
