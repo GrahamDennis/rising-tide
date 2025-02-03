@@ -7,7 +7,7 @@ pythonPackages.buildPythonPackage {
 
   dependencies = with pythonPackages; [
     example-py
-    example-extended-py
+    example-extended-py-with-custom-name
     protobuf
     types-protobuf
   ];

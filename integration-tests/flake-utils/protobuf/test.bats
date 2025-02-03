@@ -59,3 +59,8 @@ teardown() {
   run nix build .#example-file-descriptor-set .#example-generated-sources-cpp .#example-generated-sources-py
   assert_success
 }
+
+@test "can build renamed package" {
+  run nix build .#example-extended-py-with-custom-name
+  assert_success
+}

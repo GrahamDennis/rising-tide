@@ -97,7 +97,7 @@ in
       languages.python.pythonOverlay = risingTideLib.mkOverlay config.fullyQualifiedPackagePath cfg.callPackageFunction;
       languages.python.package = lib.getAttrFromPath config.fullyQualifiedPackagePath cfg.pythonPackages;
       mkShell.inputsFrom = [ cfg.package ];
-      packages.${config.name} = cfg.package;
+      packages.${config.packageName} = cfg.package;
     })
     # Inherit parent python overlays
     {

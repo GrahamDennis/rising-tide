@@ -19,11 +19,11 @@ let
       @<(find $src -name '*.proto') \
   '';
   subprojectNames = {
-    generatedSources.python = "${config.name}-generated-sources-py";
-    generatedSources.cpp = "${config.name}-generated-sources-cpp";
-    python = "${config.name}-py";
-    cpp = "${config.name}-cpp";
-    fileDescriptorSet = "${config.name}-file-descriptor-set";
+    generatedSources.python = "${config.packageName}-generated-sources-py";
+    generatedSources.cpp = "${config.packageName}-generated-sources-cpp";
+    python = "${config.packageName}-py";
+    cpp = "${config.packageName}-cpp";
+    fileDescriptorSet = "${config.packageName}-file-descriptor-set";
   };
   subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) subprojectNames;
 in
@@ -46,14 +46,6 @@ in
         type = types.path;
       };
       python = {
-        packageName = lib.mkOption {
-          description = ''
-            The name of the python package to generate
-          '';
-          type = types.str;
-          default = config.name;
-          defaultText = lib.literalExpression "config.name";
-        };
         extraDependencies = lib.mkOption {
           description = ''
             A function from `pythonPackages` to a list of additional dependencies
@@ -108,9 +100,9 @@ in
           tools.go-task.enable = lib.mkForce false;
           languages.python.pyproject = {
             project = {
-              name = cfg.python.packageName;
+              name = config.packageName;
               version = "0.1.0";
-              description = "Generated protobuf bindings for ${cfg.python.packageName}";
+              description = "Generated protobuf bindings for ${config.packageName}";
               dependencies = [
                 "protobuf"
                 "types-protobuf"

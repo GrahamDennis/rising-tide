@@ -28,6 +28,6 @@ in
   config = lib.mkIf (config.callPackageFunction != null) {
     overlay = risingTideLib.mkOverlay config.fullyQualifiedPackagePath config.callPackageFunction;
     package = lib.getAttrFromPath config.fullyQualifiedPackagePath pkgs;
-    packages.${config.name} = config.package;
+    packages.${config.packageName} = config.package;
   };
 }

@@ -20,8 +20,8 @@ in
     };
     name = lib.mkOption {
       type = types.str;
-      default = config.name;
-      defaultText = lib.literalExpression "config.name";
+      default = config.packageName;
+      defaultText = lib.literalExpression "config.packageName";
     };
     stdenv = lib.mkOption {
       type = types.str;
