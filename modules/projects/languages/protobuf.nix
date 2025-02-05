@@ -108,10 +108,13 @@ in
               pathsInSrcDirectory = lib.concatMapStringsSep " " (file: "src/" + file);
             in
             { pkgs, stdenvNoCC, ... }:
+            let
+              extraPackages = (cfg.cpp.extraDependencies pkgs);
+            in
             stdenvNoCC.mkDerivation {
               inherit (config) name;
               src = cfg.src;
-              nativeBuildInputs = [ pkgs.protobuf ] ++ (cfg.cpp.extraDependencies pkgs);
+              nativeBuildInputs = [ pkgs.protobuf ];
 
               cmakeLists = ''
                 PROJECT(${subprojects.cpp.packageName})
@@ -122,10 +125,23 @@ in
 
                 find_package(protobuf CONFIG REQUIRED)
                 add_library(${subprojects.cpp.packageName} SHARED ''${PROTO_HEADER} ''${PROTO_SRC})
-                target_link_libraries(${subprojects.cpp.packageName} PUBLIC protobuf::libprotobuf)
+                target_link_libraries(${subprojects.cpp.packageName}
+                  PUBLIC
+                    protobuf::libprotobuf
+                    ${lib.concatMapStringsSep " " (package: package.name) extraPackages}
+                )
                 target_include_directories(${subprojects.cpp.packageName} PUBLIC src/)
 
-                install(DIRECTORY ./src DESTINATION "include/" FILES_MATCHING PATTERN "*.pb.h")
+                ${lib.optionalString cfg.grpc.enable ''
+                  find_package(gRPC CONFIG REQUIRED)
+                  message(STATUS "Using gRPC ''${gRPC_VERSION}")
+                  target_link_libraries(${subprojects.cpp.packageName}
+                    PUBLIC
+                      gRPC::grpc++
+                  )
+                ''}
+
+                install(DIRECTORY ./src/ DESTINATION "include/" FILES_MATCHING PATTERN "*.pb.h")
                 install(TARGETS ${subprojects.cpp.packageName} LIBRARY DESTINATION "lib/")
               '';
 
@@ -149,10 +165,17 @@ in
               name = config.packageName;
               src = subprojects.generatedSources.cpp.package;
 
-              buildInputs = with pkgs; [
-                cmake
-                protobuf
-              ];
+              buildInputs =
+                with pkgs;
+                [
+                  cmake
+                  protobuf
+                ]
+                ++ (lib.optionals cfg.grpc.enable [
+                  pkgs.grpc
+                  pkgs.openssl
+                ])
+                ++ (cfg.cpp.extraDependencies pkgs);
             };
         };
       ${subprojectNames.generatedSources.python} =

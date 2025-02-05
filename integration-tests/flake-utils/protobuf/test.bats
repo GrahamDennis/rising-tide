@@ -72,3 +72,11 @@ teardown() {
   assert_success
   assert_output "example.v1.GreeterService"
 }
+
+@test "can build C++ projects" {
+  run nix build .#example-cpp .#example-extended-cpp
+  assert_success
+  run ./result list
+  assert_success
+  assert_output "example.v1.GreeterService"
+}
