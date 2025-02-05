@@ -1,18 +1,15 @@
-# project injector context
-{
-  project,
-  ...
-}:
 # python packages context
 { stdenv, pkgs }:
 stdenv.mkDerivation {
-  name = project.name;
+  name = "cpp-package";
   src = ./.;
 
-  buildInputs = with pkgs; [
+  nativeBuildInputs = with pkgs; [
     cmake
     ninja
-    fmt
-    gtest
   ];
+  buildInputs = with pkgs; [ fmt ];
+
+  doCheck = true;
+  checkInputs = with pkgs; [ gtest ];
 }

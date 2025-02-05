@@ -7,7 +7,7 @@
   };
 
   outputs =
-    {
+    inputs@{
       flake-utils,
       nixpkgs,
       self,
@@ -17,24 +17,37 @@
       rising-tide = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
       );
+      perSystemOutputs = flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.default ];
+          };
+          project = rising-tide.lib.mkProject { inherit pkgs; } {
+            name = "cpp-package";
+            namespacePath = [
+              "rising-tide"
+              "integration-tests"
+              "cpp"
+            ];
+            languages.cpp.enable = true;
+            callPackageFunction = import ./package.nix;
+          };
+        in
+        {
+          inherit project;
+          inherit (project) packages devShells;
+          legacyPackages = pkgs;
+        }
+      );
+      systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
+        rootProjectBySystem = perSystemOutputs.project;
+      };
     in
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-        project = rising-tide.lib.mkProject { inherit system; } {
-          name = "cpp-package";
-          languages.cpp.enable = true;
-          tools.go-task.enable = true;
-        };
-        injector = rising-tide.lib.mkInjector "injector" { args = { inherit project system; }; };
-      in
-      rec {
-        packages.default = pkgs.callPackage (injector.inject ./package.nix) { };
-        devShells.default = pkgs.mkShell {
-          inputsFrom = [ packages.default ];
-          nativeBuildInputs = project.allTools;
-        };
-      }
-    );
+    perSystemOutputs
+    // {
+      inherit inputs;
+      inherit (systemIndependentOutputs) overlays;
+    };
 }

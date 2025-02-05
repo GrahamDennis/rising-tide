@@ -43,6 +43,7 @@ in
             includes = [
               "*.cmake"
               "CMakeLists.txt"
+              "**/CMakeLists.txt"
             ];
           };
         };

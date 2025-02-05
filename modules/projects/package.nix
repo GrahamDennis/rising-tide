@@ -29,5 +29,6 @@ in
     overlay = risingTideLib.mkOverlay config.fullyQualifiedPackagePath config.callPackageFunction;
     package = lib.getAttrFromPath config.fullyQualifiedPackagePath pkgs;
     packages.${config.packageName} = config.package;
+    mkShell.inputsFrom = [ config.package ];
   };
 }

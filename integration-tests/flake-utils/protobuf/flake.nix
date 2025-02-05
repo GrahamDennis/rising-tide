@@ -52,7 +52,7 @@
                 tools.uv.enable = true;
               };
         in
-        rec {
+        {
           inherit project;
           inherit (project) devShells packages;
         }
