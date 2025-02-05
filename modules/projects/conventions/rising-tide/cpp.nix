@@ -3,6 +3,7 @@
 # project context
 {
   config,
+  toolsPkgs,
   ...
 }:
 let
@@ -37,6 +38,7 @@ in
       }
       # Enable C++ tools in C++ projects
       (lib.mkIf (cppEnabledIn config) {
+        mkShell.nativeBuildInputs = [ toolsPkgs.lldb ];
         tools = {
           clang-format.enable = true;
           clang-tidy.enable = true;
