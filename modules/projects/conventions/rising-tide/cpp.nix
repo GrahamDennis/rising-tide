@@ -4,6 +4,7 @@
 {
   config,
   toolsPkgs,
+  system,
   ...
 }:
 let
@@ -38,7 +39,11 @@ in
       }
       # Enable C++ tools in C++ projects
       (lib.mkIf (cppEnabledIn config) {
-        mkShell.nativeBuildInputs = [ toolsPkgs.lldb ];
+        # Filter because lldb isn't available on aarch64-darwin
+        mkShell.nativeBuildInputs = builtins.filter (lib.meta.availableOn { inherit system; }) [
+          toolsPkgs.lldb
+          toolsPkgs.gdb
+        ];
         tools = {
           clang-format.enable = true;
           clang-tidy.enable = true;
