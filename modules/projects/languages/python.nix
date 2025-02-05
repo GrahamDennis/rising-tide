@@ -111,6 +111,7 @@ in
         ]
       );
     }
+    # FIXME: This may need to be able to be overridden
     (lib.mkIf config.isRootProject {
       overlay = _final: prev: {
         pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ cfg.pythonOverlay ];
