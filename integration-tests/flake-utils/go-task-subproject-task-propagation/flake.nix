@@ -23,7 +23,6 @@
         project = rising-tide.lib.mkProject { inherit system; } {
           name = "go-task-subproject-task-propagation-integration-test";
           relativePaths.toRoot = "./.";
-          mkShell.enable = true;
           subprojects.subproject = {
             relativePaths.toParentProject = "subproject";
             tools.go-task = {

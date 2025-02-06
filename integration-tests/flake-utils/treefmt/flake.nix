@@ -23,7 +23,6 @@
         project = rising-tide.lib.mkProject { inherit system; } {
           name = "treefmt-integration-test";
           relativePaths.toRoot = "./.";
-          mkShell.enable = true;
           tools.treefmt = {
             enable = true;
           };
