@@ -100,6 +100,9 @@ let
           ];
         };
       };
+      vscode.settings = {
+        "cmake.ignoreCMakeListsMissing" = true;
+      };
     };
   };
 in
