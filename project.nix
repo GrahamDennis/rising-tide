@@ -103,4 +103,4 @@ let
     };
   };
 in
-project.devShells.default
+project

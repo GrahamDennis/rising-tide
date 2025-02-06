@@ -3,47 +3,68 @@
   injector,
   lib,
   risingTideLib,
+  inputs,
   ...
 }:
+let
+  inherit (lib) types;
+in
 {
-  flake = {
-    modules.flake = injector.injectModules {
-      project = ./modules/projects/project.nix;
-    };
-    lib = risingTideLib;
+  imports = [
+    # FIXME: Create a proper flake-parts module for project
+    (inputs.flake-parts.lib.mkTransposedPerSystemModule {
+      name = "project";
+      option = lib.mkOption {
+        type = types.raw;
+        default = null;
+      };
+      file = ./flake-modules.nix;
+    })
+  ];
+  config = {
+    flake = {
+      modules.flake = injector.injectModules {
+        project = ./modules/projects/project.nix;
+      };
+      lib = risingTideLib;
 
-    tests = injector.inject ./tests;
+      tests = injector.inject ./tests;
+    };
+
+    perSystem =
+      {
+        pkgs,
+        injector',
+        config,
+        ...
+      }:
+      let
+        project = injector'.inject ./project.nix;
+      in
+      {
+        inherit project;
+        packages.default = config.packages.all-checks;
+        packages.project-module-docs =
+          pkgs.callPackage (injector.inject ./packages/project-module-docs.nix)
+            { };
+        packages.lib-docs = pkgs.callPackage (injector.inject ./packages/lib-docs.nix) { };
+        packages.all-checks = pkgs.linkFarm "all-checks" (
+          risingTideLib.flattenAttrsRecursiveCond (v: !(lib.isDerivation v)) config.legacyPackages.checks
+        );
+
+        inherit (project) devShells;
+
+        legacyPackages =
+          let
+            overrideDerivationName =
+              path: drv: drv.overrideAttrs { name = "checks.${builtins.concatStringsSep "." path}"; };
+          in
+          {
+            checks = lib.mapAttrsRecursiveCond (value: !(lib.isDerivation value)) overrideDerivationName (
+              injector'.inject ./checks
+            );
+          };
+
+      };
   };
-
-  perSystem =
-    {
-      pkgs,
-      injector',
-      config,
-      ...
-    }:
-    {
-      packages.default = config.packages.all-checks;
-      packages.project-module-docs =
-        pkgs.callPackage (injector.inject ./packages/project-module-docs.nix)
-          { };
-      packages.lib-docs = pkgs.callPackage (injector.inject ./packages/lib-docs.nix) { };
-      packages.all-checks = pkgs.linkFarm "all-checks" (
-        risingTideLib.flattenAttrsRecursiveCond (v: !(lib.isDerivation v)) config.legacyPackages.checks
-      );
-
-      devShells.default = injector'.inject ./devShell.nix;
-
-      legacyPackages =
-        let
-          overrideDerivationName =
-            path: drv: drv.overrideAttrs { name = "checks.${builtins.concatStringsSep "." path}"; };
-        in
-        {
-          checks = lib.mapAttrsRecursiveCond (value: !(lib.isDerivation value)) overrideDerivationName (
-            injector'.inject ./checks
-          );
-        };
-
-    };
 }
