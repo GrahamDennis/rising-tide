@@ -29,6 +29,7 @@ in
         go-task = {
           enable = true;
           taskfile.tasks = {
+            "build".deps = [ "build:cmake" ];
             "build:cmake" = {
               desc = "Build using CMake.";
               cmds = [
