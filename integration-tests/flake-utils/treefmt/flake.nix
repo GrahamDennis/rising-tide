@@ -9,7 +9,6 @@
   outputs =
     {
       flake-utils,
-      nixpkgs,
       self,
       ...
     }:
@@ -21,20 +20,18 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
         project = rising-tide.lib.mkProject { inherit system; } {
           name = "treefmt-integration-test";
           relativePaths.toRoot = "./.";
+          mkShell.enable = true;
           tools.treefmt = {
             enable = true;
           };
         };
       in
       {
-        devShells.default = pkgs.mkShell {
-          name = "treefmt-integration-test";
-          nativeBuildInputs = project.allTools;
-        };
+        inherit project;
+        inherit (project) packages devShells;
       }
     );
 }

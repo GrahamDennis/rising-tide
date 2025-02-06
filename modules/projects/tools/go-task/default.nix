@@ -60,7 +60,7 @@ in
       enabledSubprojects = lib.filterAttrs (_name: enabledIn) config.subprojects;
     in
     lib.mkIf cfg.enable {
-      allTools = [
+      mkShell.nativeBuildInputs = [
         (toolsPkgs.makeSetupHook {
           name = "go-task-setup-hook.sh";
           propagatedBuildInputs = [ cfg.package ];
@@ -95,6 +95,9 @@ in
             output = "taskfile.yml";
           }
         ];
+        vscode.recommendedExtensions = lib.mkIf config.isRootProject {
+          "task.vscode-task" = true;
+        };
       };
     };
 }

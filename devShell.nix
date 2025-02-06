@@ -20,6 +20,13 @@ let
   project = risingTideLib.mkProject { inherit system; } {
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
+    mkShell = {
+      nativeBuildInputs = with pkgs; [
+        nix-unit
+        batsWithLibraries
+        nodejs
+      ];
+    };
     tools = {
       circleci.enable = true;
       cue.enable = true;
@@ -96,13 +103,4 @@ let
     };
   };
 in
-pkgs.mkShell {
-  name = "rising-tide-root";
-  nativeBuildInputs =
-    (with pkgs; [
-      nix-unit
-      batsWithLibraries
-      nodejs
-    ])
-    ++ project.allTools;
-}
+project.devShells.default

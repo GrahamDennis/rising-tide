@@ -46,9 +46,6 @@ in
   config = {
     mkShell = lib.mkMerge [
       {
-        nativeBuildInputs = config.allTools;
-      }
-      {
         inputsFrom = builtins.concatMap (
           projectConfig: projectConfig.mkShell.inputsFrom
         ) config.subprojectsList;

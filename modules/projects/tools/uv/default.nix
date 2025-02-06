@@ -23,7 +23,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    allTools = [
+    mkShell.nativeBuildInputs = [
       (toolsPkgs.makeSetupHook {
         name = "uv-shell-hook.sh";
         propagatedBuildInputs = [ cfg.package ];

@@ -9,7 +9,6 @@
   outputs =
     {
       flake-utils,
-      nixpkgs,
       self,
       ...
     }:
@@ -21,9 +20,9 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
         project = rising-tide.lib.mkProject { inherit system; } {
           name = "go-task-integration-test";
+          mkShell.enable = true;
           tools.go-task = {
             enable = true;
             taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
@@ -31,10 +30,8 @@
         };
       in
       {
-        devShells.default = pkgs.mkShell {
-          name = "go-task-integration-test";
-          nativeBuildInputs = project.allTools;
-        };
+        inherit project;
+        inherit (project) packages devShells;
       }
     );
 }

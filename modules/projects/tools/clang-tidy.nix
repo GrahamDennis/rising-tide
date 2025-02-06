@@ -20,7 +20,7 @@ in
       config = lib.mkOption {
         description = ''
           The clang-tidy YAML file to generate.
-          Refer to the [clang-tide documentation](https://clang.llvm.org/extra/clang-tidy/).
+          Refer to the [clang-tidy documentation](https://clang.llvm.org/extra/clang-tidy/).
         '';
         type = settingsFormat.type;
         default = { };

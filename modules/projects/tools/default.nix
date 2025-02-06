@@ -11,6 +11,7 @@
     ./circleci.nix
     ./clang-format
     ./clang-tidy.nix
+    ./clangd.nix
     ./cmake-format.nix
     ./cmake.nix
     ./cue.nix

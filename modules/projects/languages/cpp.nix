@@ -32,6 +32,7 @@ in
           "ms-vscode.cpptools-extension-pack" = true;
           "matepek.vscode-catch2-test-adapter" = true;
           "vadimcn.vscode-lldb" = true;
+          "llvm-vs-code-extensions.vscode-clangd" = true;
         };
       };
     })

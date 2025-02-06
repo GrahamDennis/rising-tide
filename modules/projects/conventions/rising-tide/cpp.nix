@@ -45,6 +45,7 @@ in
           toolsPkgs.gdb
         ];
         tools = {
+          clangd.enable = true;
           clang-format.enable = true;
           clang-tidy.enable = true;
           cmake-format.enable = true;

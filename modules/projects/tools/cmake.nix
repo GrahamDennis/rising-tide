@@ -21,13 +21,14 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
-      allTools = [
+      mkShell.nativeBuildInputs = [
         cfg.package
         toolsPkgs.ninja
       ];
       tools = {
         go-task = {
           enable = true;
+          # FIXME: Add gtest/ctest integration
           taskfile.tasks = {
             "build".deps = [ "build:cmake" ];
             "build:cmake" = {
