@@ -24,6 +24,10 @@ tasks:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/deadnix  {{.CLI_ARGS}}
     desc: Run deadnix. Additional CLI arguments after `--` are forwarded to deadnix
+  tool:keep-sorted:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/keep-sorted {{.CLI_ARGS}}
+    desc: Run keep-sorted. Additional CLI arguments after `--` are forwarded to keep-sorted
   tool:mdformat:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/mdformat {{.CLI_ARGS}}
