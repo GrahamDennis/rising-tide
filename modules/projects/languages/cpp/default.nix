@@ -27,45 +27,71 @@ in
         type = risingTideLib.types.callPackageFunction;
       };
 
-      sanitizers.asan =
+      sanitizers =
         let
           asanCfg = cfg.sanitizers.asan;
+          lsanCfg = cfg.sanitizers.lsan;
         in
         {
-          enable = lib.mkEnableOption "Enable package variant with ASAN enabled";
-          cflags = lib.mkOption {
-            type = types.str;
-            default = "-fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls";
-          };
-          options = lib.mkOption {
-            type = types.listOf types.str;
-            readOnly = true;
-            default = [ "suppressions=${asanCfg.suppressionsFile}" ] ++ asanCfg.extraOptions;
-          };
-          extraOptions = lib.mkOption {
-            type = types.listOf types.str;
-            default = [ ];
-          };
-          suppressions = lib.mkOption {
-            type = types.listOf types.str;
-            default = [ ];
-          };
-          suppressionsFile = lib.mkOption {
-            type = types.pathInStore;
-            default = toolsPkgs.writeTextFile {
-              name = "asan-suppressions";
-              text = lib.concatLines asanCfg.suppressions;
+          asan = {
+            enable = lib.mkEnableOption "Enable package variant with ASAN enabled";
+            cflags = lib.mkOption {
+              type = types.str;
+              default = "-fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g";
+            };
+            options = lib.mkOption {
+              type = types.listOf types.str;
+              readOnly = true;
+              default = [ "suppressions=${asanCfg.suppressionsFile}" ] ++ asanCfg.extraOptions;
+            };
+            extraOptions = lib.mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            suppressions = lib.mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            suppressionsFile = lib.mkOption {
+              type = types.pathInStore;
+              default = toolsPkgs.writeTextFile {
+                name = "asan-suppressions";
+                text = lib.concatLines asanCfg.suppressions;
+              };
+            };
+            setupHook = lib.mkOption {
+              type = types.package;
+              default = toolsPkgs.makeSetupHook {
+                name = "asan-hook";
+                substitutions = {
+                  asanCflags = asanCfg.cflags;
+                  asanOptions = builtins.toString asanCfg.options;
+                  lsanOptions = builtins.toString lsanCfg.options;
+                };
+              } ./hooks/asan.sh;
             };
           };
-          setupHook = lib.mkOption {
-            type = types.package;
-            default = toolsPkgs.makeSetupHook {
-              name = "asan-hook";
-              substitutions = {
-                asanCflags = asanCfg.cflags;
-                asanOptions = builtins.toString asanCfg.options;
+          lsan = {
+            options = lib.mkOption {
+              type = types.listOf types.str;
+              readOnly = true;
+              default = [ "suppressions=${lsanCfg.suppressionsFile}" ] ++ lsanCfg.extraOptions;
+            };
+            extraOptions = lib.mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            suppressions = lib.mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            suppressionsFile = lib.mkOption {
+              type = types.pathInStore;
+              default = toolsPkgs.writeTextFile {
+                name = "lsan-suppressions";
+                text = lib.concatLines lsanCfg.suppressions;
               };
-            } ./hooks/asan.sh;
+            };
           };
         };
     };
