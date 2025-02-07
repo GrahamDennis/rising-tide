@@ -35,7 +35,7 @@ in
               desc = "Build using CMake.";
               cmds = [
                 "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -G Ninja -S . -B build"
-                "cd build; ninja"
+                "cmake --build build"
               ];
             };
             "tool:cmake" = {

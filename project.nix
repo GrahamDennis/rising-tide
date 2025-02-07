@@ -25,6 +25,8 @@ let
         nix-unit
         batsWithLibraries
         nodejs
+        nix-eval-jobs
+        nix-fast-build
       ];
     };
     tools = {
