@@ -6,17 +6,20 @@
 # project context
 {
   imports = injector.injectModules [
+    # keep-sorted start
     ./alejandra.nix
     ./buf.nix
     ./circleci.nix
     ./clang-format
     ./clang-tidy.nix
+    ./clangd.nix
     ./cmake-format.nix
     ./cmake.nix
     ./cue.nix
     ./deadnix.nix
     ./direnv
     ./go-task
+    ./keep-sorted.nix
     ./lefthook.nix
     ./mdformat.nix
     ./mypy.nix
@@ -34,5 +37,6 @@
     ./treefmt.nix
     ./uv
     ./vscode.nix
+    # keep-sorted end
   ];
 }

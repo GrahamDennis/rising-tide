@@ -31,8 +31,10 @@
               "integration-tests"
               "cpp"
             ];
-            languages.cpp.enable = true;
-            callPackageFunction = import ./package.nix;
+            languages.cpp = {
+              enable = true;
+              callPackageFunction = import ./package.nix;
+            };
           };
         in
         {

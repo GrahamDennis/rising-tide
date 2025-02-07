@@ -22,11 +22,13 @@ in
 
   config = lib.mkIf cfg.enable {
     conventions.risingTide = {
+      # keep-sorted start
       common.enable = lib.mkDefault true;
       cpp.enable = lib.mkDefault true;
       protobuf.enable = lib.mkDefault true;
       python.enable = lib.mkDefault true;
       rootProject.enable = lib.mkDefault true;
+      # keep-sorted end
     };
   };
 }

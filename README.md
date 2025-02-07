@@ -27,6 +27,8 @@ Integrated tooling includes:
 
 Apply these tools to a project (using rising-tide's conventions) with:
 
+FIXME: update this documentation
+
 ```nix
 
 project = rising-tide.lib.mkProject {
@@ -36,11 +38,8 @@ project = rising-tide.lib.mkProject {
 
 # Then add project.allTools to nativeCheckInputs of your package or nativeBuildInputs of your devShell:
 
-devShells.default = pkgs.mkShell {
-    name = "my-awesome-project";
-    nativeBuildInputs = project.allTools
-        ++ [ /* other dev tools */ ];
-};
+inherit (project) devShells;
+
 ```
 
 Now inside your nix develop shell you can list all supported tasks by running `task -l`, run all checks (including code reformatting) by running `task check` or just reformatting by running `task check:treefmt`.

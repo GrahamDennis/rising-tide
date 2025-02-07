@@ -159,24 +159,27 @@ in
       ${subprojectNames.cpp} =
         { config, ... }:
         {
-          callPackageFunction =
-            { pkgs, stdenv, ... }:
-            stdenv.mkDerivation {
-              name = config.packageName;
-              src = subprojects.generatedSources.cpp.package;
+          languages.cpp = {
+            enable = true;
+            callPackageFunction =
+              { pkgs, stdenv, ... }:
+              stdenv.mkDerivation {
+                name = config.packageName;
+                src = subprojects.generatedSources.cpp.package;
 
-              buildInputs =
-                with pkgs;
-                [
-                  cmake
-                  protobuf
-                ]
-                ++ (lib.optionals cfg.grpc.enable [
-                  pkgs.grpc
-                  pkgs.openssl
-                ])
-                ++ (cfg.cpp.extraDependencies pkgs);
-            };
+                buildInputs =
+                  with pkgs;
+                  [
+                    cmake
+                    protobuf
+                  ]
+                  ++ (lib.optionals cfg.grpc.enable [
+                    pkgs.grpc
+                    pkgs.openssl
+                  ])
+                  ++ (cfg.cpp.extraDependencies pkgs);
+              };
+          };
         };
       ${subprojectNames.generatedSources.python} =
         { config, ... }:

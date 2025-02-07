@@ -1,6 +1,7 @@
 .direnv
 
 # nixago: ignore-linked-files
+/.clangd
 /.clang-tidy
 /.clang-format
 /.vscode/extensions.json

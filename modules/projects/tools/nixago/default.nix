@@ -45,7 +45,7 @@ in
     };
   };
   config = lib.mkIf (cfg.requests != [ ]) {
-    allTools = [
+    mkShell.nativeBuildInputs = [
       (
         let
           bashSafeName = risingTideLib.sanitizeBashIdentifier "project${config.relativePaths.toRoot}SetupHook";

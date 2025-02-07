@@ -20,6 +20,15 @@ let
   project = risingTideLib.mkProject { inherit system; } {
     name = "rising-tide-root";
     relativePaths.toRoot = "./.";
+    mkShell = {
+      nativeBuildInputs = with pkgs; [
+        nix-unit
+        batsWithLibraries
+        nodejs
+        nix-eval-jobs
+        nix-fast-build
+      ];
+    };
     tools = {
       circleci.enable = true;
       cue.enable = true;
@@ -93,16 +102,10 @@ let
           ];
         };
       };
+      vscode.settings = {
+        "cmake.ignoreCMakeListsMissing" = true;
+      };
     };
   };
 in
-pkgs.mkShell {
-  name = "rising-tide-root";
-  nativeBuildInputs =
-    (with pkgs; [
-      nix-unit
-      batsWithLibraries
-      nodejs
-    ])
-    ++ project.allTools;
-}
+project

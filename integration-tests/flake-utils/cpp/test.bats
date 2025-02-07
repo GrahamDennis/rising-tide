@@ -20,3 +20,8 @@ setup() {
   run nix build .#rising-tide.integration-tests.cpp.cpp-package
   assert_success
 }
+
+@test "nix build with sanitizers packages.system.cpp-package" {
+  run nix build .#cpp-package-with-asan .#cpp-package-with-tsan
+  assert_success
+}

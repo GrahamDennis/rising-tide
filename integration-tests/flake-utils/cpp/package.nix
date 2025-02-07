@@ -1,8 +1,12 @@
 # python packages context
-{ stdenv, pkgs }:
+{
+  stdenv,
+  pkgs,
+}:
 stdenv.mkDerivation {
   name = "cpp-package";
   src = ./.;
+  hardeningDisable = [ "all" ];
 
   nativeBuildInputs = with pkgs; [
     cmake

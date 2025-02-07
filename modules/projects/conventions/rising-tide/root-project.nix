@@ -20,6 +20,8 @@ in
       {
         conventions.risingTide.common.enable = true;
         tools = {
+          # keep-sorted start block=yes
+          deadnix.enable = true;
           direnv = {
             enable = true;
             contents = ''
@@ -30,9 +32,7 @@ in
               use flake
             '';
           };
-          deadnix.enable = true;
-          mdformat.enable = true;
-          nixfmt-rfc-style.enable = true;
+          keep-sorted.enable = true;
           lefthook = {
             enable = true;
             config = {
@@ -47,6 +47,8 @@ in
               };
             };
           };
+          mdformat.enable = true;
+          nixfmt-rfc-style.enable = true;
           shellcheck.enable = true;
           shfmt = {
             enable = true;
@@ -82,6 +84,9 @@ in
               }
             ];
           };
+          vscode.recommendedExtensions = {
+            "jnoortheen.nix-ide" = true;
+          };
           vscode.settings = {
             # See https://github.com/nix-community/vscode-nix-ide/pull/417
             "nix.hiddenLanguageServerErrors" = [
@@ -89,9 +94,7 @@ in
               "textDocument/documentSymbol"
             ];
           };
-          vscode.recommendedExtensions = {
-            "jnoortheen.nix-ide" = true;
-          };
+          # keep-sorted end
         };
       };
 }

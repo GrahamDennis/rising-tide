@@ -32,7 +32,6 @@ in
         name = "my-awesome-project";
         relativePaths.toRoot = "./.";
         subprojectsList = [ ];
-        allTools = [ ];
       };
   "test project with path to parent" =
     expectRenderedConfig
