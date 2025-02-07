@@ -20,6 +20,7 @@
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
         let
+          inherit (nixpkgs) lib;
           pkgs = import nixpkgs {
             inherit system;
             overlays = [ self.overlays.default ];
@@ -31,8 +32,10 @@
               "integration-tests"
               "cpp"
             ];
-            languages.cpp.enable = true;
-            callPackageFunction = import ./package.nix;
+            languages.cpp = {
+              enable = true;
+              callPackageFunction = import ./package.nix;
+            };
           };
         in
         {
