@@ -31,6 +31,7 @@ in
         let
           asanCfg = cfg.sanitizers.asan;
           lsanCfg = cfg.sanitizers.lsan;
+          tsanCfg = cfg.sanitizers.tsan;
         in
         {
           asan = {
@@ -93,6 +94,43 @@ in
               };
             };
           };
+          tsan = {
+            enable = lib.mkEnableOption "Enable package variant with TSAN enabled";
+            cflags = lib.mkOption {
+              type = types.str;
+              default = "-fsanitize=thread -O2 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g";
+            };
+            options = lib.mkOption {
+              type = types.listOf types.str;
+              readOnly = true;
+              default = [ "suppressions=${tsanCfg.suppressionsFile}" ] ++ tsanCfg.extraOptions;
+            };
+            extraOptions = lib.mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            suppressions = lib.mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            suppressionsFile = lib.mkOption {
+              type = types.pathInStore;
+              default = toolsPkgs.writeTextFile {
+                name = "tsan-suppressions";
+                text = lib.concatLines tsanCfg.suppressions;
+              };
+            };
+            setupHook = lib.mkOption {
+              type = types.package;
+              default = toolsPkgs.makeSetupHook {
+                name = "tsan-hook";
+                substitutions = {
+                  tsanCflags = tsanCfg.cflags;
+                  tsanOptions = builtins.toString tsanCfg.options;
+                };
+              } ./hooks/tsan.sh;
+            };
+          };
         };
     };
   };
@@ -114,9 +152,16 @@ in
                 name = prev.name + "-with-asan";
                 nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.asan.setupHook ];
               });
+            enableTsan =
+              drv:
+              lib.overrideDerivation drv (prev: {
+                name = prev.name + "-with-tsan";
+                nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.tsan.setupHook ];
+              });
             resultWithExtraPassthru = result.overrideAttrs (prev: {
               passthru = (prev.passthru or { }) // {
                 ${if cfg.sanitizers.asan.enable then "withAsan" else null} = enableAsan resultWithExtraPassthru;
+                ${if cfg.sanitizers.tsan.enable then "withTsan" else null} = enableTsan resultWithExtraPassthru;
               };
             });
           in
@@ -124,6 +169,8 @@ in
         );
       packages."${config.packageName}-with-asan" =
         lib.mkIf cfg.sanitizers.asan.enable config.package.passthru.withAsan;
+      packages."${config.packageName}-with-tsan" =
+        lib.mkIf cfg.sanitizers.tsan.enable config.package.passthru.withTsan;
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode = {

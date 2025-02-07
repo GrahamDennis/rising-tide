@@ -22,7 +22,10 @@ in
       # C++ tool configurations
       {
         conventions.risingTide.common.enable = true;
-        languages.cpp.sanitizers.asan.enable = true;
+        languages.cpp.sanitizers = {
+          asan.enable = true;
+          tsan.enable = true;
+        };
         tools = {
           clang-format.config = {
             header = {

@@ -22,6 +22,6 @@ setup() {
 }
 
 @test "nix build with sanitizers packages.system.cpp-package" {
-  run nix build .#cpp-package-with-asan
+  run nix build .#cpp-package-with-asan .#cpp-package-with-tsan
   assert_success
 }
