@@ -65,6 +65,7 @@ in
             line-length = 120;
             lint = {
               extend-select = [
+                # keep-sorted start
                 "C4"
                 "E"
                 "F"
@@ -79,6 +80,7 @@ in
                 "SIM"
                 "TCH"
                 "W"
+                # keep-sorted end
               ];
             };
             lint.extend-per-file-ignores = {

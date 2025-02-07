@@ -27,6 +27,7 @@ in
           tsan.enable = true;
         };
         tools = {
+          # keep-sorted start block=yes
           clang-format.config = {
             header = {
               BasedOnStyle = "Google";
@@ -39,6 +40,7 @@ in
           cmake-format.config = {
             format.line_width = 120;
           };
+          # keep-sorted end
         };
       }
       # Enable C++ tools in C++ projects
