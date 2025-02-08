@@ -40,7 +40,7 @@ setup() {
   assert_output "Hello from package-2!"
 }
 
-@test "can build all packages" {
-  run nix build .#package-1 .#package-2 .#package-3
+@test "nix build of _all-project-packages" {
+  run nix build .#_all-project-packages
   assert_success
 }

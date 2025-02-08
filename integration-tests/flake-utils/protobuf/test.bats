@@ -77,3 +77,8 @@ teardown() {
   run nix build .#example-cpp .#example-extended-cpp
   assert_success
 }
+
+@test "nix build of _all-project-packages" {
+  run nix build .#_all-project-packages
+  assert_success
+}

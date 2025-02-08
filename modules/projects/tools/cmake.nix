@@ -30,8 +30,8 @@ in
           enable = true;
           # FIXME: Add gtest/ctest integration
           taskfile.tasks = {
-            "build".deps = [ "build:cmake" ];
-            "build:cmake" = {
+            "build".deps = [ "cmake:build" ];
+            "cmake:build" = {
               desc = "Build using CMake.";
               cmds = [
                 "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -G Ninja -S . -B build"

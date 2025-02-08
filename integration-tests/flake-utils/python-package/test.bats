@@ -94,7 +94,7 @@ teardown() {
   assert_output "Hello from python-package!"
 }
 
-@test "can build all packages" {
-  run nix build .#python-package
+@test "nix build of _all-project-packages" {
+  run nix build .#_all-project-packages
   assert_success
 }

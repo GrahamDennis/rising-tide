@@ -70,13 +70,6 @@ let
               "nix-build:all-checks"
             ];
           };
-          "nix-build:*" = {
-            desc = "Build a package with `nix build`";
-            vars.PACKAGE = "{{index .MATCH 0}}";
-            label = "nix-build:{{.PACKAGE}}";
-            prefix = "nix-build:{{.PACKAGE}}";
-            cmds = [ "nix build --show-trace --log-lines 500 .#{{.PACKAGE}}" ];
-          };
           "docs:generate" = {
             cmds = [
               "rm -rf docs/rising-tide/docs/_generated; mkdir -p docs/rising-tide/docs/_generated"

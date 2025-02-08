@@ -81,12 +81,23 @@ in
             }) enabledSubprojects
           );
           tasks = lib.mkMerge (
-            lib.mapAttrsToList (
+            (lib.mapAttrsToList (
               _name: subprojectConfig:
               lib.genAttrs (getCfg subprojectConfig).inheritedTasks (taskName: {
                 deps = [ "${subprojectConfig.name}:${taskName}" ];
               })
-            ) enabledSubprojects
+            ) enabledSubprojects)
+            ++ [
+              {
+                "nix-build:*" = {
+                  desc = "Build a package with `nix build`";
+                  vars.PACKAGE = "{{index .MATCH 0}}";
+                  label = "nix-build:{{.PACKAGE}}";
+                  prefix = "nix-build:{{.PACKAGE}}";
+                  cmds = [ "nix build --show-trace --log-lines 500 .#{{.PACKAGE}}" ];
+                };
+              }
+            ]
           );
         };
         nixago.requests = lib.mkIf (cfg.taskfile != { }) [
