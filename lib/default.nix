@@ -1,10 +1,20 @@
 # rising-tide flake context
-{ lib, self, ... }:
+{
+  lib,
+  self,
+  inputs,
+  ...
+}:
 let
   inherit (import ./injector.nix { inherit lib; }) mkInjector;
   injector = mkInjector "injector" {
     args = {
-      inherit lib self risingTideLib;
+      inherit
+        lib
+        self
+        inputs
+        risingTideLib
+        ;
     };
   };
   risingTideLib = {
@@ -12,6 +22,7 @@ let
     injector = injector.inject ./injector.nix;
     nixagoEngines = injector.inject ./nixagoEngines.nix;
     overlays = injector.inject ./overlays.nix;
+    perSystem = injector.inject ./perSystem;
     project = injector.inject ./project.nix;
     strings = injector.inject ./strings.nix;
     tests = injector.inject ./tests.nix;

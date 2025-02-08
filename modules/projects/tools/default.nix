@@ -19,7 +19,7 @@
     ./deadnix.nix
     ./direnv
     ./go-task
-    ./jetbrains
+    ./jetbrains.nix
     ./keep-sorted.nix
     ./lefthook.nix
     ./mdformat.nix

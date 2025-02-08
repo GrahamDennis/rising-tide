@@ -34,9 +34,16 @@
               package-3 = import ./projects/package-3-with-no-tests/project.nix;
             };
 
-            tools.jetbrains = {
+            tools.experimental.jetbrains = {
               enable = true;
               xml = {
+                "modules.xml.fake" = {
+                  name = "project";
+                  attrs.version = "4";
+                  children = [
+                    { name = "component"; }
+                  ];
+                };
                 "python-monorepo.iml.fake" = {
                   name = "module";
                   attrs.type = "PYTHON_MODULE";
