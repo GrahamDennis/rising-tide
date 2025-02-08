@@ -49,6 +49,7 @@ in
         ];
         vscode.settings = {
           "clangd.path" = clangdExe;
+          "clangd.arguments" = [ "--query-driver=/nix/store/**" ];
         };
       };
     })
