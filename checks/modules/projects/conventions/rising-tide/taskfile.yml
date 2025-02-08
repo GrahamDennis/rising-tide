@@ -40,6 +40,10 @@ tasks:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/nixfmt {{.CLI_ARGS}}
     desc: Run nixfmt-rfc-style. Additional CLI arguments after `--` are forwarded
+  tool:ripsecrets:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/ripsecrets {{.CLI_ARGS}}
+    desc: Run ripsecrets. Additional CLI arguments after `--` are forwarded to ripsecrets
   tool:shellcheck:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/shellcheck --rcfile /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-shellcheckrc {{.CLI_ARGS}}

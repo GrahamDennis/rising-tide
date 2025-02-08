@@ -49,6 +49,7 @@ in
           };
           mdformat.enable = true;
           nixfmt-rfc-style.enable = true;
+          ripsecrets.enable = true;
           shellcheck.enable = true;
           shfmt = {
             enable = true;

@@ -29,6 +29,7 @@
     ./nixfmt-rfc-style.nix
     ./protolint.nix
     ./pytest.nix
+    ./ripsecrets.nix
     ./ruff.nix
     ./shellcheck.nix
     ./shfmt.nix
