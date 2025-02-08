@@ -5,3 +5,11 @@ tasks:
     cmds:
       - echo Hello World!
     desc: Say hello
+  nix-build:*:
+    cmds:
+      - nix build --show-trace --log-lines 500 .#{{.PACKAGE}}
+    desc: Build a package with `nix build`
+    label: nix-build:{{.PACKAGE}}
+    prefix: nix-build:{{.PACKAGE}}
+    vars:
+      PACKAGE: '{{index .MATCH 0}}'

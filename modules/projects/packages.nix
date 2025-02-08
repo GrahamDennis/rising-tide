@@ -6,7 +6,6 @@
 # project context
 {
   config,
-  toolsPkgs,
   ...
 }:
 let
@@ -26,11 +25,5 @@ in
         ]
       );
     }
-    (lib.mkIf (config.isRootProject) {
-      packages._all-project-packages = toolsPkgs.linkFarm "all-project-packages" (
-        builtins.removeAttrs config.packages [ "_all-project-packages" ]
-      );
-      tools.go-task.taskfile.tasks.build.deps = [ "nix-build:_all-project-packages" ];
-    })
   ];
 }

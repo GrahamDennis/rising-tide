@@ -3,6 +3,7 @@
 # project context
 {
   config,
+  toolsPkgs,
   ...
 }:
 let
@@ -19,6 +20,9 @@ in
       # Root project tool configurations
       {
         conventions.risingTide.common.enable = true;
+        packages._all-project-packages = toolsPkgs.linkFarm "all-project-packages" (
+          builtins.removeAttrs config.packages [ "_all-project-packages" ]
+        );
         tools = {
           # keep-sorted start block=yes
           deadnix.enable = true;
@@ -32,6 +36,7 @@ in
               use flake
             '';
           };
+          go-task.taskfile.tasks.build.deps = [ "nix-build:_all-project-packages" ];
           keep-sorted.enable = true;
           lefthook = {
             enable = true;

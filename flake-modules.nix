@@ -43,14 +43,14 @@ in
       in
       {
         inherit project;
-        packages.default = config.packages.all-checks;
-        packages.project-module-docs =
-          pkgs.callPackage (injector.inject ./packages/project-module-docs.nix)
-            { };
-        packages.lib-docs = pkgs.callPackage (injector.inject ./packages/lib-docs.nix) { };
-        packages.all-checks = pkgs.linkFarm "all-checks" (
-          risingTideLib.flattenAttrsRecursiveCond (v: !(lib.isDerivation v)) config.legacyPackages.checks
-        );
+        packages = project.packages // {
+          default = config.packages.all-checks;
+          project-module-docs = pkgs.callPackage (injector.inject ./packages/project-module-docs.nix) { };
+          lib-docs = pkgs.callPackage (injector.inject ./packages/lib-docs.nix) { };
+          all-checks = pkgs.linkFarm "all-checks" (
+            risingTideLib.flattenAttrsRecursiveCond (v: !(lib.isDerivation v)) config.legacyPackages.checks
+          );
+        };
 
         inherit (project) devShells;
 
