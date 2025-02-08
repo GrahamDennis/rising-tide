@@ -27,6 +27,13 @@ in
             enable = true;
             useInDevelopShell = true;
           };
+          lsan.suppressions = [
+            "leak:libpython3"
+            "leak:pybind11"
+            "leak:multiarray_umath.cpython"
+            "leak:PyObject_Malloc"
+            "leak:python3"
+          ];
           tsan.enable = true;
         };
         tools = {
