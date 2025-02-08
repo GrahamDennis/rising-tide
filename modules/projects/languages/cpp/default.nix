@@ -5,7 +5,7 @@
   ...
 }:
 # project context
-{ config, toolsPkgs, ... }:
+{ config, pkgs, ... }:
 let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.cpp;
@@ -55,14 +55,14 @@ in
             };
             suppressionsFile = lib.mkOption {
               type = types.pathInStore;
-              default = toolsPkgs.writeTextFile {
+              default = pkgs.writeTextFile {
                 name = "asan-suppressions";
                 text = lib.concatLines asanCfg.suppressions;
               };
             };
             setupHook = lib.mkOption {
               type = types.package;
-              default = toolsPkgs.makeSetupHook {
+              default = pkgs.makeSetupHook {
                 name = "asan-hook";
                 substitutions = {
                   asanCflags = asanCfg.cflags;
@@ -88,7 +88,7 @@ in
             };
             suppressionsFile = lib.mkOption {
               type = types.pathInStore;
-              default = toolsPkgs.writeTextFile {
+              default = pkgs.writeTextFile {
                 name = "lsan-suppressions";
                 text = lib.concatLines lsanCfg.suppressions;
               };
@@ -115,14 +115,14 @@ in
             };
             suppressionsFile = lib.mkOption {
               type = types.pathInStore;
-              default = toolsPkgs.writeTextFile {
+              default = pkgs.writeTextFile {
                 name = "tsan-suppressions";
                 text = lib.concatLines tsanCfg.suppressions;
               };
             };
             setupHook = lib.mkOption {
               type = types.package;
-              default = toolsPkgs.makeSetupHook {
+              default = pkgs.makeSetupHook {
                 name = "tsan-hook";
                 substitutions = {
                   tsanCflags = tsanCfg.cflags;
