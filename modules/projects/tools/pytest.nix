@@ -122,8 +122,6 @@ in
               "--override-ini=consider_namespace_packages=true"
               "--override-ini=pythonpath=."
               "--rootdir=."
-              # FIXME: this only makes sense if coverage is enabled somewhere
-              "--no-cov"
             ]
             ++ (builtins.concatMap (
               projectConfig:

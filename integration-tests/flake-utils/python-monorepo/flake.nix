@@ -33,6 +33,98 @@
               package-2 = import ./projects/package-2/project.nix;
               package-3 = import ./projects/package-3-with-no-tests/project.nix;
             };
+
+            tools.jetbrains = {
+              enable = true;
+              xml = {
+                "python-monorepo.iml.fake" = {
+                  name = "module";
+                  attrs.type = "PYTHON_MODULE";
+                  attrs.version = "4";
+                  children = [
+                    {
+                      name = "component";
+                      attrs.name = "NewModuleRootManager";
+                      children = [
+                        {
+                          name = "content";
+                          attrs.url = "file://$MODULE_DIR$";
+                          children = [
+                            {
+                              name = "sourceFolder";
+                              attrs.url = "file://$MODULE_DIR$/projects/package-1/src";
+                              attrs.isTestSource = "false";
+                            }
+                            {
+                              name = "sourceFolder";
+                              attrs.url = "file://$MODULE_DIR$/projects/package-1/tests";
+                              attrs.isTestSource = "true";
+                            }
+                            {
+                              name = "sourceFolder";
+                              attrs.url = "file://$MODULE_DIR$/projects/package-2/src";
+                              attrs.isTestSource = "false";
+                            }
+                            {
+                              name = "sourceFolder";
+                              attrs.url = "file://$MODULE_DIR$/projects/package-2/tests";
+                              attrs.isTestSource = "true";
+                            }
+                            {
+                              name = "sourceFolder";
+                              attrs.url = "file://$MODULE_DIR$/projects/package-3-with-no-tests/src";
+                              attrs.isTestSource = "false";
+                            }
+                            {
+                              name = "excludeFolder";
+                              attrs.url = "file://$MODULE_DIR$/.venv";
+                            }
+                          ];
+                        }
+                        {
+                          name = "orderEntry";
+                          attrs.type = "jdk";
+                          attrs.jdkName = "Python 3.12 (python-monorepo)";
+                          attrs.jdkType = "Python SDK";
+                        }
+                        {
+                          name = "orderEntry";
+                          attrs.type = "sourceFolder";
+                          attrs.forTests = "false";
+                        }
+                      ];
+                    }
+                    {
+                      name = "component";
+                      attrs.name = "PyDocumentationSettings";
+                      children = [
+                        {
+                          name = "option";
+                          attrs.name = "format";
+                          attrs.value = "PLAIN";
+                        }
+                        {
+                          name = "option";
+                          attrs.name = "myDocStringFormat";
+                          attrs.value = "Plain";
+                        }
+                      ];
+                    }
+                    {
+                      name = "component";
+                      attrs.name = "TestRunnerService";
+                      children = [
+                        {
+                          name = "option";
+                          attrs.name = "PROJECT_TEST_RUNNER";
+                          attrs.value = "py.test";
+                        }
+                      ];
+                    }
+                  ];
+                };
+              };
+            };
           };
         in
         rec {
