@@ -23,7 +23,10 @@ in
       {
         conventions.risingTide.common.enable = true;
         languages.cpp.sanitizers = {
-          asan.enable = true;
+          asan = {
+            enable = true;
+            useInDevelopShell = true;
+          };
           tsan.enable = true;
         };
         tools = {

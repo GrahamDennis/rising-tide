@@ -36,6 +36,7 @@ in
         {
           asan = {
             enable = lib.mkEnableOption "Enable package variant with ASAN enabled";
+            useInDevelopShell = lib.mkEnableOption "Use this package variant in the develop shell";
             cflags = lib.mkOption {
               type = types.str;
               default = "-fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g";
@@ -96,6 +97,7 @@ in
           };
           tsan = {
             enable = lib.mkEnableOption "Enable package variant with TSAN enabled";
+            useInDevelopShell = lib.mkEnableOption "Use this package variant in the develop shell";
             cflags = lib.mkOption {
               type = types.str;
               default = "-fsanitize=thread -O2 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g";
@@ -171,6 +173,10 @@ in
         lib.mkIf cfg.sanitizers.asan.enable config.package.passthru.withAsan;
       packages."${config.packageName}-with-tsan" =
         lib.mkIf cfg.sanitizers.tsan.enable config.package.passthru.withTsan;
+      mkShell.inputsFrom = lib.mkMerge [
+        (lib.mkIf cfg.sanitizers.asan.useInDevelopShell (lib.mkForce [ config.package.passthru.withAsan ]))
+        (lib.mkIf cfg.sanitizers.tsan.useInDevelopShell (lib.mkForce [ config.package.passthru.withTsan ]))
+      ];
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode = {
