@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MypyConfigService">
+    <option name="customMypyPath" value="/nix/store/nvg7qbq2d8pr1l89g72gkwdzlkjs5ciq-python3.12-mypy-1.14.1/bin/mypy"/>
+    <option name="mypyConfigFilePath" value="/nix/store/06pvnlj72ndnbm40bpda4s91jqrk4ppw-mypy.toml"/>
+  </component>
+</project>

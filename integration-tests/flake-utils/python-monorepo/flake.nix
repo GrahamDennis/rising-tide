@@ -26,113 +26,135 @@
             inherit system;
             overlays = [ self.overlays.default ];
           };
-          project = rising-tide.lib.mkProject { inherit pkgs; } {
-            name = "python-monorepo-root";
-            subprojects = {
-              package-1 = import ./projects/package-1/project.nix;
-              package-2 = import ./projects/package-2/project.nix;
-              package-3 = import ./projects/package-3-with-no-tests/project.nix;
-            };
+          project = rising-tide.lib.mkProject { inherit pkgs; } (
+            { config, lib, ... }:
+            {
+              name = "python-monorepo-root";
+              subprojects = {
+                package-1 = import ./projects/package-1/project.nix;
+                package-2 = import ./projects/package-2/project.nix;
+                package-3 = import ./projects/package-3-with-no-tests/project.nix;
+              };
 
-            tools.experimental.jetbrains = {
-              enable = true;
-              xml = {
-                "modules.xml.fake" = {
-                  name = "project";
-                  attrs.version = "4";
-                  children = [
-                    { name = "component"; }
-                  ];
-                };
-                "python-monorepo.iml.fake" = {
-                  name = "module";
-                  attrs.type = "PYTHON_MODULE";
-                  attrs.version = "4";
-                  children = [
-                    {
-                      name = "component";
-                      attrs.name = "NewModuleRootManager";
+              tools.experimental.jetbrains = {
+                enable = true;
+                projectSettings = {
+                  "externalDependencies.xml" = {
+                    components.ExternalDependencies = {
                       children = [
                         {
-                          name = "content";
-                          attrs.url = "file://$MODULE_DIR$";
-                          children = [
+                          name = "plugin";
+                          attrs.id = "com.koxudaxi.ruff";
+                        }
+                        {
+                          name = "plugin";
+                          attrs.id = "com.leinardi.pycharm.mypy";
+                        }
+                      ];
+                    };
+                  };
+                  "misc.xml" = {
+                    components = {
+                      Black.options.sdkName = "Python 3.12 (python-monorepo)";
+                      ProjectRootManager.attrs = {
+                        version = "2";
+                        project-jdk-name = "Python 3.12 (python-monorepo)";
+                        project-jdk-type = "Python SDK";
+                      };
+                    };
+                  };
+                  "ruff.xml" = {
+                    components.RuffConfigService.options = {
+                      globalRuffExecutablePath = lib.getExe config.tools.ruff.package;
+                      useRuffServer = "true";
+                      useRuffFormat = "true";
+                    };
+                  };
+                  "mypy.xml" = {
+                    components.MypyConfigService.options = {
+                      customMypyPath = lib.getExe config.tools.mypy.package;
+                      mypyConfigFilePath = builtins.toString config.tools.mypy.configFile;
+                    };
+                  };
+                  "modules.xml" = {
+                    components = {
+                      ProjectModuleManager = {
+                        children = [
+                          {
+                            name = "modules";
+                            children = [
+                              {
+                                name = "module";
+                                attrs.fileurl = "file://$PROJECT_DIR$/.idea/python-monorepo.iml";
+                                attrs.filepath = "$PROJECT_DIR$/.idea/python-monorepo.iml";
+                              }
+                            ];
+                          }
+                        ];
+                      };
+                    };
+                  };
+                };
+                moduleSettings = {
+                  "python-monorepo.iml" = {
+                    type = "PYTHON_MODULE";
+                    root = {
+                      contentEntries = [
+                        {
+                          url = "file://$MODULE_DIR$";
+                          sourceFolders = [
                             {
-                              name = "sourceFolder";
-                              attrs.url = "file://$MODULE_DIR$/projects/package-1/src";
-                              attrs.isTestSource = "false";
+                              url = "file://$MODULE_DIR$/projects/package-1/src";
+                              isTestSource = false;
                             }
                             {
-                              name = "sourceFolder";
-                              attrs.url = "file://$MODULE_DIR$/projects/package-1/tests";
-                              attrs.isTestSource = "true";
+                              url = "file://$MODULE_DIR$/projects/package-1/tests";
+                              isTestSource = true;
                             }
                             {
-                              name = "sourceFolder";
-                              attrs.url = "file://$MODULE_DIR$/projects/package-2/src";
-                              attrs.isTestSource = "false";
+                              url = "file://$MODULE_DIR$/projects/package-2/src";
+                              isTestSource = false;
                             }
                             {
-                              name = "sourceFolder";
-                              attrs.url = "file://$MODULE_DIR$/projects/package-2/tests";
-                              attrs.isTestSource = "true";
+                              url = "file://$MODULE_DIR$/projects/package-2/tests";
+                              isTestSource = true;
                             }
                             {
-                              name = "sourceFolder";
-                              attrs.url = "file://$MODULE_DIR$/projects/package-3-with-no-tests/src";
-                              attrs.isTestSource = "false";
-                            }
-                            {
-                              name = "excludeFolder";
-                              attrs.url = "file://$MODULE_DIR$/.venv";
+                              url = "file://$MODULE_DIR$/projects/package-3-with-no-tests/src";
+                              isTestSource = false;
                             }
                           ];
+                          excludeFolders = [
+                            { url = "file://$MODULE_DIR$/.venv"; }
+                          ];
+                        }
+                      ];
+                      orderEntries = [
+                        {
+                          type = "jdk";
+                          attrs = {
+                            jdkType = "Python SDK";
+                            jdkName = "Python 3.12 (python-monorepo)";
+                          };
                         }
                         {
-                          name = "orderEntry";
-                          attrs.type = "jdk";
-                          attrs.jdkName = "Python 3.12 (python-monorepo)";
-                          attrs.jdkType = "Python SDK";
-                        }
-                        {
-                          name = "orderEntry";
-                          attrs.type = "sourceFolder";
+                          type = "sourceFolder";
                           attrs.forTests = "false";
                         }
                       ];
-                    }
-                    {
-                      name = "component";
-                      attrs.name = "PyDocumentationSettings";
-                      children = [
-                        {
-                          name = "option";
-                          attrs.name = "format";
-                          attrs.value = "PLAIN";
-                        }
-                        {
-                          name = "option";
-                          attrs.name = "myDocStringFormat";
-                          attrs.value = "Plain";
-                        }
-                      ];
-                    }
-                    {
-                      name = "component";
-                      attrs.name = "TestRunnerService";
-                      children = [
-                        {
-                          name = "option";
-                          attrs.name = "PROJECT_TEST_RUNNER";
-                          attrs.value = "py.test";
-                        }
-                      ];
-                    }
-                  ];
+                    };
+                    components = {
+                      PyDocumentationSettings.options = {
+                        format = "PLAIN";
+                        myDocStringFormat = "Plain";
+                      };
+                      TestRunnerService.options.PROJECT_TEST_RUNNER = "py.test";
+                    };
+                  };
                 };
               };
-            };
-          };
+            }
+          );
         in
         rec {
           inherit project;
