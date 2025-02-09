@@ -23,6 +23,7 @@ lib.genAttrs (import inputs.systems) (
                   children = lib.mkOption {
                     type = types.listOf elementType;
                     default = [ ];
+                    visible = "shallow";
                   };
                 };
               }

@@ -32,21 +32,17 @@ let
           type = types.listOf settingsFormat.type;
           default = [ ];
         };
-        xml = lib.mkOption {
-          readOnly = true;
-          type = settingsFormat.type;
-          default = {
-            name = "component";
-            attrs = {
-              inherit name;
-            } // config.attrs;
-            children =
-              (lib.mapAttrsToList (name: value: {
-                name = "option";
-                attrs = { inherit name value; };
-              }) config.options)
-              ++ config.children;
-          };
+        xml = mkXmlOption {
+          name = "component";
+          attrs = {
+            inherit name;
+          } // config.attrs;
+          children =
+            (lib.mapAttrsToList (name: value: {
+              name = "option";
+              attrs = { inherit name value; };
+            }) config.options)
+            ++ config.children;
         };
       };
     }
@@ -59,14 +55,10 @@ let
           type = types.attrsOf componentType;
           default = { };
         };
-        xml = lib.mkOption {
-          readOnly = true;
-          type = settingsFormat.type;
-          default = {
-            name = "project";
-            attrs.version = "4";
-            children = builtins.map (component: component.xml) (builtins.attrValues config.components);
-          };
+        xml = mkXmlOption {
+          name = "project";
+          attrs.version = "4";
+          children = builtins.map (component: component.xml) (builtins.attrValues config.components);
         };
       };
     }
@@ -77,8 +69,11 @@ let
     value:
     lib.mkOption {
       readOnly = true;
+      description = "The generated XML for this element";
+      visible = "shallow";
       type = settingsFormat.type;
       default = value;
+      defaultText = lib.literalMD "The generated XML for this element";
     };
   toXml = submodule: submodule.xml;
   sourceFolderType = types.submodule (
@@ -181,17 +176,13 @@ let
           type = types.nullOr moduleRootType;
           default = null;
         };
-        xml = lib.mkOption {
-          readOnly = true;
-          type = settingsFormat.type;
-          default = {
-            name = "module";
-            attrs.type = config.type;
-            attrs.version = "4";
-            children =
-              (lib.optional (config.root != null) config.root.xml)
-              ++ (builtins.map (component: component.xml) (builtins.attrValues config.components));
-          };
+        xml = mkXmlOption {
+          name = "module";
+          attrs.type = config.type;
+          attrs.version = "4";
+          children =
+            (lib.optional (config.root != null) config.root.xml)
+            ++ (builtins.map (component: component.xml) (builtins.attrValues config.components));
         };
       };
     }
@@ -212,7 +203,6 @@ in
       xml = lib.mkOption {
         type = types.attrsOf settingsFormat.type;
         default = { };
-        visible = "shallow";
       };
       xmlFiles = lib.mkOption {
         readOnly = true;
