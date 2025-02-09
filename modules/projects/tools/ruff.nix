@@ -93,7 +93,7 @@ in
           "ruff.path" = [ ruffExe ];
         };
       };
-      tools.experimental.jetbrains = {
+      tools.jetbrains = {
         requiredPlugins."com.koxudaxi.ruff" = true;
         projectSettings."ruff.xml" = {
           components.RuffConfigService.options = {

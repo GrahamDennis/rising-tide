@@ -14,6 +14,7 @@
 let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.python;
+  pythonEnabledIn = projectConfig: (getCfg projectConfig).enable;
   cfg = getCfg config;
   pyprojectSettingsFormat = toolsPkgs.formats.toml { };
   pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" cfg.pyproject;
@@ -116,6 +117,85 @@ in
       overlay = _final: prev: {
         pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [ cfg.pythonOverlay ];
       };
+      tools.jetbrains =
+        let
+          inherit (cfg.pythonPackages.python) pythonVersion;
+        in
+        lib.mkIf (builtins.any pythonEnabledIn config.allProjectsList) {
+          projectSettings = {
+            "misc.xml" = {
+              components.ProjectRootManager.attrs = {
+                version = "2";
+                # This "JDK" name depends on the name of the directory containing this project.
+                # The @projectDirName@ variable will get rewritten when the file is written.
+                project-jdk-name = "Python ${pythonVersion} (@projectDirName@)";
+                project-jdk-type = "Python SDK";
+              };
+            };
+            # FIXME: Is this a python-only thing?
+            "modules.xml" = {
+              components.ProjectModuleManager.children = [
+                {
+                  name = "modules";
+                  children = [
+                    {
+                      name = "module";
+                      attrs.fileurl = "file://$PROJECT_DIR$/.idea/${config.name}.iml";
+                      attrs.filepath = "$PROJECT_DIR$/.idea/${config.name}.iml";
+                    }
+                  ];
+                }
+              ];
+            };
+          };
+          moduleSettings."${config.name}.iml" = {
+            type = "PYTHON_MODULE";
+            root = {
+              contentEntries = [
+                {
+                  url = "file://$MODULE_DIR$";
+                  sourceFolders = lib.pipe config.allProjectsList [
+                    (builtins.filter pythonEnabledIn)
+                    (builtins.concatMap (
+                      projectConfig:
+                      (builtins.map (srcRoot: {
+                        url = "file://$MODULE_DIR$/${projectConfig.relativePaths.toRoot}/${srcRoot}";
+                        isTestSource = false;
+                      }) (getCfg projectConfig).sourceRoots)
+                      ++ (builtins.map (testRoot: {
+                        url = "file://$MODULE_DIR$/${projectConfig.relativePaths.toRoot}/${testRoot}";
+                        isTestSource = true;
+                      }) (getCfg projectConfig).testRoots)
+                    ))
+                  ];
+                  excludeFolders = [
+                    { url = "file://$MODULE_DIR$/.venv"; }
+                  ];
+                }
+              ];
+              orderEntries = [
+                {
+                  type = "jdk";
+                  attrs = {
+                    jdkType = "Python SDK";
+                    jdkName = "Python ${pythonVersion} (@projectDirName@)";
+                  };
+                }
+                {
+                  type = "sourceFolder";
+                  attrs.forTests = "false";
+                }
+              ];
+            };
+            components = {
+              PyDocumentationSettings.options = {
+                format = "PLAIN";
+                myDocStringFormat = "Plain";
+              };
+              TestRunnerService.options.PROJECT_TEST_RUNNER = "py.test";
+            };
+          };
+        };
     })
   ];
 }

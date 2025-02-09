@@ -26,115 +26,14 @@
             inherit system;
             overlays = [ self.overlays.default ];
           };
-          project = rising-tide.lib.mkProject { inherit pkgs; } (
-            { config, ... }:
-            {
-              name = "python-monorepo-root";
-              subprojects = {
-                package-1 = import ./projects/package-1/project.nix;
-                package-2 = import ./projects/package-2/project.nix;
-                package-3 = import ./projects/package-3-with-no-tests/project.nix;
-              };
-
-              tools.experimental.jetbrains = {
-                enable = true;
-                projectSettings = {
-                  "misc.xml" = {
-                    components = {
-                      Black.options.sdkName = "Python 3.12 (python-monorepo)";
-                      ProjectRootManager.attrs = {
-                        version = "2";
-                        project-jdk-name = "Python 3.12 (python-monorepo)";
-                        project-jdk-type = "Python SDK";
-                      };
-                    };
-                  };
-                  "mypy.xml" = {
-                    components.MypyConfigService.options = {
-                      # It seems like this needs to embed the PYTHONPATH for everything to work
-                      customMypyPath = builtins.toString config.tools.mypy.wrappedPackage;
-                      mypyConfigFilePath = builtins.toString config.tools.mypy.configFile;
-                    };
-                  };
-                  "modules.xml" = {
-                    components = {
-                      ProjectModuleManager = {
-                        children = [
-                          {
-                            name = "modules";
-                            children = [
-                              {
-                                name = "module";
-                                attrs.fileurl = "file://$PROJECT_DIR$/.idea/python-monorepo.iml";
-                                attrs.filepath = "$PROJECT_DIR$/.idea/python-monorepo.iml";
-                              }
-                            ];
-                          }
-                        ];
-                      };
-                    };
-                  };
-                };
-                moduleSettings = {
-                  "python-monorepo.iml" = {
-                    type = "PYTHON_MODULE";
-                    root = {
-                      contentEntries = [
-                        {
-                          url = "file://$MODULE_DIR$";
-                          sourceFolders = [
-                            {
-                              url = "file://$MODULE_DIR$/projects/package-1/src";
-                              isTestSource = false;
-                            }
-                            {
-                              url = "file://$MODULE_DIR$/projects/package-1/tests";
-                              isTestSource = true;
-                            }
-                            {
-                              url = "file://$MODULE_DIR$/projects/package-2/src";
-                              isTestSource = false;
-                            }
-                            {
-                              url = "file://$MODULE_DIR$/projects/package-2/tests";
-                              isTestSource = true;
-                            }
-                            {
-                              url = "file://$MODULE_DIR$/projects/package-3-with-no-tests/src";
-                              isTestSource = false;
-                            }
-                          ];
-                          excludeFolders = [
-                            { url = "file://$MODULE_DIR$/.venv"; }
-                          ];
-                        }
-                      ];
-                      orderEntries = [
-                        {
-                          type = "jdk";
-                          attrs = {
-                            jdkType = "Python SDK";
-                            jdkName = "Python 3.12 (python-monorepo)";
-                          };
-                        }
-                        {
-                          type = "sourceFolder";
-                          attrs.forTests = "false";
-                        }
-                      ];
-                    };
-                    components = {
-                      PyDocumentationSettings.options = {
-                        format = "PLAIN";
-                        myDocStringFormat = "Plain";
-                      };
-                      TestRunnerService.options.PROJECT_TEST_RUNNER = "py.test";
-                    };
-                  };
-                };
-              };
-            }
-          );
+          project = rising-tide.lib.mkProject { inherit pkgs; } {
+            name = "python-monorepo-root";
+            subprojects = {
+              package-1 = import ./projects/package-1/project.nix;
+              package-2 = import ./projects/package-2/project.nix;
+              package-3 = import ./projects/package-3-with-no-tests/project.nix;
+            };
+          };
         in
         rec {
           inherit project;

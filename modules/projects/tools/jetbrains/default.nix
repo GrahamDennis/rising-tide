@@ -14,7 +14,7 @@ in
   ...
 }:
 let
-  cfg = config.tools.experimental.jetbrains;
+  cfg = config.tools.jetbrains;
   settingsFormat = risingTideLib.perSystem.${system}.formats.xml { };
   componentType = types.submodule (
     { config, name, ... }:
@@ -190,7 +190,7 @@ let
 in
 {
   options = {
-    tools.experimental.jetbrains = {
+    tools.jetbrains = {
       enable = lib.mkEnableOption "Enable JetBrains IDE integration";
       projectSettings = lib.mkOption {
         type = types.attrsOf projectSettingsType;
@@ -216,7 +216,7 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    tools.experimental.jetbrains = {
+    tools.jetbrains = {
       projectSettings."externalDependencies.xml" = lib.mkIf (cfg.requiredPlugins != { }) {
         components.ExternalDependencies.children = lib.mapAttrsToList (
           pluginId: enable:
@@ -231,10 +231,22 @@ in
         (builtins.mapAttrs (_name: moduleSettings: moduleSettings.xml) cfg.moduleSettings)
       ];
     };
-    tools.nixago.requests = lib.mapAttrsToList (name: file: {
-      data = file;
-      output = ".idea/${name}";
-      hook.mode = "copy";
-    }) cfg.xmlFiles;
+    tools.nixago.requests =
+      (lib.mapAttrsToList (name: file: {
+        data = file;
+        output = ".idea/${name}";
+        hook.mode = "copy";
+        hook.extra = ''
+          # Python SDKs need to refer to the project directory name
+          sed -i -e "s|@projectDirName@|$(basename $(pwd))|g" .idea/${name}
+        '';
+      }) cfg.xmlFiles)
+      ++ [
+        (lib.mkIf (cfg.xmlFiles != { }) {
+          data = ./jetbrains.gitignore;
+          output = ".idea/.gitignore";
+          hook.mode = "copy";
+        })
+      ];
   };
 }

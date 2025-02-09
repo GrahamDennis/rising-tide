@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder isTestSource="false" url="file://$MODULE_DIR$/./python-package-1/./src"/>
+      <excludeFolder url="file://$MODULE_DIR$/.venv"/>
+    </content>
+    <orderEntry jdkName="Python 3.12 (protobuf)" jdkType="Python SDK" type="jdk"/>
+    <orderEntry forTests="false" type="sourceFolder"/>
+  </component>
+  <component name="PyDocumentationSettings">
+    <option name="format" value="PLAIN"/>
+    <option name="myDocStringFormat" value="Plain"/>
+  </component>
+  <component name="TestRunnerService">
+    <option name="PROJECT_TEST_RUNNER" value="py.test"/>
+  </component>
+</module>

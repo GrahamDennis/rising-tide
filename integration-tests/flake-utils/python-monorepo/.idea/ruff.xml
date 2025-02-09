@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="RuffConfigService">
-    <option name="globalRuffExecutablePath" value="/nix/store/8p1yfri8k7l4pfv08slpbbk9x03b14bg-ruff-0.9.2/bin/ruff"/>
-    <option name="useRuffFormat" value="true"/>
-    <option name="useRuffServer" value="true"/>
-  </component>
-</project>

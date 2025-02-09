@@ -34,6 +34,7 @@ in
       }
       (lib.mkIf config.isRootProject {
         tools.vscode.enable = true;
+        tools.jetbrains.enable = true;
       })
     ]
   );
