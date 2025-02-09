@@ -27,7 +27,7 @@
             overlays = [ self.overlays.default ];
           };
           project = rising-tide.lib.mkProject { inherit pkgs; } (
-            { config, lib, ... }:
+            { config, ... }:
             {
               name = "python-monorepo-root";
               subprojects = {
@@ -39,21 +39,6 @@
               tools.experimental.jetbrains = {
                 enable = true;
                 projectSettings = {
-                  "externalDependencies.xml" = {
-                    components.ExternalDependencies = {
-                      children = [
-                        {
-                          name = "plugin";
-                          attrs.id = "com.koxudaxi.ruff";
-                        }
-                        # Only works when PYTHONPATH is embedded in the executable
-                        # {
-                        #   name = "plugin";
-                        #   attrs.id = "com.leinardi.pycharm.mypy";
-                        # }
-                      ];
-                    };
-                  };
                   "misc.xml" = {
                     components = {
                       Black.options.sdkName = "Python 3.12 (python-monorepo)";
@@ -62,13 +47,6 @@
                         project-jdk-name = "Python 3.12 (python-monorepo)";
                         project-jdk-type = "Python SDK";
                       };
-                    };
-                  };
-                  "ruff.xml" = {
-                    components.RuffConfigService.options = {
-                      globalRuffExecutablePath = lib.getExe config.tools.ruff.package;
-                      useRuffServer = "true";
-                      useRuffFormat = "true";
                     };
                   };
                   "mypy.xml" = {

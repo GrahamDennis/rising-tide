@@ -200,6 +200,10 @@ in
         type = types.attrsOf moduleSettingsType;
         default = { };
       };
+      requiredPlugins = lib.mkOption {
+        type = types.attrsOf types.bool;
+        default = { };
+      };
       xml = lib.mkOption {
         type = types.attrsOf settingsFormat.type;
         default = { };
@@ -213,6 +217,15 @@ in
   };
   config = lib.mkIf cfg.enable {
     tools.experimental.jetbrains = {
+      projectSettings."externalDependencies.xml" = lib.mkIf (cfg.requiredPlugins != { }) {
+        components.ExternalDependencies.children = lib.mapAttrsToList (
+          pluginId: enable:
+          (lib.mkIf enable {
+            name = "plugin";
+            attrs.id = pluginId;
+          })
+        ) cfg.requiredPlugins;
+      };
       xml = lib.mkMerge [
         (builtins.mapAttrs (_name: projectSettings: projectSettings.xml) cfg.projectSettings)
         (builtins.mapAttrs (_name: moduleSettings: moduleSettings.xml) cfg.moduleSettings)

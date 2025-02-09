@@ -93,6 +93,16 @@ in
           "ruff.path" = [ ruffExe ];
         };
       };
+      tools.experimental.jetbrains = {
+        requiredPlugins."com.koxudaxi.ruff" = true;
+        projectSettings."ruff.xml" = {
+          components.RuffConfigService.options = {
+            globalRuffExecutablePath = lib.getExe config.tools.ruff.package;
+            useRuffServer = "true";
+            useRuffFormat = "true";
+          };
+        };
+      };
     })
   ];
 }
