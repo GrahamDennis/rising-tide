@@ -5,7 +5,11 @@ pythonPackages.buildPythonPackage rec {
   pyproject = true;
   src = ./.;
 
-  dependencies = with pythonPackages; [ package-1 ];
+  dependencies = with pythonPackages; [
+    package-1
+    requests
+    types-requests
+  ];
 
   # FIXME: These should end up in the dev shell automatically
   optional-dependencies = {

@@ -15,17 +15,24 @@ let
   emptyGoogleDirectory = toolsPkgs.runCommand "mypy-google-fixups" { } ''
     mkdir -p $out/google
   '';
-  mypyExe = toolsPkgs.writeShellScript "mypy" ''
-    # mypy fails to typecheck generated protobuf python bindings imports of google.protobuf
-    # unless the google directory is present in the MYPYPATH. This is a workaround to fix that.
-    MYPYPATH="''${MYPYPATH:+''${MYPYPATH}:}${emptyGoogleDirectory}" ${lib.getExe cfg.package} "$@"
-  '';
+  mypyExe = builtins.toString cfg.wrappedPackage;
 in
 {
   options = {
     tools.mypy = {
       enable = lib.mkEnableOption "Enable mypy integration";
       package = lib.mkPackageOption toolsPkgs "mypy" { pkgsText = "toolsPkgs"; };
+      wrappedPackage = lib.mkOption {
+        readOnly = true;
+        type = types.package;
+        default = toolsPkgs.writeShellScript "mypy" ''
+          # mypy fails to typecheck generated protobuf python bindings imports of google.protobuf
+          # unless the google directory is present in the MYPYPATH. This is a workaround to fix that.
+          MYPYPATH="''${MYPYPATH:+''${MYPYPATH}:}${emptyGoogleDirectory}"
+          export MYPYPATH
+          ${lib.getExe cfg.package} "$@"
+        '';
+      };
       config = lib.mkOption {
         description = ''
           The mypy TOML file to generate. All configuration here is nested under the `tool.mypy` key

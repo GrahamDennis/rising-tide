@@ -46,10 +46,11 @@
                           name = "plugin";
                           attrs.id = "com.koxudaxi.ruff";
                         }
-                        {
-                          name = "plugin";
-                          attrs.id = "com.leinardi.pycharm.mypy";
-                        }
+                        # Only works when PYTHONPATH is embedded in the executable
+                        # {
+                        #   name = "plugin";
+                        #   attrs.id = "com.leinardi.pycharm.mypy";
+                        # }
                       ];
                     };
                   };
@@ -72,7 +73,8 @@
                   };
                   "mypy.xml" = {
                     components.MypyConfigService.options = {
-                      customMypyPath = lib.getExe config.tools.mypy.package;
+                      # It seems like this needs to embed the PYTHONPATH for everything to work
+                      customMypyPath = builtins.toString config.tools.mypy.wrappedPackage;
                       mypyConfigFilePath = builtins.toString config.tools.mypy.configFile;
                     };
                   };
