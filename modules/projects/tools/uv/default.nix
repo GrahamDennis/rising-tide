@@ -23,6 +23,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    tools.gitignore = {
+      enable = true;
+      rules = ''
+        # uv virtual environment
+        .venv
+      '';
+    };
     mkShell.nativeBuildInputs = [
       (toolsPkgs.makeSetupHook {
         name = "uv-shell-hook.sh";

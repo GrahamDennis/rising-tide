@@ -2,3 +2,21 @@
 # nixago: ignore-linked-files
 /taskfile.yml
 /.ruff.toml
+# rising-tide-managed: start
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# uv virtual environment
+.venv
+
+.pytest_cache/
+.coverage
+
+.mypy_cache/
+
+# rising-tide-managed: end

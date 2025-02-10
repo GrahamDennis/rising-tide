@@ -32,6 +32,12 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       tools = {
+        gitignore = {
+          enable = true;
+          rules = ''
+            .direnv
+          '';
+        };
         nixago.requests = [
           {
             data = toolsPkgs.writeText "envrc" cfg.contents;

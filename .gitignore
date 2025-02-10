@@ -35,6 +35,8 @@ build/
 /taskfile.yml
 
 # rising-tide-managed: start
+.direnv
 
 .coverage
+
 # rising-tide-managed: end

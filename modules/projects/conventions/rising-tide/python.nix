@@ -101,6 +101,18 @@ in
           ruff.lint.enable = true;
           ruff.format.enable = true;
           uv.enable = true;
+          gitignore = {
+            enable = true;
+            rules = ''
+              # Python-generated files
+              __pycache__/
+              *.py[oc]
+              build/
+              dist/
+              wheels/
+              *.egg-info
+            '';
+          };
         };
       })
     ]

@@ -105,7 +105,7 @@ let
       };
       gitignore = {
         enable = true;
-        lines = ''
+        rules = ''
           .coverage
         '';
       };

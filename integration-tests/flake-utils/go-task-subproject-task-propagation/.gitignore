@@ -4,3 +4,8 @@
 /.vscode/settings.json
 /.lefthook.yml
 /taskfile.yml
+
+# rising-tide-managed: start
+.direnv
+
+# rising-tide-managed: end

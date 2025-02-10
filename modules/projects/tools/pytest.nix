@@ -60,6 +60,13 @@ in
         (lib.mkIf cfg.coverage.enable [ config.languages.python.pythonPackages.pytest-cov ])
       ];
       tools = {
+        gitignore = {
+          enable = true;
+          rules = ''
+            .pytest_cache/
+            .coverage
+          '';
+        };
         pytest.config = lib.mkMerge [
           {
             addopts = [

@@ -4,3 +4,10 @@
 /.vscode/settings.json
 /taskfile.yml
 /.lefthook.yml
+
+# rising-tide-managed: start
+.ruff_cache/
+
+.direnv
+
+# rising-tide-managed: end

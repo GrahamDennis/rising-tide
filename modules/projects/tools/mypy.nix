@@ -93,6 +93,12 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       tools = {
+        gitignore = {
+          enable = true;
+          rules = ''
+            .mypy_cache/
+          '';
+        };
         go-task = {
           enable = true;
           taskfile.tasks =

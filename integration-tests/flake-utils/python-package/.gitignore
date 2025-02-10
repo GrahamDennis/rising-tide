@@ -5,3 +5,25 @@
 /.vscode/extensions.json
 /.vscode/settings.json
 /.ruff.toml
+# rising-tide-managed: start
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# uv virtual environment
+.venv
+
+.ruff_cache/
+
+.pytest_cache/
+.coverage
+
+.mypy_cache/
+
+.direnv
+
+# rising-tide-managed: end

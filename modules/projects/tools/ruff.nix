@@ -85,6 +85,12 @@ in
     })
 
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tools.gitignore = {
+        enable = true;
+        rules = ''
+          .ruff_cache/
+        '';
+      };
       tools.vscode = {
         recommendedExtensions = {
           "charliermarsh.ruff" = true;

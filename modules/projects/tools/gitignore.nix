@@ -3,7 +3,6 @@
 # project context
 {
   config,
-  toolsPkgs,
   ...
 }:
 let
@@ -11,7 +10,6 @@ let
   cfg = config.tools.gitignore;
   gitignoreStartLine = "# rising-tide-managed: start";
   gitignoreEndLine = "# rising-tide-managed: end";
-  sortedLines = builtins.sort builtins.lessThan (lib.splitString "\n" cfg.lines);
   shellHook = ''
     if ! test -f .gitignore; then
       touch .gitignore
@@ -24,7 +22,7 @@ let
 
     sed -i '/${gitignoreStartLine}/,/${gitignoreEndLine}/c\
     ${gitignoreStartLine}\
-    ${builtins.concatStringsSep "\\\n" sortedLines}\
+    ${builtins.concatStringsSep "\\\n" (lib.splitString "\n" cfg.rules)}\
     ${gitignoreEndLine}' .gitignore
   '';
 in
@@ -32,7 +30,7 @@ in
   options = {
     tools.gitignore = {
       enable = lib.mkEnableOption "Enable managing a section of .gitignore";
-      lines = lib.mkOption {
+      rules = lib.mkOption {
         type = types.lines;
         default = [ ];
       };
@@ -44,8 +42,5 @@ in
       enable = true;
       hooks.gitignore = shellHook;
     };
-    mkShell.nativeBuildInputs = [
-      (toolsPkgs.writeShellScript "gitignore-hook" shellHook)
-    ];
   };
 }

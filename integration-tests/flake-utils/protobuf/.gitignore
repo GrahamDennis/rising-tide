@@ -3,3 +3,12 @@
 /.vscode/settings.json
 /taskfile.yml
 /.lefthook.yml
+# rising-tide-managed: start
+# uv virtual environment
+.venv
+
+.ruff_cache/
+
+.direnv
+
+# rising-tide-managed: end
