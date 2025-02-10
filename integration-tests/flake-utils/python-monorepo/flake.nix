@@ -4,19 +4,18 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    rising-tide.url = "github:GrahamDennis/rising-tide";
   };
 
   outputs =
     inputs@{
       flake-utils,
       nixpkgs,
+      rising-tide,
       self,
       ...
     }:
     let
-      rising-tide = builtins.getFlake (
-        builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
-      );
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
         let
@@ -45,16 +44,8 @@
       };
     in
     perSystemOutputs
+    // systemIndependentOutputs
     // {
-      /*
-        When using rising-tide externally you should just write something like `perSystemOutputs // systemIndependentOutputs`,
-        however due to the way we import rising-tide locally in integration-tests, to avoid infinite recursion,
-        it must be clear to the nix evaluator that systemIndependentOutputs doesn't set the `sourceInfo` or `narHash`
-        keys.
-      */
-      inherit (systemIndependentOutputs) overlays pythonOverlays;
-      inputs = inputs // {
-        inherit rising-tide;
-      };
+      inherit inputs;
     };
 }

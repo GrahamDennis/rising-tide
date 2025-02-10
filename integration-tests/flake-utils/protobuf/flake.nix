@@ -4,19 +4,18 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    rising-tide.url = "github:GrahamDennis/rising-tide";
   };
 
   outputs =
     inputs@{
       flake-utils,
       nixpkgs,
+      rising-tide,
       self,
       ...
     }:
     let
-      rising-tide = builtins.getFlake (
-        builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
-      );
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
         let
@@ -62,8 +61,8 @@
       };
     in
     perSystemOutputs
+    // systemIndependentOutputs
     // {
       inherit inputs;
-      inherit (systemIndependentOutputs) overlays pythonOverlays;
     };
 }

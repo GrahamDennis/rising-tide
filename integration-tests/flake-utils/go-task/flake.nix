@@ -4,19 +4,15 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    rising-tide.url = "github:GrahamDennis/rising-tide";
   };
 
   outputs =
     {
       flake-utils,
-      self,
+      rising-tide,
       ...
     }:
-    let
-      rising-tide = builtins.getFlake (
-        builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
-      );
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
