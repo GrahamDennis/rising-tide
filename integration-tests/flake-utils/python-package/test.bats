@@ -20,6 +20,10 @@ teardown() {
   fi
 }
 
+nixBuild() {
+  nix build --override-input rising-tide "$(git rev-parse --show-toplevel)"
+}
+
 @test "can import and run python_package" {
   run python -c "import python_package; print(python_package.hello())"
   assert_success
@@ -83,7 +87,7 @@ teardown() {
   assert_failure
   assert_output --partial "assert 'Hello from python-package!' == 'Goodbye from python-package!'"
 
-  run nix build --show-trace --log-lines 500 .#python-package
+  run nixBuild --show-trace --log-lines 500 .#python-package
   assert_failure
   assert_output --partial "assert 'Hello from python-package!' == 'Goodbye"
 }
@@ -95,6 +99,6 @@ teardown() {
 }
 
 @test "nix build of _all-project-packages" {
-  run nix build .#_all-project-packages
+  run nixBuild .#_all-project-packages
   assert_success
 }

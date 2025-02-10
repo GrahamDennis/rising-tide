@@ -20,6 +20,10 @@ teardown() {
   fi
 }
 
+nixBuild() {
+  nix build --override-input rising-tide "$(git rev-parse --show-toplevel)"
+}
+
 @test "check task succeeds" {
   run task check
   assert_success
@@ -56,17 +60,17 @@ teardown() {
 }
 
 @test "can build all generated sources" {
-  run nix build .#example-file-descriptor-set .#example-generated-sources-cpp .#example-generated-sources-py
+  run nixBuild .#example-file-descriptor-set .#example-generated-sources-cpp .#example-generated-sources-py
   assert_success
 }
 
 @test "can build renamed package" {
-  run nix build .#example-extended-py-with-custom-name
+  run nixBuild .#example-extended-py-with-custom-name
   assert_success
 }
 
 @test "generated file descriptor sets are self-contained" {
-  run nix build .#example-curl
+  run nixBuild .#example-curl
   assert_success
   run ./result list
   assert_success
@@ -74,11 +78,11 @@ teardown() {
 }
 
 @test "can build C++ projects" {
-  run nix build .#example-cpp .#example-extended-cpp
+  run nixBuild .#example-cpp .#example-extended-cpp
   assert_success
 }
 
 @test "nix build of _all-project-packages" {
-  run nix build .#_all-project-packages
+  run nixBuild .#_all-project-packages
   assert_success
 }

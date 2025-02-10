@@ -60,7 +60,9 @@ let
             label = "integration-test:{{.INTEGRATION_TEST}}";
             prefix = "integration-test:{{.INTEGRATION_TEST}}";
             cmds = [
-              "nix develop --show-trace --command ${batsExe} ./test.bats"
+              ''
+                nix develop --show-trace --override-input rising-tide "$(git rev-parse --show-toplevel)" --command ${batsExe} ./test.bats
+              ''
             ];
           };
           build = {
@@ -97,6 +99,9 @@ let
       };
       vscode.settings = {
         "cmake.ignoreCMakeListsMissing" = true;
+      };
+      vscode.recommendedExtensions = {
+        "jetmartin.bats" = true;
       };
     };
   };
