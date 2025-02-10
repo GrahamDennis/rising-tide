@@ -103,6 +103,12 @@ let
       vscode.recommendedExtensions = {
         "jetmartin.bats" = true;
       };
+      gitignore = {
+        enable = true;
+        lines = ''
+          .coverage
+        '';
+      };
     };
   };
 in

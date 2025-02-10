@@ -33,3 +33,8 @@ build/
 /.vscode/settings.json
 /.lefthook.yml
 /taskfile.yml
+
+# rising-tide-managed: start
+
+.coverage
+# rising-tide-managed: end

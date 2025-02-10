@@ -5,7 +5,7 @@ echo "Sourcing @bashSafeName@"
 function @bashSafeName@() {
   echo "Executing @bashSafeName@"
 
-  @nixagoHook@
+  @shellHooks@
 }
 
 findconfig() {
@@ -31,7 +31,7 @@ function @bashSafeName@PreShell() {
   # Ensure the subproject exists
   mkdir -p "@relativePathToRoot@"
   cd "@relativePathToRoot@" || return
-  @nixagoHook@
+  @shellHooks@
   popd >/dev/null || return
 }
 
@@ -47,9 +47,6 @@ function configShellHook() {
   echo "Executing configShellHook"
   uniqueArray preShellHooks
   runHook preShellHook
-
-  # shellcheck disable=SC1091
-  . "@bashCompletionPackage@/etc/profile.d/bash_completion.sh"
 
   uniqueArray postShellHooks
   runHook postShellHook

@@ -45,23 +45,12 @@ in
     };
   };
   config = lib.mkIf (cfg.requests != [ ]) {
-    mkShell.nativeBuildInputs = [
-      (
-        let
-          bashSafeName = risingTideLib.sanitizeBashIdentifier "project${config.relativePaths.toRoot}SetupHook";
-        in
-        toolsPkgs.makeSetupHook {
-          name = "${config.relativePaths.toRoot}-setup-hook";
-          substitutions = {
-            inherit bashSafeName;
-            relativePathToRoot = config.relativePaths.toRoot;
-            nixagoHook =
-              toolsPkgs.writeShellScript "nixago-setup-hook"
-                (inputs.nixago.lib.${system}.makeAll cfg.requests).shellHook;
-            bashCompletionPackage = toolsPkgs.bash-completion;
-          };
-        } ./mk-config-hook.sh
-      )
-    ];
+    tools.shellHooks = {
+      enable = true;
+      hooks.nixago = builtins.toString (
+        toolsPkgs.writeShellScript "nixago-setup-hook"
+          (inputs.nixago.lib.${system}.makeAll cfg.requests).shellHook
+      );
+    };
   };
 }

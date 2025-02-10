@@ -18,6 +18,7 @@
     ./cue.nix
     ./deadnix.nix
     ./direnv
+    ./gitignore.nix
     ./go-task
     ./jetbrains
     ./keep-sorted.nix
@@ -26,12 +27,13 @@
     ./mypy.nix
     ./nil.nix
     ./nix-unit.nix
-    ./nixago
+    ./nixago.nix
     ./nixfmt-rfc-style.nix
     ./protolint.nix
     ./pytest.nix
     ./ripsecrets.nix
     ./ruff.nix
+    ./shellHooks
     ./shellcheck.nix
     ./shfmt.nix
     ./statix.nix
