@@ -20,3 +20,9 @@ jobs:
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run `ci:check`
         run: nix develop --command task ci:check
+      - uses: "DeterminateSystems/flakehub-push@main"
+        with:
+          name: "GrahamDennis/rising-tide"
+          rolling: true
+          visibility: "public"
+          include-output-paths: true
