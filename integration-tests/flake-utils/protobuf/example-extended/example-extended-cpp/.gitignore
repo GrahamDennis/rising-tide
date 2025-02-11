@@ -1,6 +1,0 @@
-
-# nixago: ignore-linked-files
-/.clang-format
-/.clang-tidy
-/.clangd
-/taskfile.yml
