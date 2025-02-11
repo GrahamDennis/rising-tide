@@ -16,7 +16,7 @@ jobs:
           # Fetch all history so that protobuf API compatibility can be checked
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/flakehub-nix-cache-action@main
+      - uses: DeterminateSystems/flakehub-cache-action@main
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run `ci:check`
         run: nix develop --command task ci:check
