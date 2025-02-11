@@ -10,13 +10,12 @@ setup() {
 
 restore_src_in_teardown() {
   mkdir -p build/bats
-  cp -r example/ build/bats
+  cp -R example/ build/bats
 }
 
 teardown() {
   if [ -d build/bats/example ]; then
-    rm -rf example/
-    mv build/bats/example .
+    cp -R build/bats/example/ .
   fi
 }
 
