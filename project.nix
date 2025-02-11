@@ -95,6 +95,9 @@ let
           ];
         };
       };
+      vscode.recommendedExtensions = {
+        "jetmartin.bats" = true;
+      };
       vscode.settings = {
         "cmake.ignoreCMakeListsMissing" = true;
       };
