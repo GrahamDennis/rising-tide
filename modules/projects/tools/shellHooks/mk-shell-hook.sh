@@ -2,12 +2,6 @@
 
 echo "Sourcing @bashSafeName@"
 
-function @bashSafeName@() {
-  echo "Executing @bashSafeName@"
-
-  @shellHooks@
-}
-
 findconfig() {
   # from: https://www.npmjs.com/package/find-config#algorithm
   # 1. If X/file.ext exists and is a regular file, return it. STOP
@@ -56,7 +50,6 @@ function configShellHook() {
   echo "Finished executing configShellHook"
 }
 
-postPatchHooks+=(@bashSafeName@)
 preShellHooks+=(@bashSafeName@PreShell)
 # shellcheck disable=SC2034
 shellHook=configShellHook
