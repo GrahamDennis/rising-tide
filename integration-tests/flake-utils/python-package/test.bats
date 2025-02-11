@@ -21,7 +21,7 @@ teardown() {
 }
 
 nixBuild() {
-  nix build --override-input rising-tide "$(git rev-parse --show-toplevel)" "$@"
+  nix build --override-input rising-tide "$(git rev-parse --show-toplevel)"
 }
 
 @test "can import and run python_package" {
