@@ -17,9 +17,6 @@ let
   configFile = settingsFormat.generate "pytest.toml" {
     tool.pytest.ini_options = cfg.config;
   };
-  coverageConfigFile = settingsFormat.generate "coverage.toml" {
-    tool.coverage = cfg.coverage.config;
-  };
 in
 {
   options = {
@@ -36,44 +33,19 @@ in
         type = settingsFormat.type;
         default = { };
       };
-      # FIXME: This should be separated out into perhaps 2 separate tools: coverage-py and pytest-cov
-      coverage = {
-        enable = lib.mkEnableOption "Enable pytest-cov integration";
-        config = lib.mkOption {
-          description = ''
-            The python coverage TOML configuration file to generate. All configuration here is nested under the `tool.coverage` key
-            in the generated file.
-
-            Refer to the [coverage documentation](https://coverage.readthedocs.io/en/7.6.10/config.html#toml-syntax).
-          '';
-          type = settingsFormat.type;
-          default = { };
-        };
-      };
     };
   };
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
-      mkShell.nativeBuildInputs = lib.mkMerge [
-        [ config.languages.python.pythonPackages.pytest ]
-        (lib.mkIf cfg.coverage.enable [ config.languages.python.pythonPackages.pytest-cov ])
-      ];
+      mkShell.nativeBuildInputs = [ config.languages.python.pythonPackages.pytest ];
       tools = {
-        pytest.config = lib.mkMerge [
-          {
-            addopts = [
-              "--showlocals"
-              "--maxfail=1"
-            ];
-          }
-          (lib.mkIf cfg.coverage.enable {
-            addopts = [
-              "--cov"
-              "--cov-config=${toString coverageConfigFile}"
-            ];
-          })
-        ];
+        pytest.config = {
+          addopts = [
+            "--showlocals"
+            "--maxfail=1"
+          ];
+        };
 
         go-task = {
           enable = true;
@@ -82,31 +54,21 @@ in
               let
                 callPytest = args: "pytest --config-file=${toString configFile} --rootdir=. ${args}";
               in
-              lib.mkMerge [
-                {
-                  test.deps = [ "test:pytest" ];
-                  "test:pytest" = {
-                    desc = "Run pytest";
-                    # Only run pytest if there is a test directory
-                    cmds = [
-                      (callPytest "--junitxml=./build/test.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
-                    ];
-                  };
-                  "tool:pytest" = {
-                    desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
-                    cmds = [ (callPytest "{{.CLI_ARGS}}") ];
-                  };
-                }
-                (lib.mkIf cfg.coverage.enable {
-                  "tool:coverage" = {
-                    desc = "Run python coverage tool.";
-                    cmds = [ "coverage {{.CLI_ARGS}}" ];
-                    env = {
-                      COVERAGE_RCFILE = builtins.toString coverageConfigFile;
-                    };
-                  };
-                })
-              ];
+
+              {
+                test.deps = [ "test:pytest" ];
+                "test:pytest" = {
+                  desc = "Run pytest";
+                  # Only run pytest if there is a test directory
+                  cmds = [
+                    (callPytest "--junitxml=./build/test.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
+                  ];
+                };
+                "tool:pytest" = {
+                  desc = "Run pytest. Additional CLI arguments after `--` are forwarded to pytest";
+                  cmds = [ (callPytest "{{.CLI_ARGS}}") ];
+                };
+              };
           };
         };
       };
@@ -116,7 +78,6 @@ in
         enable = true;
         rules = ''
           .pytest_cache/
-          .coverage
         '';
       };
       tools.vscode = {

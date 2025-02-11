@@ -20,10 +20,11 @@ wheels/
 .ruff_cache/
 
 .pytest_cache/
-.coverage
 
 .mypy_cache/
 
 /.direnv
+
+.coverage*
 
 # rising-tide-managed: end

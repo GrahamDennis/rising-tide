@@ -42,22 +42,22 @@ in
             config = {
               markers = [ "integration" ];
             };
-            coverage.config = {
-              run.branch = true;
-              run.source = [ "src/" ];
-              report = {
-                exclude_also = [
-                  # don't complain about conditional type checking imports
-                  "if TYPE_CHECKING:"
-                  # Don't complain about abstract methods, they aren't run:
-                  "@(abc\\.)?abstractmethod"
-                  # Don't complain about assert_never calls, as they aren't run:
-                  "assert_never\\("
-                ];
-                show_missing = true;
-                skip_covered = true;
-                skip_empty = true;
-              };
+          };
+          coverage-py.config = {
+            run.branch = true;
+            run.source = [ "src/" ];
+            report = {
+              exclude_also = [
+                # don't complain about conditional type checking imports
+                "if TYPE_CHECKING:"
+                # Don't complain about abstract methods, they aren't run:
+                "@(abc\\.)?abstractmethod"
+                # Don't complain about assert_never calls, as they aren't run:
+                "assert_never\\("
+              ];
+              show_missing = true;
+              skip_covered = true;
+              skip_empty = true;
             };
           };
           ruff.config = {
@@ -94,9 +94,9 @@ in
       (lib.mkIf (pythonEnabledIn config) {
         tools = {
           mypy.enable = true;
+          coverage-py.enable = true;
           pytest = {
             enable = (getLangCfg config).testRoots != [ ];
-            coverage.enable = true;
           };
           ruff.lint.enable = true;
           ruff.format.enable = true;

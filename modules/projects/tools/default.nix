@@ -15,6 +15,7 @@
     ./clangd.nix
     ./cmake-format.nix
     ./cmake.nix
+    ./coverage-py.nix
     ./cue.nix
     ./deadnix.nix
     ./direnv

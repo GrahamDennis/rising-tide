@@ -13,4 +13,6 @@
 
 /.direnv
 
+.coverage*
+
 # rising-tide-managed: end
