@@ -120,15 +120,17 @@ in
       tools.jetbrains =
         let
           inherit (cfg.pythonPackages.python) pythonVersion;
+          # This "JDK" name depends on the name of the directory containing this project.
+          # The @projectDirName@ variable will get rewritten when the file is written.
+          sdkName = "Python ${pythonVersion} (@projectDirName@)";
         in
         lib.mkIf (builtins.any pythonEnabledIn config.allProjectsList) {
           projectSettings = {
             "misc.xml" = {
+              components.Black.options = { inherit sdkName; };
               components.ProjectRootManager.attrs = {
                 version = "2";
-                # This "JDK" name depends on the name of the directory containing this project.
-                # The @projectDirName@ variable will get rewritten when the file is written.
-                project-jdk-name = "Python ${pythonVersion} (@projectDirName@)";
+                project-jdk-name = sdkName;
                 project-jdk-type = "Python SDK";
               };
             };
@@ -178,7 +180,7 @@ in
                   type = "jdk";
                   attrs = {
                     jdkType = "Python SDK";
-                    jdkName = "Python ${pythonVersion} (@projectDirName@)";
+                    jdkName = sdkName;
                   };
                 }
                 {

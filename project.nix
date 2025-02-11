@@ -38,9 +38,9 @@ let
           test.deps = [ "test:integration-tests" ];
           "test:integration-tests" = {
             desc = "Run integration tests";
+            dir = "integration-tests";
             vars.INTEGRATION_TESTS.sh = ''
               # Find all integration test directories without a ./ prefix
-              cd integration-tests;
               find . -name flake.nix -print0 | xargs -0 dirname | cut -f2- -d'/'
             '';
             deps = [
@@ -60,9 +60,7 @@ let
             label = "integration-test:{{.INTEGRATION_TEST}}";
             prefix = "integration-test:{{.INTEGRATION_TEST}}";
             cmds = [
-              ''
-                nix develop --show-trace --override-input rising-tide "$(git rev-parse --show-toplevel)" --command ${batsExe} ./test.bats
-              ''
+              "nix develop --show-trace --command ${batsExe} ./test.bats"
             ];
           };
           build = {
@@ -82,12 +80,10 @@ let
           "docs:build" = {
             deps = [ "docs:generate" ];
             desc = "Build documentation";
+            dir = "docs/rising-tide";
             cmds = [
-              ''
-                cd docs/rising-tide
-                npm install
-                npm run build
-              ''
+              "npm install"
+              "npm run build"
             ];
           };
           "ci:check".deps = [
@@ -97,17 +93,11 @@ let
           ];
         };
       };
-      vscode.settings = {
-        "cmake.ignoreCMakeListsMissing" = true;
-      };
       vscode.recommendedExtensions = {
         "jetmartin.bats" = true;
       };
-      gitignore = {
-        enable = true;
-        rules = ''
-          .coverage
-        '';
+      vscode.settings = {
+        "cmake.ignoreCMakeListsMissing" = true;
       };
     };
   };

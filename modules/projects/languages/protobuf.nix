@@ -160,7 +160,6 @@ in
         { config, ... }:
         {
           languages.cpp = {
-            enable = true;
             callPackageFunction =
               { pkgs, stdenv, ... }:
               stdenv.mkDerivation {

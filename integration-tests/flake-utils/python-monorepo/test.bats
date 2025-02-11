@@ -6,10 +6,6 @@ setup() {
   bats_load_library bats-file
 }
 
-nixBuild() {
-  nix build --override-input rising-tide "$(git rev-parse --show-toplevel)" "$@"
-}
-
 @test "can import and run package_1" {
   run python -c "import package_1; print(package_1.hello())"
   assert_success
@@ -45,6 +41,6 @@ nixBuild() {
 }
 
 @test "nix build of _all-project-packages" {
-  run nixBuild .#_all-project-packages
+  run nix build .#_all-project-packages
   assert_success
 }
