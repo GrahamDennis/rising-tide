@@ -82,3 +82,8 @@ teardown() {
   run nix build .#_all-project-packages
   assert_success
 }
+
+@test "can run task build" {
+  run task build
+  assert_success
+}

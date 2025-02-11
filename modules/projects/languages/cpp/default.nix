@@ -24,7 +24,8 @@ in
           pkgs.callPackage callPackageFunction {}
           ```
         '';
-        type = risingTideLib.types.callPackageFunction;
+        type = types.nullOr risingTideLib.types.callPackageFunction;
+        default = null;
       };
 
       sanitizers =
@@ -137,7 +138,7 @@ in
     };
   };
   config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
+    (lib.mkIf (cfg.callPackageFunction != null) {
       callPackageFunction =
         let
           f = cfg.callPackageFunction;
@@ -173,6 +174,8 @@ in
         lib.mkIf cfg.sanitizers.asan.enable config.package.passthru.withAsan;
       packages."${config.packageName}-with-tsan" =
         lib.mkIf cfg.sanitizers.tsan.enable config.package.passthru.withTsan;
+    })
+    (lib.mkIf cfg.enable {
       mkShell.inputsFrom = lib.mkMerge [
         (lib.mkIf cfg.sanitizers.asan.useInDevelopShell (lib.mkForce [ config.package.passthru.withAsan ]))
         (lib.mkIf cfg.sanitizers.tsan.useInDevelopShell (lib.mkForce [ config.package.passthru.withTsan ]))
