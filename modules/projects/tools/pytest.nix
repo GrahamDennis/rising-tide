@@ -60,13 +60,6 @@ in
         (lib.mkIf cfg.coverage.enable [ config.languages.python.pythonPackages.pytest-cov ])
       ];
       tools = {
-        gitignore = {
-          enable = true;
-          rules = ''
-            .pytest_cache/
-            .coverage
-          '';
-        };
         pytest.config = lib.mkMerge [
           {
             addopts = [
@@ -119,6 +112,13 @@ in
       };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tools.gitignore = {
+        enable = true;
+        rules = ''
+          .pytest_cache/
+          .coverage
+        '';
+      };
       tools.vscode = {
         settings = {
           "python.testing.pytestEnabled" = true;

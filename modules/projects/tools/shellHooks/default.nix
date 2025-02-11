@@ -24,7 +24,7 @@ in
         default = [ ];
       };
       hooks = lib.mkOption {
-        type = types.attrsOf types.lines;
+        type = types.attrsOf types.str;
         default = { };
       };
     };
@@ -38,6 +38,7 @@ in
         substitutions = {
           inherit bashSafeName;
           relativePathToRoot = config.relativePaths.toRoot;
+          bashCompletionPackage = toolsPkgs.bash-completion;
           shellHooks = lib.mapAttrsToList (name: script: ''
             ## Begin ${name}
             ${script}

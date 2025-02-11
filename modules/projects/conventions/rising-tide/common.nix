@@ -3,7 +3,6 @@
 # project context
 {
   config,
-  toolsPkgs,
   ...
 }:
 let
@@ -17,12 +16,6 @@ in
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       {
-        tools.shellHooks = {
-          enable = true;
-          hooks.bashCompletion = ''
-            . "${toolsPkgs.bash-completion}/etc/profile.d/bash_completion.sh"
-          '';
-        };
         tools.go-task = {
           taskfile.run = "when_changed";
           taskfile.tasks = {

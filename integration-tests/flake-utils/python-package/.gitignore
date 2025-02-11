@@ -15,7 +15,7 @@ wheels/
 *.egg-info
 
 # uv virtual environment
-.venv
+/.venv
 
 .ruff_cache/
 
@@ -24,6 +24,6 @@ wheels/
 
 .mypy_cache/
 
-.direnv
+/.direnv
 
 # rising-tide-managed: end

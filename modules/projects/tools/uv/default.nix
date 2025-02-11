@@ -27,7 +27,7 @@ in
       enable = true;
       rules = ''
         # uv virtual environment
-        .venv
+        /.venv
       '';
     };
     mkShell.nativeBuildInputs = [

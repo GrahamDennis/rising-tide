@@ -6,6 +6,6 @@
 /taskfile.yml
 
 # rising-tide-managed: start
-.direnv
+/.direnv
 
 # rising-tide-managed: end

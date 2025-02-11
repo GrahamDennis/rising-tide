@@ -8,6 +8,11 @@
 # rising-tide-managed: start
 .ruff_cache/
 
-.direnv
+.pytest_cache/
+.coverage
+
+.mypy_cache/
+
+/.direnv
 
 # rising-tide-managed: end

@@ -35,7 +35,7 @@ in
         gitignore = {
           enable = true;
           rules = ''
-            .direnv
+            /.direnv
           '';
         };
         nixago.requests = [

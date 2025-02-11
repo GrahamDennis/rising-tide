@@ -5,10 +5,12 @@
 /.lefthook.yml
 # rising-tide-managed: start
 # uv virtual environment
-.venv
+/.venv
 
 .ruff_cache/
 
-.direnv
+.mypy_cache/
+
+/.direnv
 
 # rising-tide-managed: end
