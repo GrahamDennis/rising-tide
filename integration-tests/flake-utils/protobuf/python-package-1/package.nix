@@ -12,5 +12,7 @@ pythonPackages.buildPythonPackage {
     types-protobuf
   ];
 
+  pythonImportsCheck = [ "python_package_1" ];
+
   build-system = with pythonPackages; [ hatchling ];
 }

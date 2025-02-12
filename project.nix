@@ -22,7 +22,6 @@ let
     relativePaths.toRoot = "./.";
     mkShell = {
       nativeBuildInputs = with pkgs; [
-        nix-unit
         batsWithLibraries
         nodejs
         nix-eval-jobs

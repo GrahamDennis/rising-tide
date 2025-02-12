@@ -19,15 +19,18 @@ let
     {
       imports =
         (injector.injectModules [
+          # keep-sorted start
           ./conventions
           ./devShells.nix
-          ./mkShell.nix
           ./languages
+          ./mkShell.nix
           ./namespace.nix
+          ./nix-eval-jobs.nix
           ./overlay.nix
           ./package.nix
           ./packages.nix
           ./tools
+          # keep-sorted end
         ])
         ++ projectModules;
 

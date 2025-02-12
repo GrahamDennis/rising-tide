@@ -50,6 +50,11 @@
                   python-package-1 = import ./python-package-1/project.nix;
                 };
                 tools.uv.enable = true;
+                mkShell.nativeBuildInputs = with pkgs; [
+                  nix-eval-jobs
+                  nix-fast-build
+                  nix-output-monitor
+                ];
               };
         in
         {
