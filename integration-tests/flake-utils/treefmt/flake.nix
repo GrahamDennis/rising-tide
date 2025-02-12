@@ -30,7 +30,7 @@
       in
       {
         inherit project;
-        inherit (project) packages devShells;
+        inherit (project) packages devShells hydraJobs;
       }
     );
 }
