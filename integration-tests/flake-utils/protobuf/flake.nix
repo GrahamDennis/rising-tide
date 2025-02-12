@@ -59,7 +59,7 @@
         in
         {
           inherit project;
-          inherit (project) devShells packages;
+          inherit (project) devShells packages hydraJobs;
         }
       );
       systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {

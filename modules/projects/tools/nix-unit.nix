@@ -30,7 +30,7 @@ in
         test.deps = [ "test:nix-unit" ];
         "test:nix-unit" = {
           desc = "Run nix-unit tests";
-          cmds = [ "${nix-unitExe} --show-trace --flake .#${cfg.testsFlakeAttrPath}" ];
+          cmds = [ "${nix-unitExe} --show-trace --flake .?submodules=1#${cfg.testsFlakeAttrPath}" ];
         };
         "tool:nix-unit" = {
           desc = "Run nix-unit. Additional CLI arguments after `--` are forwarded";

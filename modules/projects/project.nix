@@ -22,10 +22,10 @@ let
           # keep-sorted start
           ./conventions
           ./devShells.nix
+          ./hydraJobs.nix
           ./languages
           ./mkShell.nix
           ./namespace.nix
-          ./nix-eval-jobs.nix
           ./overlay.nix
           ./package.nix
           ./packages.nix

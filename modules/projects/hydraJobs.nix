@@ -19,11 +19,14 @@ let
   );
 in
 {
-  options.nix-eval-jobs = lib.mkOption {
+  options.hydraJobs = lib.mkOption {
     type = recursivePackagesType;
     default = { };
   };
   config = {
-    nix-eval-jobs = builtins.removeAttrs config.packages [ "_all-project-packages" ];
+    hydraJobs = lib.pipe config.packages [
+      (lib.flip builtins.removeAttrs [ "_all-project-packages" ])
+      (builtins.mapAttrs (_name: package: lib.hydraJob package))
+    ];
   };
 }

@@ -27,6 +27,7 @@
     ./mdformat.nix
     ./mypy.nix
     ./nil.nix
+    ./nix-fast-build.nix
     ./nix-unit.nix
     ./nixago.nix
     ./nixfmt-rfc-style.nix

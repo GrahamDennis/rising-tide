@@ -94,7 +94,7 @@ in
                   vars.PACKAGE = "{{index .MATCH 0}}";
                   label = "nix-build:{{.PACKAGE}}";
                   prefix = "nix-build:{{.PACKAGE}}";
-                  cmds = [ "nix build --show-trace --log-lines 500 .#{{.PACKAGE}}" ];
+                  cmds = [ "nix build --show-trace --log-lines 500 .?submodules=1#{{.PACKAGE}}" ];
                 };
               }
             ]
