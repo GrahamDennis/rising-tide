@@ -153,12 +153,14 @@ in
               drv:
               lib.overrideDerivation drv (prev: {
                 name = prev.name + "-with-asan";
+                dontStrip = true;
                 nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.asan.setupHook ];
               });
             enableTsan =
               drv:
               lib.overrideDerivation drv (prev: {
                 name = prev.name + "-with-tsan";
+                dontStrip = true;
                 nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.tsan.setupHook ];
               });
             resultWithExtraPassthru = result.overrideAttrs (prev: {
