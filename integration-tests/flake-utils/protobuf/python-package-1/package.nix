@@ -10,6 +10,7 @@ pythonPackages.buildPythonPackage {
     example-extended-py-with-custom-name
     protobuf
     types-protobuf
+    grpcio
   ];
 
   pythonImportsCheck = [ "python_package_1" ];

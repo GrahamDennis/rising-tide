@@ -32,6 +32,7 @@
     ./nixago.nix
     ./nixfmt-rfc-style.nix
     ./protolint.nix
+    ./pyright.nix
     ./pytest.nix
     ./ripsecrets.nix
     ./ruff.nix

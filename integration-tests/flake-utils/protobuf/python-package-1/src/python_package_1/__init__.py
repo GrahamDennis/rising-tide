@@ -1,3 +1,5 @@
+import grpc
+import grpc.aio
 from example.v1 import greeter_pb2
 from example_extended.v1 import greeter_pb2 as greeter_pb2_extended
 
@@ -22,6 +24,15 @@ def check_typing_of_lists_in_generated_packages() -> greeter_pb2.SayHelloRequest
     for message in message_list.messages:
         return message
     return greeter_pb2.SayHelloRequest()
+
+
+def check_typing_in_exception() -> None:
+    try:
+        foo = check_typing_of_lists_in_generated_packages()
+    except grpc.aio.AioRpcError as e:
+        print(f"error code {e.code()}")
+        raise
+    foo.name
 
 
 def cli() -> None:

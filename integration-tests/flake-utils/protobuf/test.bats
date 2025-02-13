@@ -10,12 +10,12 @@ setup() {
 
 restore_src_in_teardown() {
   mkdir -p build/bats
-  cp -R example/ build/bats
+  cp -R example/ python-package-1/ build/bats
 }
 
 teardown() {
   if [ -d build/bats/example ]; then
-    cp -R build/bats/example/ .
+    cp -R build/bats/{example,python-package-1} .
   fi
 }
 
@@ -85,4 +85,20 @@ teardown() {
 @test "can run task build" {
   run task build
   assert_success
+}
+
+@test "check:pyright task fails on non-existent method call" {
+  restore_src_in_teardown
+  sed -i -e 's/grpc.aio.AioRpcError/grpc.RpcError/' python-package-1/src/python_package_1/__init__.py
+  run task python-package-1:check:pyright
+  assert_failure
+  assert_output --partial 'Cannot access attribute "code" for class "RpcError"'
+}
+
+@test "check:pyright task fails on unbound variable" {
+  restore_src_in_teardown
+  sed -i -e 's/print(f"error code {e.code()}")/foo.name/' python-package-1/src/python_package_1/__init__.py
+  run task python-package-1:check:pyright
+  assert_failure
+  assert_output --partial '"foo" is unbound'
 }

@@ -37,6 +37,10 @@ in
               disallow_untyped_calls = false;
               disallow_incomplete_defs = false;
             };
+            # FIXME: Add grpc-stubs
+            perModuleOverrides."grpc.*" = {
+              ignore_missing_imports = true;
+            };
           };
           pytest = {
             config = {
@@ -93,14 +97,8 @@ in
       # Enable Python tools in Python projects
       (lib.mkIf (pythonEnabledIn config) {
         tools = {
-          mypy.enable = true;
+          # keep-sorted start block=yes
           coverage-py.enable = true;
-          pytest = {
-            enable = (getLangCfg config).testRoots != [ ];
-          };
-          ruff.lint.enable = true;
-          ruff.format.enable = true;
-          uv.enable = true;
           gitignore = {
             enable = true;
             rules = ''
@@ -113,6 +111,15 @@ in
               *.egg-info
             '';
           };
+          mypy.enable = true;
+          pyright.enable = true;
+          pytest = {
+            enable = (getLangCfg config).testRoots != [ ];
+          };
+          ruff.format.enable = true;
+          ruff.lint.enable = true;
+          uv.enable = true;
+          # keep-sorted end
         };
       })
     ]
