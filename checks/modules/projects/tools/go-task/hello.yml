@@ -7,7 +7,7 @@ tasks:
     desc: Say hello
   nix-build:*:
     cmds:
-      - nix build --show-trace --log-lines 500 .#{{.PACKAGE}}
+      - nix build --show-trace --log-lines 500 .?submodules=1#{{.PACKAGE}}
     desc: Build a package with `nix build`
     label: nix-build:{{.PACKAGE}}
     prefix: nix-build:{{.PACKAGE}}
