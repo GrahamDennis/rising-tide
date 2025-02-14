@@ -1,5 +1,8 @@
 .direnv
 
+# Until this is supported
+.idea
+
 # nixago: ignore-linked-files
 /.clangd
 /.clang-tidy
