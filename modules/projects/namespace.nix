@@ -28,13 +28,9 @@ in
     };
     subprojects = lib.mkOption {
       type = types.attrsOf (
-        types.submoduleWith {
-          modules = [
-            {
-              # Children inherit the namespace path of their parent
-              namespacePath = lib.mkDefault config.namespacePath;
-            }
-          ];
+        types.submodule {
+          # Children inherit the namespace path of their parent
+          namespacePath = lib.mkDefault config.namespacePath;
         }
       );
     };

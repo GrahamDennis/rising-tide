@@ -55,7 +55,7 @@ in
           "direnv.watchForChanges" = false;
         };
 
-        recommendedExtensions."mkhl.direnv" = true;
+        recommendedExtensions."mkhl.direnv".enable = true;
       };
     })
   ];

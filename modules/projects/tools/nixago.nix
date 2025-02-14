@@ -29,16 +29,15 @@ in
         '';
         # FIXME: Replace the attrs with a submodule with the noop engine as default.
         type = types.listOf (
-          types.submodule [
-            {
-              freeformType = types.anything;
-              options.engine = lib.mkOption {
-                type = types.functionTo types.pathInStore;
-                description = "The engine to use for generating the derivation";
-                default = risingTideLib.nixagoEngines.noop;
-              };
-            }
-          ]
+          types.submodule {
+            freeformType = types.anything;
+            options.engine = lib.mkOption {
+              type = types.functionTo types.pathInStore;
+              description = "The engine to use for generating the derivation";
+              default = risingTideLib.nixagoEngines.noop;
+            };
+          }
+
         );
         default = [ ];
       };

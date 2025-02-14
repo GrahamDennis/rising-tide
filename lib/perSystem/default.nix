@@ -11,23 +11,19 @@ lib.genAttrs (import inputs.systems) (
       xml =
         _parameters:
         let
-          elementType = types.submoduleWith {
-            modules = [
-              {
-                options = {
-                  name = lib.mkOption { type = types.str; };
-                  attrs = lib.mkOption {
-                    type = types.attrsOf types.str;
-                    default = { };
-                  };
-                  children = lib.mkOption {
-                    type = types.listOf elementType;
-                    default = [ ];
-                    visible = "shallow";
-                  };
-                };
-              }
-            ];
+          elementType = types.submodule {
+            options = {
+              name = lib.mkOption { type = types.str; };
+              attrs = lib.mkOption {
+                type = types.attrsOf types.str;
+                default = { };
+              };
+              children = lib.mkOption {
+                type = types.listOf elementType;
+                default = [ ];
+                visible = "shallow";
+              };
+            };
           };
         in
         {

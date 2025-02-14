@@ -70,7 +70,7 @@ in
             "python.analysis.languageServerMode" = "full";
             "python.analysis.typeCheckingMode" = "standard";
           };
-          recommendedExtensions."ms-python.vscode-pylance" = true;
+          recommendedExtensions."ms-python.vscode-pylance".enable = true;
         };
       };
     })

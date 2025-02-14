@@ -186,10 +186,10 @@ in
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode = {
         recommendedExtensions = {
-          "ms-vscode.cpptools-extension-pack" = true;
-          "matepek.vscode-catch2-test-adapter" = true;
-          "vadimcn.vscode-lldb" = true;
-          "llvm-vs-code-extensions.vscode-clangd" = true;
+          "ms-vscode.cpptools-extension-pack".enable = true;
+          "matepek.vscode-catch2-test-adapter".enable = true;
+          "vadimcn.vscode-lldb".enable = true;
+          "llvm-vs-code-extensions.vscode-clangd".enable = true;
         };
       };
     })

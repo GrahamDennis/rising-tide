@@ -117,7 +117,7 @@ in
           }
         ];
         vscode.recommendedExtensions = lib.mkIf config.isRootProject {
-          "task.vscode-task" = true;
+          "task.vscode-task".enable = true;
         };
       };
     };

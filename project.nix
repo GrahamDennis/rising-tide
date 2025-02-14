@@ -99,7 +99,7 @@ let
         };
       };
       vscode.recommendedExtensions = {
-        "jetmartin.bats" = true;
+        "jetmartin.bats".enable = true;
       };
       vscode.settings = {
         "cmake.ignoreCMakeListsMissing" = true;

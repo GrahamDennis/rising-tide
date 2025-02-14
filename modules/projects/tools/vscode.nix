@@ -26,22 +26,27 @@ in
         description = ''
           An attrset of booleans to indicate which extensions should be included in `.vscode/extensions.json`.
         '';
-        type = types.attrsOf types.bool;
+        type = types.attrsOf types.submodule (
+          { name, ... }:
+          {
+            options.enable = lib.mkEnableOption "Enable extension '${cfg.name}'";
+          }
+        );
         default = { };
         example = {
-          "jnoortheen.nix-ide" = true;
+          "jnoortheen.nix-ide".enable = true;
         };
       };
       extensions = lib.mkOption {
         description = ''
           Contents of the VSCode `.vscode/extensions.json` file to generate. This file describes extensions
-          that are recommended to be used with this project. Prefer to instead modify `recommendedExtensions`.
+          that are recommended to be used with this project. Instead modify `recommendedExtensions`.
         '';
         type = settingsFormat.type;
         readOnly = true;
         default = {
           recommendations = builtins.attrNames (
-            lib.filterAttrs (_name: enabled: enabled) cfg.recommendedExtensions
+            lib.filterAttrs (_name: extensionCfg: extensionCfg.enable) cfg.recommendedExtensions
           );
         };
       };

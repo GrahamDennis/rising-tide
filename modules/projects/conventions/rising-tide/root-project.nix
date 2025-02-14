@@ -91,7 +91,7 @@ in
             ];
           };
           vscode.recommendedExtensions = {
-            "jnoortheen.nix-ide" = true;
+            "jnoortheen.nix-ide".enable = true;
           };
           vscode.settings = {
             # See https://github.com/nix-community/vscode-nix-ide/pull/417

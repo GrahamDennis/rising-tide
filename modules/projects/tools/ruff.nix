@@ -93,7 +93,7 @@ in
       };
       tools.vscode = {
         recommendedExtensions = {
-          "charliermarsh.ruff" = true;
+          "charliermarsh.ruff".enable = true;
         };
         settings = {
           "ruff.path" = [ ruffExe ];

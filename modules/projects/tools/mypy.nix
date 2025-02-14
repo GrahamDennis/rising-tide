@@ -139,7 +139,7 @@ in
               "--config-file=${toString cfg.configFile}"
             ];
           };
-          recommendedExtensions."ms-python.mypy-type-checker" = true;
+          recommendedExtensions."ms-python.mypy-type-checker".enable = true;
         };
       };
     })
