@@ -25,14 +25,17 @@ in
         languages.cpp.sanitizers = {
           asan = {
             enable = true;
-            useInDevelopShell = true;
+            enableInDevelopShell = true;
           };
           lsan.suppressions = [
-            "leak:libpython3"
-            "leak:pybind11"
-            "leak:multiarray_umath.cpython"
+            # keep-sorted start
             "leak:PyObject_Malloc"
+            "leak:libobjc"
+            "leak:libpython3"
+            "leak:multiarray_umath.cpython"
+            "leak:pybind11"
             "leak:python3"
+            # keep-sorted end
           ];
           tsan.enable = true;
         };

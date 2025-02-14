@@ -16,14 +16,12 @@ in
     type = types.attrsOf types.package;
     default = { };
   };
-  config = lib.mkMerge [
-    {
-      packages = lib.mkMerge (
-        lib.pipe config.subprojects [
-          builtins.attrValues
-          (builtins.map (subproject: subproject.packages))
-        ]
-      );
-    }
-  ];
+  config = {
+    packages = lib.mkMerge (
+      lib.pipe config.subprojects [
+        builtins.attrValues
+        (builtins.map (subproject: subproject.packages))
+      ]
+    );
+  };
 }
