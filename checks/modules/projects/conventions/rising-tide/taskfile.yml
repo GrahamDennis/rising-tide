@@ -16,6 +16,7 @@ tasks:
       - task: check:_concurrent
     desc: Run all checks
   check:_concurrent:
+    deps: []
     internal: true
   check:_serial:
     cmds:

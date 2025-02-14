@@ -20,11 +20,17 @@ let
 in
 {
   options.tasks = {
+    build = {
+      enable = (lib.mkEnableOption "Enable the check task") // {
+        default = true;
+      };
+
+    };
     check = {
       enable = (lib.mkEnableOption "Enable the check task") // {
         default = true;
       };
-      serialTasks = lib.mkOption {
+      serialChecks = lib.mkOption {
         type = types.attrsOf enabledModule;
         default = { };
         description = ''
@@ -37,7 +43,7 @@ in
           "check:treefmt".enable = true;
         };
       };
-      concurrentTasks = lib.mkOption {
+      concurrentChecks = lib.mkOption {
         type = types.attrsOf enabledModule;
         default = { };
         example = {
@@ -69,14 +75,14 @@ in
           };
           "check:_serial" = {
             internal = true;
-            cmds = lib.pipe cfg.check.serialTasks [
+            cmds = lib.pipe cfg.check.serialChecks [
               (lib.filterAttrs (_name: taskCfg: taskCfg.enable))
               (lib.mapAttrsToList (name: _taskCfg: { task = name; }))
             ];
           };
           "check:_concurrent" = {
             internal = true;
-            deps = lib.pipe cfg.check.concurrentTasks [
+            deps = lib.pipe cfg.check.concurrentChecks [
               (lib.filterAttrs (_name: taskCfg: taskCfg.enable))
               builtins.attrNames
             ];
