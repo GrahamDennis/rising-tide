@@ -1,6 +1,14 @@
 version: "3"
 output: prefixed
 tasks:
+  check:
+    cmds:
+      - task: check:_serial
+      - task: check:_concurrent
+  check:_concurrent:
+    internal: true
+  check:_serial:
+    internal: true
   hello:
     cmds:
       - echo Hello World!

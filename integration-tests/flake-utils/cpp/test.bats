@@ -18,6 +18,7 @@ teardown() {
 }
 
 @test "check task succeeds" {
+  run task cmake:build
   run task check
   assert_success
 }

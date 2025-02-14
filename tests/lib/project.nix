@@ -18,7 +18,7 @@ in
         taskfile = {
           output = "prefixed";
           tasks = {
-            check.deps = [ "check:treefmt" ];
+            "check:_serial".cmds = [ { task = "check:treefmt"; } ];
             "check:treefmt" = { };
             "tool:deadnix" = { };
             "tool:nixfmt-rfc-style" = { };

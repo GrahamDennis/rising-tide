@@ -11,9 +11,16 @@ tasks:
       - lint
       - format
       - fmt
-    deps:
-      - check:treefmt
+    cmds:
+      - task: check:_serial
+      - task: check:_concurrent
     desc: Run all checks
+  check:_concurrent:
+    internal: true
+  check:_serial:
+    cmds:
+      - task: check:treefmt
+    internal: true
   check:treefmt:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml {{if .CI}} --ci {{end}} --tree-root . --on-unmatched debug
