@@ -18,10 +18,6 @@ in
       {
         tools.go-task = {
           taskfile.run = "when_changed";
-          taskfile.tasks = {
-            test.desc = "Run all tests";
-            build.desc = "Build";
-          };
         };
       }
       (lib.mkIf config.isRootProject {

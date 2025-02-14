@@ -36,6 +36,7 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
+      tasks.check.dependsOn = [ "check:pyright" ];
       tools = {
         go-task = {
           enable = true;
@@ -44,7 +45,6 @@ in
               callPyright = args: "${pyrightExe} --project=${toString cfg.configFile} ${args}";
             in
             {
-              "check:_concurrent".deps = [ { task = "check:pyright"; } ];
               "check:pyright" = {
                 desc = "Run pyright type checker";
                 cmds = [

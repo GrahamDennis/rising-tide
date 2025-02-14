@@ -28,13 +28,18 @@ let
         nix-fast-build
       ];
     };
+    tasks.test.dependsOn = [ "test:integration-tests" ];
+    tasks.build.dependsOn = [
+      "nix-build:project-module-docs"
+      "nix-build:lib-docs"
+      "nix-build:all-checks"
+    ];
     tools = {
       circleci.enable = true;
       cue.enable = true;
       nix-unit.enable = true;
       go-task = {
         taskfile.tasks = {
-          test.deps = [ "test:integration-tests" ];
           "test:integration-tests" = {
             desc = "Run integration tests";
             dir = "integration-tests";
@@ -60,13 +65,6 @@ let
             prefix = "integration-test:{{.INTEGRATION_TEST}}";
             cmds = [
               "nix develop --show-trace --command ${batsExe} ./test.bats"
-            ];
-          };
-          build = {
-            deps = [
-              "nix-build:project-module-docs"
-              "nix-build:lib-docs"
-              "nix-build:all-checks"
             ];
           };
           "docs:generate" = {

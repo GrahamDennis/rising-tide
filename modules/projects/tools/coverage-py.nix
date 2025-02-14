@@ -41,6 +41,7 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       mkShell.nativeBuildInputs = [ config.languages.python.pythonPackages.pytest-cov ];
+      tasks.test.serialTasks = lib.mkAfter [ "test:coverage-report" ];
       tools = {
         pytest.config = {
           addopts = [
@@ -54,13 +55,6 @@ in
           enable = true;
           taskfile = {
             tasks = {
-              "test" = {
-                cmds = lib.mkBefore [
-                  {
-                    defer.task = "test:coverage-report";
-                  }
-                ];
-              };
               "test:pytest" = {
                 env.COVERAGE_FILE = ".coverage.pytest";
               };

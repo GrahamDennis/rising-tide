@@ -24,10 +24,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    tasks.test.dependsOn = [ "test:nix-unit" ];
     tools.go-task = {
       enable = true;
       taskfile.tasks = {
-        test.deps = [ "test:nix-unit" ];
         "test:nix-unit" = {
           desc = "Run nix-unit tests";
           cmds = [ "${nix-unitExe} --show-trace --flake .?submodules=1#${cfg.testsFlakeAttrPath}" ];

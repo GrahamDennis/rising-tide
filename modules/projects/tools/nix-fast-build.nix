@@ -25,10 +25,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    tasks.build.dependsOn = [ "nix-fast-build:${cfg.jobsFlakeAttrPath}" ];
     tools.go-task = {
       enable = true;
       taskfile.tasks = {
-        build.deps = [ "nix-fast-build:${cfg.jobsFlakeAttrPath}" ];
         "nix-fast-build:*" = {
           desc = "Build jobs with nix-fast-build";
           vars.JOBS = "{{index .MATCH 0}}";

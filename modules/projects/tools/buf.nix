@@ -81,36 +81,32 @@ in
         };
         go-task = {
           enable = true;
-          taskfile.tasks = lib.mkMerge [
-            {
-              "check:treefmt" = {
-                deps = [ "buf:prepare" ];
-              };
-              "buf:prepare" = {
-                desc = "Ensure protobuf imports are available in build/";
-                cmds = lib.mapAttrsToList (name: src: ''
-                  mkdir -p build/buf/
-                  ln --symbolic --force --no-target-directory ${src} build/buf/${name}
-                '') protobufImportPaths;
-              };
-              "tool:buf" = {
-                desc = "Run buf. Additional CLI arguments after `--` are forwarded to buf";
-                deps = [ "buf:prepare" ];
-                cmds = [ "${bufExe} --config ${cfg.configFile} {{.CLI_ARGS}}" ];
-              };
-            }
-            (lib.mkIf cfg.experimental.breaking.enable {
-              "check:_concurrent".deps = [ "check:buf-breaking" ];
-              "check:buf-breaking" = {
-                deps = [ "buf:prepare" ];
-                desc = "Ensure that there are no breaking changes in the proto files";
-                cmds = [
-                  "${bufExe} breaking --config ${cfg.configFile} --against ${cfg.experimental.breaking.against}"
-                ];
-              };
-            })
-          ];
+          taskfile.tasks = {
+            "check:treefmt".deps = [ "buf:prepare" ];
+            "buf:prepare" = {
+              desc = "Ensure protobuf imports are available in build/";
+              cmds = lib.mapAttrsToList (name: src: ''
+                mkdir -p build/buf/
+                ln --symbolic --force --no-target-directory ${src} build/buf/${name}
+              '') protobufImportPaths;
+            };
+            "tool:buf" = {
+              desc = "Run buf. Additional CLI arguments after `--` are forwarded to buf";
+              deps = [ "buf:prepare" ];
+              cmds = [ "${bufExe} --config ${cfg.configFile} {{.CLI_ARGS}}" ];
+            };
+          };
         };
+      };
+    })
+    (lib.mkIf (cfg.enable && cfg.experimental.breaking.enable) {
+      tasks.check.dependsOn = [ "check:buf-breaking" ];
+      tools.go-task.taskfile.tasks."check:buf-breaking" = {
+        deps = [ "buf:prepare" ];
+        desc = "Ensure that there are no breaking changes in the proto files";
+        cmds = [
+          "${bufExe} breaking --config ${cfg.configFile} --against ${cfg.experimental.breaking.against}"
+        ];
       };
     })
   ];

@@ -1,20 +1,15 @@
 version: "3"
 output: prefixed
 tasks:
+  build:
+    desc: Build
+    internal: true
   check:
     aliases:
       - lint
       - format
       - fmt
-    cmds:
-      - task: check:_serial
-      - task: check:_concurrent
     desc: Run all checks
-  check:_concurrent:
-    deps: []
-    internal: true
-  check:_serial:
-    cmds: []
     internal: true
   hello:
     cmds:
@@ -28,3 +23,6 @@ tasks:
     prefix: nix-build:{{.PACKAGE}}
     vars:
       PACKAGE: '{{index .MATCH 0}}'
+  test:
+    desc: Run all tests
+    internal: true

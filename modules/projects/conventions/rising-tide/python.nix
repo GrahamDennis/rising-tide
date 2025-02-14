@@ -98,7 +98,7 @@ in
       (lib.mkIf (pythonEnabledIn config) {
         tools = {
           # keep-sorted start block=yes
-          coverage-py.enable = true;
+          coverage-py.enable = (getLangCfg config).testRoots != [ ];
           gitignore = {
             enable = true;
             rules = ''
@@ -113,9 +113,7 @@ in
           };
           mypy.enable = true;
           pyright.enable = true;
-          pytest = {
-            enable = (getLangCfg config).testRoots != [ ];
-          };
+          pytest.enable = (getLangCfg config).testRoots != [ ];
           ruff.format.enable = true;
           ruff.lint.enable = true;
           uv.enable = true;

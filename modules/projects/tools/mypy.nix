@@ -92,6 +92,7 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
+      tasks.check.dependsOn = [ "check:mypy" ];
       tools = {
         go-task = {
           enable = true;
@@ -100,7 +101,6 @@ in
               callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
             in
             {
-              "check:_concurrent".deps = [ { task = "check:mypy"; } ];
               "check:mypy" = {
                 desc = "Run mypy type checker";
                 cmds = [

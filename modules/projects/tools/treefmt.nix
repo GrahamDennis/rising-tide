@@ -33,7 +33,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    tasks.check.serialChecks."check:treefmt".enable = true;
+    tasks.check.serialTasks = [ "check:treefmt" ];
     tools.go-task = {
       enable = true;
       taskfile.tasks =

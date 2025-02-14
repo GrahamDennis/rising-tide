@@ -39,6 +39,8 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       mkShell.nativeBuildInputs = [ config.languages.python.pythonPackages.pytest ];
+      tasks.test.dependsOn = [ "test:pytest" ];
+
       tools = {
         pytest.config = {
           addopts = [
@@ -46,7 +48,6 @@ in
             "--maxfail=1"
           ];
         };
-
         go-task = {
           enable = true;
           taskfile = {
@@ -56,7 +57,6 @@ in
               in
 
               {
-                test.deps = [ "test:pytest" ];
                 "test:pytest" = {
                   desc = "Run pytest";
                   # Only run pytest if there is a test directory

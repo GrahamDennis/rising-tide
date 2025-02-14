@@ -10,54 +10,47 @@
 }:
 let
   inherit (lib) types;
-  enabledModule = types.submodule (
-    { name, ... }:
-    {
-      options.enable = lib.mkEnableOption "Enable task ${name}";
-    }
-  );
   cfg = config.tasks;
+  mkTasks =
+    names:
+    lib.genAttrs names (name: {
+      enable = (lib.mkEnableOption "Enable the ${name} task") // {
+        default = true;
+      };
+      dependsOn = lib.mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = "A list of task names that must complete before this task";
+      };
+      serialTasks = lib.mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = "A list of task names that will be run serially by this task after all dependencies have completed.";
+      };
+    });
+  tasksToCmds = builtins.map (name: {
+    task = name;
+  });
+  ifNotEmpty = tasks: lib.mkIf (tasks != [ ]) tasks;
 in
 {
-  options.tasks = {
-    build = {
-      enable = (lib.mkEnableOption "Enable the check task") // {
-        default = true;
-      };
-
-    };
-    check = {
-      enable = (lib.mkEnableOption "Enable the check task") // {
-        default = true;
-      };
-      serialChecks = lib.mkOption {
-        type = types.attrsOf enabledModule;
-        default = { };
-        description = ''
-          Tasks that should be run serially as part of the check task. Check tasks should be added
-          here if they modify files, for example to format them. Prefer to add such tasks as part
-          of `treefmt` if they operate on a single file at a time as treefmt performs parallelisation
-          across files.
-        '';
-        example = {
-          "check:treefmt".enable = true;
-        };
-      };
-      concurrentChecks = lib.mkOption {
-        type = types.attrsOf enabledModule;
-        default = { };
-        example = {
-          "check:mypy".enable = true;
-          "check:ctest".enable = true;
-        };
-        description = ''
-          Tasks that can be run concurrently as part of the check task. Check tasks should be added here
-          if they do not modify files.
-        '';
-      };
-    };
-  };
+  options.tasks = mkTasks [
+    "build"
+    "check"
+    "test"
+  ];
   config = lib.mkMerge [
+    (lib.mkIf cfg.build.enable {
+      tools.go-task = {
+        taskfile.tasks = {
+          build = {
+            desc = "Build";
+            deps = ifNotEmpty cfg.build.dependsOn;
+            cmds = ifNotEmpty (tasksToCmds cfg.build.serialTasks);
+          };
+        };
+      };
+    })
     (lib.mkIf cfg.check.enable {
       tools.go-task = {
         taskfile.tasks = {
@@ -68,24 +61,19 @@ in
               "format"
               "fmt"
             ];
-            cmds = [
-              { task = "check:_serial"; }
-              { task = "check:_concurrent"; }
-            ];
+            deps = ifNotEmpty cfg.check.dependsOn;
+            cmds = ifNotEmpty (tasksToCmds cfg.check.serialTasks);
           };
-          "check:_serial" = {
-            internal = true;
-            cmds = lib.pipe cfg.check.serialChecks [
-              (lib.filterAttrs (_name: taskCfg: taskCfg.enable))
-              (lib.mapAttrsToList (name: _taskCfg: { task = name; }))
-            ];
-          };
-          "check:_concurrent" = {
-            internal = true;
-            deps = lib.pipe cfg.check.concurrentChecks [
-              (lib.filterAttrs (_name: taskCfg: taskCfg.enable))
-              builtins.attrNames
-            ];
+        };
+      };
+    })
+    (lib.mkIf cfg.test.enable {
+      tools.go-task = {
+        taskfile.tasks = {
+          test = {
+            desc = "Run all tests";
+            deps = ifNotEmpty cfg.test.dependsOn;
+            cmds = ifNotEmpty (tasksToCmds cfg.test.serialTasks);
           };
         };
       };

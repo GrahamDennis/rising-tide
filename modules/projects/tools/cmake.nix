@@ -25,17 +25,25 @@ in
         cfg.package
         toolsPkgs.ninja
       ];
+      tasks.build.dependsOn = [ "cmake:build" ];
+      tasks.test.dependsOn = [ "test:ctest" ];
       tools = {
         go-task = {
           enable = true;
           # FIXME: Add gtest/ctest integration
           taskfile.tasks = {
-            "build".deps = [ "cmake:build" ];
             "cmake:build" = {
               desc = "Build using CMake.";
               cmds = [
                 "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -G Ninja -S . -B build"
                 "cmake --build build"
+              ];
+            };
+            "test:ctest" = {
+              desc = "Run CTest";
+              dir = "build/tests";
+              cmds = [
+                "ctest"
               ];
             };
             "tool:cmake" = {
