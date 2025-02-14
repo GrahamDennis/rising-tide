@@ -100,7 +100,7 @@ in
               };
             }
             (lib.mkIf cfg.experimental.breaking.enable {
-              check.deps = [ "check:buf-breaking" ];
+              "check:_concurrent".deps = [ "check:buf-breaking" ];
               "check:buf-breaking" = {
                 deps = [ "buf:prepare" ];
                 desc = "Ensure that there are no breaking changes in the proto files";

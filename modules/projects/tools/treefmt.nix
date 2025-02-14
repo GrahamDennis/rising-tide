@@ -41,7 +41,7 @@ in
             args: "${treefmtExe} --config-file ${configFile} ${args} --tree-root . --on-unmatched debug";
         in
         {
-          check.deps = [ "check:treefmt" ];
+          "check:_serial".cmds = [ { task = "check:treefmt"; } ];
           "check:treefmt" = {
             desc = "Reformat with treefmt";
             cmds = [ (callTreefmt "{{if .CI}} --ci {{end}}") ];

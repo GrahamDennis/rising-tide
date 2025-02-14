@@ -96,6 +96,16 @@ in
                   prefix = "nix-build:{{.PACKAGE}}";
                   cmds = [ "nix build --show-trace --log-lines 500 .?submodules=1#{{.PACKAGE}}" ];
                 };
+                check.cmds = [
+                  { task = "check:_serial"; }
+                  { task = "check:_concurrent"; }
+                ];
+                "check:_serial" = {
+                  internal = true;
+                };
+                "check:_concurrent" = {
+                  internal = true;
+                };
               }
             ]
           );

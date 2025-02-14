@@ -100,9 +100,7 @@ in
               callMypy = args: "${mypyExe} --config-file=${toString cfg.configFile} ${args}";
             in
             {
-              # Mypy must run after treefmt, so we run it as a command not a dependency
-              # (as dependencies run in parallel)
-              check.cmds = [ { task = "check:mypy"; } ];
+              "check:_concurrent".deps = [ { task = "check:mypy"; } ];
               "check:mypy" = {
                 desc = "Run mypy type checker";
                 cmds = [

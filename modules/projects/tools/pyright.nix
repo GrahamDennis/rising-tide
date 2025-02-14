@@ -44,7 +44,7 @@ in
               callPyright = args: "${pyrightExe} --project=${toString cfg.configFile} ${args}";
             in
             {
-              check.deps = [ { task = "check:pyright"; } ];
+              "check:_concurrent".deps = [ { task = "check:pyright"; } ];
               "check:pyright" = {
                 desc = "Run pyright type checker";
                 cmds = [
