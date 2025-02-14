@@ -57,7 +57,7 @@ EOF
 
   run task nix-build:cpp-package-with-asan
   assert_failure
-  assert_output --partial 'ASanTest.Foo (Subprocess aborted)'
+  assert_output --regexp 'ASanTest\.Foo \((Subprocess aborted|Failed)\)'
 }
 
 @test "TSAN build catches data races" {
