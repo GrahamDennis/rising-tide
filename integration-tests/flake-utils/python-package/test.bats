@@ -52,15 +52,19 @@ teardown() {
 @test "check fails on incorrect type hints" {
   restore_src_in_teardown
   sed -i -e 's/def hello() -> str:/def hello() -> int:/' src/python_package/__init__.py
-  run task check
+  run task check:mypy
   assert_failure
   assert_output --partial "[return-value]"
+
+  run task check:pyright
+  assert_failure
+  assert_output --partial "(reportReturnType)"
 }
 
 @test "check fails on missing type hints" {
   restore_src_in_teardown
   sed -i -e 's/def hello() -> str:/def hello():/' src/python_package/__init__.py
-  run task check
+  run task check:mypy
   assert_failure
   assert_output --partial "[no-untyped-def]"
 }
