@@ -83,5 +83,5 @@ EOF
 
   run task nix-build:cpp-package-with-tsan
   assert_failure
-  assert_output --partial 'TSanTest.Foo (Subprocess aborted)'
+  assert_output --regexp 'TSanTest\.Foo \((Subprocess aborted|Failed)\)'
 }
