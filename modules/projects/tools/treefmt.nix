@@ -33,6 +33,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    tasks.check.serialTasks."check:treefmt".enable = true;
     tools.go-task = {
       enable = true;
       taskfile.tasks =
@@ -41,7 +42,6 @@ in
             args: "${treefmtExe} --config-file ${configFile} ${args} --tree-root . --on-unmatched debug";
         in
         {
-          "check:_serial".cmds = [ { task = "check:treefmt"; } ];
           "check:treefmt" = {
             desc = "Reformat with treefmt";
             cmds = [ (callTreefmt "{{if .CI}} --ci {{end}}") ];

@@ -29,6 +29,7 @@ let
           ./overlay.nix
           ./package.nix
           ./packages.nix
+          ./tasks.nix
           ./tools
           # keep-sorted end
         ])
@@ -83,6 +84,7 @@ let
           '';
           type = types.attrsOf (
             types.submoduleWith {
+              shorthandOnlyDefinesConfig = true;
               specialArgs = { inherit system projectModules; };
               modules =
                 let

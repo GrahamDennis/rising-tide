@@ -26,11 +26,13 @@ in
         description = ''
           An attrset of booleans to indicate which extensions should be included in `.vscode/extensions.json`.
         '';
-        type = types.attrsOf types.submodule (
-          { name, ... }:
-          {
-            options.enable = lib.mkEnableOption "Enable extension '${cfg.name}'";
-          }
+        type = types.attrsOf (
+          types.submodule (
+            { name, ... }:
+            {
+              options.enable = lib.mkEnableOption "Enable extension '${name}'";
+            }
+          )
         );
         default = { };
         example = {
