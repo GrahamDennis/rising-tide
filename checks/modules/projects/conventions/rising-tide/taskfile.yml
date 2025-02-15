@@ -28,6 +28,7 @@ tasks:
     desc: Run CI workflow
   ci:check-not-dirty:
     cmds:
+      - git status
       - git diff-files -u --compact-summary --exit-code
   nix-build:*:
     cmds:

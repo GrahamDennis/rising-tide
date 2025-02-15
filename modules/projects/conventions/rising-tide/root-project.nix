@@ -47,7 +47,8 @@ in
           };
           go-task.taskfile.tasks."ci:check-not-dirty" = {
             cmds = [
-              "git diff-files -u --compact-summary --exit-code"
+              "git status"
+              "git diff-files --compact-summary --exit-code"
             ];
           };
           keep-sorted.enable = true;
