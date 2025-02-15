@@ -46,7 +46,7 @@ in
             '';
           };
           go-task.taskfile.tasks."ci:check-not-dirty" = {
-            cmds = [ "git diff-files --quiet" ];
+            cmds = [ "git diff-files --compact-summary --exit-code" ];
           };
           keep-sorted.enable = true;
           lefthook = {
