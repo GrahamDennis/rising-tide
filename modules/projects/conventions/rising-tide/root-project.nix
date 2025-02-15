@@ -24,6 +24,14 @@ in
           builtins.removeAttrs config.packages [ "_all-project-packages" ]
         );
         tasks.build.dependsOn = [ "nix-build:_all-project-packages" ];
+        tasks.ci = {
+          dependsOn = [
+            "build"
+            "check"
+            "test"
+          ];
+          serialTasks = [ "ci:check-not-dirty" ];
+        };
         tools = {
           # keep-sorted start block=yes
           deadnix.enable = true;
@@ -36,6 +44,9 @@ in
 
               use flake
             '';
+          };
+          go-task.taskfile.tasks."ci:check-not-dirty" = {
+            cmds = [ "git diff-files --quiet" ];
           };
           keep-sorted.enable = true;
           lefthook = {

@@ -36,6 +36,7 @@ in
 {
   options.tasks = mkTasks [
     "build"
+    "ci"
     "check"
     "test"
   ];
@@ -63,6 +64,17 @@ in
             ];
             deps = ifNotEmpty cfg.check.dependsOn;
             cmds = ifNotEmpty (tasksToCmds cfg.check.serialTasks);
+          };
+        };
+      };
+    })
+    (lib.mkIf cfg.ci.enable {
+      tools.go-task = {
+        taskfile.tasks = {
+          ci = {
+            desc = "Run CI workflow";
+            deps = ifNotEmpty cfg.ci.dependsOn;
+            cmds = ifNotEmpty (tasksToCmds cfg.ci.serialTasks);
           };
         };
       };

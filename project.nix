@@ -83,17 +83,6 @@ let
               "npm run build"
             ];
           };
-          "ci:check" = {
-            deps = [
-              "check"
-              "test"
-              "build"
-            ];
-            cmds = [ { defer.task = "ci:check-not-dirty"; } ];
-          };
-          "ci:check-not-dirty" = {
-            cmds = [ "git diff-files --quiet" ];
-          };
         };
       };
       vscode.recommendedExtensions = {
