@@ -9,3 +9,4 @@
 
 # Contains architecture-dependent file path
 /ruff.xml
+/scripts/

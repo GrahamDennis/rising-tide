@@ -184,6 +184,80 @@ in
       ];
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      # To use CLion with nix, create a new toolchain where the environment file is
+      # ./.idea/scripts/env.sh and CMake executable path is ./.idea/scripts/cmake
+      # then use this toolchain in the CLion project.
+      tools.jetbrains = {
+        projectSettings = {
+          "misc.xml" = {
+            components.CMakePythonSetting.options.pythonIntegrationState = "YES";
+            components.CMakeWorkspace.attrs.PROJECT_DIR = "$PROJECT_DIR$";
+          };
+          "modules.xml" = {
+            components.ProjectModuleManager.children = [
+              {
+                name = "modules";
+                children = [
+                  {
+                    name = "module";
+                    attrs.fileurl = "file://$PROJECT_DIR$/.idea/${config.name}.iml";
+                    attrs.filepath = "$PROJECT_DIR$/.idea/${config.name}.iml";
+                  }
+                ];
+              }
+            ];
+          };
+        };
+        moduleSettings."${config.name}.iml" = {
+          type = "CPP_MODULE";
+          attrs.classpath = "CMake";
+        };
+        xml."toolchains.xml" = {
+          name = "application";
+          children = [
+            {
+              name = "component";
+              attrs.name = "CPPToolchains";
+              attrs.version = "9";
+              children = [
+                {
+                  name = "toolchains";
+                  attrs.detectedVersion = "5";
+                  children = [
+                    {
+                      name = "toolchain";
+                      attrs = {
+                        name = "rising-tide-${config.name}";
+                        toolSetKind = "SYSTEM_UNIX_TOOLSET";
+                        customCmakePath = "@projectAbsolutePath@/.idea/scripts/cmake";
+                        debuggerKind = "BUNDLED_LLDB";
+                        environment = "@projectAbsolutePath@/.idea/scripts/env.sh";
+                      };
+                    }
+                  ];
+                }
+              ];
+            }
+          ];
+        };
+      };
+      tools.nixago.requests = lib.mkIf config.tools.jetbrains.enable [
+        {
+          data = ./jetbrains/env.sh;
+          output = ".idea/scripts/env.sh";
+          hook.mode = "copy";
+          hook.extra = ''
+            # Substitute the path to direnv
+            sed -i -e "s|@direnvPath@|${lib.getExe config.tools.direnv.package}|g" .idea/scripts/env.sh
+          '';
+        }
+        {
+          data = ./jetbrains/multicall.sh;
+          output = ".idea/scripts/cmake";
+          hook.mode = "copy";
+          hook.extra = "chmod +x .idea/scripts/cmake";
+        }
+      ];
       tools.vscode = {
         recommendedExtensions = {
           "ms-vscode.cpptools-extension-pack".enable = true;

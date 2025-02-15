@@ -11,6 +11,9 @@
 
 .mypy_cache/
 
+# Jetbrains-generated CMake build files
+cmake-build-*
+
 /.direnv
 
 # rising-tide-managed: end

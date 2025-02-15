@@ -134,7 +134,6 @@ in
                 project-jdk-type = "Python SDK";
               };
             };
-            # FIXME: Is this a python-only thing?
             "modules.xml" = {
               components.ProjectModuleManager.children = [
                 {

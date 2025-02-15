@@ -168,6 +168,10 @@ let
     {
       options = {
         type = typeOption;
+        attrs = lib.mkOption {
+          type = types.attrsOf types.str;
+          default = { };
+        };
         components = lib.mkOption {
           type = types.attrsOf componentType;
           default = { };
@@ -178,8 +182,10 @@ let
         };
         xml = mkXmlOption {
           name = "module";
-          attrs.type = config.type;
-          attrs.version = "4";
+          attrs = {
+            type = config.type;
+            version = "4";
+          } // config.attrs;
           children =
             (lib.optional (config.root != null) config.root.xml)
             ++ (builtins.map (component: component.xml) (builtins.attrValues config.components));
@@ -216,6 +222,13 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    tools.gitignore = {
+      enable = true;
+      rules = ''
+        # Jetbrains-generated CMake build files
+        cmake-build-*
+      '';
+    };
     tools.jetbrains = {
       projectSettings."externalDependencies.xml" = lib.mkIf (cfg.requiredPlugins != { }) {
         components.ExternalDependencies.children = lib.mapAttrsToList (
@@ -231,40 +244,23 @@ in
         (builtins.mapAttrs (_name: moduleSettings: moduleSettings.xml) cfg.moduleSettings)
       ];
     };
-    tools.gitignore = {
-      enable = true;
-      rules = ''
-        # Jetbrains-generated files
-        cmake-build-*
-      '';
-    };
-    tools.nixago.requests =
+    tools.nixago.requests = lib.mkMerge [
       (lib.mapAttrsToList (name: file: {
         data = file;
         output = ".idea/${name}";
         hook.mode = "copy";
         hook.extra = ''
           # Python SDKs need to refer to the project directory name
-          sed -i -e "s|@projectDirName@|$(basename $(pwd))|g" .idea/${name}
+          sed -i -e "s|@projectDirName@|$(basename $(pwd))|g; s|@projectAbsolutePath@|$(pwd)|g;" .idea/${name}
         '';
       }) cfg.xmlFiles)
-      ++ [
-        (lib.mkIf (cfg.xmlFiles != { }) {
+      (lib.mkIf (cfg.xmlFiles != { }) [
+        {
           data = ./jetbrains.gitignore;
           output = ".idea/.gitignore";
           hook.mode = "copy";
-        })
-        (lib.mkIf config.languages.cpp.enable {
-          data = ./scripts/env.sh;
-          output = ".idea/scripts/env.sh";
-          hook.mode = "copy";
-        })
-        (lib.mkIf config.languages.cpp.enable {
-          data = ./scripts/multicall.sh;
-          output = ".idea/scripts/cmake";
-          hook.mode = "copy";
-          hook.extra = "chmod +x .idea/scripts/cmake";
-        })
-      ];
+        }
+      ])
+    ];
   };
 }

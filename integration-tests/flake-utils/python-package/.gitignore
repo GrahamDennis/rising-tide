@@ -23,6 +23,9 @@ wheels/
 
 .mypy_cache/
 
+# Jetbrains-generated CMake build files
+cmake-build-*
+
 /.direnv
 
 .coverage*

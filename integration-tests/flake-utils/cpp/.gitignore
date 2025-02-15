@@ -12,7 +12,7 @@
 /taskfile.yml
 /.lefthook.yml
 # rising-tide-managed: start
-# Jetbrains-generated files
+# Jetbrains-generated CMake build files
 cmake-build-*
 
 /.direnv
