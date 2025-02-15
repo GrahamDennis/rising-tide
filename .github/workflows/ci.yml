@@ -20,7 +20,7 @@ jobs:
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run `task ci`
         run: nix develop --command task ci
-      - run: |
+      - run: >
           set +x
           git --version
           git diff -u
