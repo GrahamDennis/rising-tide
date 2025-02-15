@@ -11,6 +11,9 @@ tasks:
       - fmt
     desc: Run all checks
     internal: true
+  ci:
+    desc: Run CI workflow
+    internal: true
   hello:
     cmds:
       - echo Hello World!

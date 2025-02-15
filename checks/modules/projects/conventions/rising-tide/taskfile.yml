@@ -18,6 +18,17 @@ tasks:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml {{if .CI}} --ci {{end}} --tree-root . --on-unmatched debug
     desc: Reformat with treefmt
+  ci:
+    cmds:
+      - task: ci:check-not-dirty
+    deps:
+      - build
+      - check
+      - test
+    desc: Run CI workflow
+  ci:check-not-dirty:
+    cmds:
+      - git diff-files --quiet
   nix-build:*:
     cmds:
       - nix build --show-trace --log-lines 500 .?submodules=1#{{.PACKAGE}}
