@@ -46,7 +46,10 @@ in
             '';
           };
           go-task.taskfile.tasks."ci:check-not-dirty" = {
-            cmds = [ "git diff-files --compact-summary --exit-code" ];
+            cmds = [
+              "git --version"
+              "git diff-files -u --compact-summary --exit-code"
+            ];
           };
           keep-sorted.enable = true;
           lefthook = {
