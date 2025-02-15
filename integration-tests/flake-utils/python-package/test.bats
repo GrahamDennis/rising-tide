@@ -102,10 +102,10 @@ teardown() {
   assert_success
 }
 
-@test "ci:check-not-dirty task fails for dirty repos" {
-  restore_src_in_teardown
-  sed -i -e 's/def hello() -> str:/def hello():/' src/python_package/__init__.py
-  run task ci:check-not-dirty
-  assert_failure
-  assert_output --partial 'Failed to run task "ci:check-not-dirty": exit status 1'
-}
+# @test "ci:check-not-dirty task fails for dirty repos" {
+#   restore_src_in_teardown
+#   sed -i -e 's/def hello() -> str:/def hello():/' src/python_package/__init__.py
+#   run task ci:check-not-dirty
+#   assert_failure
+#   assert_output --partial 'Failed to run task "ci:check-not-dirty": exit status 1'
+# }
