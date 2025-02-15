@@ -6,7 +6,6 @@ uvShellHook() {
   # FIXME: Rebuild on dev shell change
   uv venv --allow-existing
   export VIRTUAL_ENV_DISABLE_PROMPT=1
-  # shellcheck disable=SC1091
   source .venv/bin/activate
 
   # Configure the virtual environment to automatically pick up the Nix PYTHONPATH even if it is not activated

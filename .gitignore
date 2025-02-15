@@ -35,6 +35,9 @@ build/
 /taskfile.yml
 
 # rising-tide-managed: start
+# Jetbrains-generated files
+cmake-build-*
+
 /.direnv
 
 # rising-tide-managed: end

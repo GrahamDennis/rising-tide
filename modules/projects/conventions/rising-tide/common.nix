@@ -19,6 +19,9 @@ in
         tools.go-task = {
           taskfile.run = "when_changed";
         };
+        tools.shellcheck = {
+          config.disable = [ "SC1091" ];
+        };
       }
       (lib.mkIf config.isRootProject {
         tools.vscode.enable = true;

@@ -8,7 +8,7 @@
 }:
 let
   cfg = config.tools.shellcheck;
-  settingsFormat = toolsPkgs.formats.keyValue { };
+  settingsFormat = toolsPkgs.formats.keyValue { listToValue = builtins.concatStringsSep ","; };
   configFile = settingsFormat.generate "shellcheckrc" cfg.config;
   shellCheckExe = lib.getExe cfg.package;
 in

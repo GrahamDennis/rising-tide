@@ -42,7 +42,6 @@ function configShellHook() {
   uniqueArray preShellHooks
   runHook preShellHook
 
-  # shellcheck disable=SC1091
   . "@bashCompletionPackage@/etc/profile.d/bash_completion.sh"
 
   uniqueArray postShellHooks

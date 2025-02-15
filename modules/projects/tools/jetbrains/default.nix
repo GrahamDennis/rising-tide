@@ -231,6 +231,13 @@ in
         (builtins.mapAttrs (_name: moduleSettings: moduleSettings.xml) cfg.moduleSettings)
       ];
     };
+    tools.gitignore = {
+      enable = true;
+      rules = ''
+        # Jetbrains-generated files
+        cmake-build-*
+      '';
+    };
     tools.nixago.requests =
       (lib.mapAttrsToList (name: file: {
         data = file;
@@ -246,6 +253,17 @@ in
           data = ./jetbrains.gitignore;
           output = ".idea/.gitignore";
           hook.mode = "copy";
+        })
+        (lib.mkIf config.languages.cpp.enable {
+          data = ./scripts/env.sh;
+          output = ".idea/scripts/env.sh";
+          hook.mode = "copy";
+        })
+        (lib.mkIf config.languages.cpp.enable {
+          data = ./scripts/multicall.sh;
+          output = ".idea/scripts/cmake";
+          hook.mode = "copy";
+          hook.extra = "chmod +x .idea/scripts/cmake";
         })
       ];
   };
