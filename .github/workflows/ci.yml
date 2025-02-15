@@ -21,8 +21,8 @@ jobs:
       - name: Run `task ci`
         run: nix develop --command task ci
       - run: >
-          set +x
-          git --version
-          git diff -u
-          git diff-files --quiet
-          git diff-files -u --compact-summary --exit-code
+          set +x;
+          git --version;
+          git diff -u;
+          git diff-files --quiet;
+          git diff-files -u --compact-summary --exit-code;
