@@ -105,7 +105,7 @@ in
         deps = [ "buf:prepare" ];
         desc = "Ensure that there are no breaking changes in the proto files";
         cmds = [
-          "${bufExe} breaking --config ${cfg.configFile} --against ${cfg.experimental.breaking.against}"
+          "${bufExe} breaking --exclude-imports --config ${cfg.configFile} --against ${cfg.experimental.breaking.against} --against-config ${cfg.configFile}"
         ];
       };
     })
