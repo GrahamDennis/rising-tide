@@ -24,10 +24,6 @@ in
         tools = {
           buf = {
             config.modules = [ { path = "proto"; } ];
-            experimental.breaking = {
-              enable = true;
-              against = ''"$(git rev-parse --git-dir)#subdir=$(realpath -s --relative-to $(git rev-parse --show-toplevel) .)/proto/"'';
-            };
           };
         };
       }
@@ -38,7 +34,7 @@ in
         tools = {
           buf.lint.enable = true;
           buf.format.enable = true;
-          # buf.experimental.breaking.enable = true;
+          buf.experimental.breaking.enable = false;
         };
       })
     ]

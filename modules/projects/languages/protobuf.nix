@@ -18,14 +18,7 @@ let
       ${lib.concatMapAttrsStringSep " " (_name: path: "--proto_path=${path}") cfg.importPaths} \
       @<(find $src -name '*.proto') \
   '';
-  subprojectNames = {
-    generatedSources.python = "${config.packageName}-generated-sources-py";
-    generatedSources.cpp = "${config.packageName}-generated-sources-cpp";
-    python = "${config.packageName}-py";
-    cpp = "${config.packageName}-cpp";
-    fileDescriptorSet = "${config.packageName}-file-descriptor-set";
-  };
-  subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) subprojectNames;
+  subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) cfg.subprojectNames;
 
   absoluteProtoPaths = lib.fileset.toList (
     lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src
@@ -77,11 +70,33 @@ in
           default = _pythonPackages: [ ];
         };
       };
+      subprojectNames = {
+        generatedSources.python = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-generated-sources-py";
+        };
+        generatedSources.cpp = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-generated-sources-cpp";
+        };
+        python = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-py";
+        };
+        cpp = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-cpp";
+        };
+        fileDescriptorSet = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-file-descriptor-set";
+        };
+      };
     };
   };
   config = lib.mkIf cfg.enable {
     subprojects = {
-      ${subprojectNames.fileDescriptorSet} =
+      ${cfg.subprojectNames.fileDescriptorSet} =
         { config, ... }:
         {
           callPackageFunction =
@@ -92,11 +107,11 @@ in
               nativeBuildInputs = [ pkgs.protobuf ];
 
               installPhase = ''
-                ${protoc} --include_imports --descriptor_set_out=$out
+                ${protoc} --include_imports --include_source_info --descriptor_set_out=$out
               '';
             };
         };
-      ${subprojectNames.generatedSources.cpp} =
+      ${cfg.subprojectNames.generatedSources.cpp} =
         { config, ... }:
         {
           callPackageFunction =
@@ -156,7 +171,7 @@ in
               '';
             };
         };
-      ${subprojectNames.cpp} =
+      ${cfg.subprojectNames.cpp} =
         { config, ... }:
         {
           languages.cpp = {
@@ -180,7 +195,7 @@ in
               };
           };
         };
-      ${subprojectNames.generatedSources.python} =
+      ${cfg.subprojectNames.generatedSources.python} =
         { config, ... }:
         {
           languages.python.pyproject = {
@@ -227,7 +242,7 @@ in
               '';
             };
         };
-      ${subprojectNames.python} =
+      ${cfg.subprojectNames.python} =
         { config, ... }:
         {
           mkShell.nativeBuildInputs = [ config.languages.python.package ];

@@ -11,7 +11,8 @@ let
   cfg = config.tools.buf;
   settingsFormat = toolsPkgs.formats.yaml { };
   bufExe = lib.getExe cfg.package;
-  protobufImportPaths = config.languages.protobuf.importPaths;
+  protobufCfg = config.languages.protobuf;
+  protobufImportPaths = protobufCfg.importPaths;
 in
 {
   options = {
@@ -23,10 +24,6 @@ in
       format.enable = lib.mkEnableOption "Enable buf format tool";
       experimental.breaking = {
         enable = lib.mkEnableOption "Enable buf breaking tool";
-        against = lib.mkOption {
-          type = types.str;
-          description = "What to compare against";
-        };
       };
       package = lib.mkPackageOption toolsPkgs "buf" { pkgsText = "toolsPkgs"; };
       config = lib.mkOption {
@@ -101,12 +98,43 @@ in
     })
     (lib.mkIf (cfg.enable && cfg.experimental.breaking.enable) {
       tasks.check.dependsOn = [ "check:buf-breaking" ];
-      tools.go-task.taskfile.tasks."check:buf-breaking" = {
-        deps = [ "buf:prepare" ];
-        desc = "Ensure that there are no breaking changes in the proto files";
-        cmds = [
-          "${bufExe} breaking --exclude-imports --config ${cfg.configFile} --against ${cfg.experimental.breaking.against} --against-config ${cfg.configFile}"
-        ];
+      tools.go-task.taskfile.tasks = {
+        "buf-breaking:merge-base" = {
+          vars.GIT_MERGE_BASE.sh = "git merge-base origin/main HEAD";
+          cmds = [
+            "rm build/buf-breaking/merge-base.binpb"
+            {
+              cmd = ''
+                nix build \
+                  '.?submodules=1&rev={{.GIT_MERGE_BASE}}#${protobufCfg.subprojectNames.fileDescriptorSet}' \
+                  -o build/buf-breaking/merge-base.binpb
+              '';
+              ignore_error = true;
+            }
+          ];
+        };
+        "buf-breaking:current" = {
+          cmds = [
+            "nix build '.?submodules=1#${protobufCfg.subprojectNames.fileDescriptorSet}' -o build/buf-breaking/current.binpb"
+          ];
+        };
+        "check:buf-breaking" = {
+          deps = [
+            "buf-breaking:merge-base"
+            "buf-breaking:current"
+          ];
+          desc = "Ensure that there are no breaking changes in the proto files";
+          cmds = [
+            ''
+              if [ ! -L build/buf-breaking/merge-base.binpb ]; then
+                echo "Skipping breaking change detection: cannot find previous protobufs to compare against."
+                exit 0
+              fi
+              ${bufExe} breaking --config ${cfg.configFile} build/buf-breaking/current.binpb \
+                --against build/buf-breaking/merge-base.binpb
+            ''
+          ];
+        };
       };
     })
   ];
