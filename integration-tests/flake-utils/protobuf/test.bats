@@ -44,7 +44,7 @@ teardown() {
 @test "check task fails on breaking change" {
   restore_src_in_teardown
   sed -i -e 's/string query = 1;//' example/proto/example/v1/hello.proto
-  run task example:check:buf-breaking
+  run task example:test:buf-breaking
   assert_failure
   assert_output --partial 'Previously present field "1" with name "query"'
 }

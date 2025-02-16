@@ -101,7 +101,7 @@ in
       };
     })
     (lib.mkIf (cfg.enable && cfg.breaking.enable) {
-      tasks.check.dependsOn = [ "check:buf-breaking" ];
+      tasks.test.dependsOn = [ "test:buf-breaking" ];
       tools.go-task.taskfile.tasks = {
         "buf-breaking:merge-base" = {
           vars.GIT_MERGE_BASE.sh = "git merge-base ${cfg.breaking.baseGitRef} HEAD";
@@ -122,7 +122,7 @@ in
             "nix build '.?submodules=1#${protobufCfg.subprojectNames.fileDescriptorSet}' -o build/buf-breaking/current.binpb"
           ];
         };
-        "check:buf-breaking" = {
+        "test:buf-breaking" = {
           deps = [
             "buf-breaking:merge-base"
             "buf-breaking:current"
