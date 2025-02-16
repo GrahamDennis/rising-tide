@@ -34,7 +34,7 @@ in
         tools = {
           buf.lint.enable = true;
           buf.format.enable = true;
-          buf.experimental.breaking.enable = false;
+          buf.experimental.breaking.enable = true;
         };
       })
     ]

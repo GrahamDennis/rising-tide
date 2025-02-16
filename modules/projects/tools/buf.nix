@@ -24,6 +24,10 @@ in
       format.enable = lib.mkEnableOption "Enable buf format tool";
       experimental.breaking = {
         enable = lib.mkEnableOption "Enable buf breaking tool";
+        baseGitRef = lib.mkOption {
+          type = types.str;
+          default = "origin/main";
+        };
       };
       package = lib.mkPackageOption toolsPkgs "buf" { pkgsText = "toolsPkgs"; };
       config = lib.mkOption {
@@ -100,9 +104,9 @@ in
       tasks.check.dependsOn = [ "check:buf-breaking" ];
       tools.go-task.taskfile.tasks = {
         "buf-breaking:merge-base" = {
-          vars.GIT_MERGE_BASE.sh = "git merge-base origin/main HEAD";
+          vars.GIT_MERGE_BASE.sh = "git merge-base ${cfg.experimental.breaking.baseGitRef} HEAD";
           cmds = [
-            "rm build/buf-breaking/merge-base.binpb"
+            "rm -f build/buf-breaking/merge-base.binpb"
             {
               cmd = ''
                 nix build \
