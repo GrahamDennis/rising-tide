@@ -29,7 +29,7 @@ tasks:
   ci:check-not-dirty:
     cmds:
       - git status
-      - git diff-files --compact-summary --exit-code
+      - git diff-files --compact-summary --exit-code .
   nix-build:*:
     cmds:
       - nix build --show-trace --log-lines 500 .?submodules=1#{{.PACKAGE}}
