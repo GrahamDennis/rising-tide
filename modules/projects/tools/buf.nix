@@ -22,7 +22,7 @@ in
       };
       lint.enable = lib.mkEnableOption "Enable buf lint tool";
       format.enable = lib.mkEnableOption "Enable buf format tool";
-      experimental.breaking = {
+      breaking = {
         enable = lib.mkEnableOption "Enable buf breaking tool";
         baseGitRef = lib.mkOption {
           type = types.str;
@@ -100,11 +100,11 @@ in
         };
       };
     })
-    (lib.mkIf (cfg.enable && cfg.experimental.breaking.enable) {
+    (lib.mkIf (cfg.enable && cfg.breaking.enable) {
       tasks.check.dependsOn = [ "check:buf-breaking" ];
       tools.go-task.taskfile.tasks = {
         "buf-breaking:merge-base" = {
-          vars.GIT_MERGE_BASE.sh = "git merge-base ${cfg.experimental.breaking.baseGitRef} HEAD";
+          vars.GIT_MERGE_BASE.sh = "git merge-base ${cfg.breaking.baseGitRef} HEAD";
           cmds = [
             "rm -f build/buf-breaking/merge-base.binpb"
             {
