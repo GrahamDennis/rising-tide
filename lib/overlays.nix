@@ -20,10 +20,12 @@ let
       let
         second = builtins.elemAt values 1;
       in
-      # if first ? "overrideScope" then
-      #   first.overrideScope (final: prev: recursivelyMerge prev second)
-      # else
-      if (isSimpleAttrs first && isSimpleAttrs second) then recursivelyMerge first second else second;
+      if first ? "overrideScope" then
+        first.overrideScope (_final: prev: recursivelyMerge prev second)
+      else if (isSimpleAttrs first && isSimpleAttrs second) then
+        recursivelyMerge first second
+      else
+        second;
 in
 {
   mkOverlay =
