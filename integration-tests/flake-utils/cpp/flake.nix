@@ -17,10 +17,14 @@
       rising-tide = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
       );
-      scopedPackagesOverlay = _final: prev: {
-        rising-tide = prev.lib.makeScope prev.newScope (_self: {
+      risingTidePackages =
+        { pkgs, lib, ... }:
+        lib.makeScope pkgs.newScope (_self: {
           foo = 12;
         });
+
+      scopedPackagesOverlay = final: _prev: {
+        rising-tide = final.callPackage risingTidePackages { };
       };
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
