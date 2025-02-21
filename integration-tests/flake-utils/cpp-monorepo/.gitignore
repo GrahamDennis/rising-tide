@@ -5,6 +5,7 @@ cmake-build-*
 
 /.direnv
 
+/.idea/toolchains.xml
 # rising-tide-managed: end
 
 # nixago: ignore-linked-files

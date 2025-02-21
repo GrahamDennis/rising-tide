@@ -241,6 +241,10 @@ in
           ];
         };
       };
+      tools.gitignore = {
+        enable = true;
+        rules = "/.idea/toolchains.xml";
+      };
       tools.nixago.requests = lib.mkIf config.tools.jetbrains.enable [
         {
           data = ./jetbrains/env.sh;

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<application>
-  <component name="CPPToolchains" version="9">
-    <toolchains detectedVersion="5">
-      <toolchain customCmakePath="/home/graham/Developer/rising-tide/integration-tests/flake-utils/cpp-monorepo/.idea/scripts/cmake" debuggerKind="BUNDLED_LLDB" environment="/home/graham/Developer/rising-tide/integration-tests/flake-utils/cpp-monorepo/.idea/scripts/env.sh" name="rising-tide-cpp-monorepo" toolSetKind="SYSTEM_UNIX_TOOLSET"/>
-    </toolchains>
-  </component>
-</application>
