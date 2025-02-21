@@ -13,7 +13,6 @@
         # Leaf: just create the package
         if n == len then
           final.callPackage callPackageFunction { }
-
         else
           {
             ${name} =
