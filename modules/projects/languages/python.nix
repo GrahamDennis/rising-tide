@@ -8,7 +8,6 @@
 {
   config,
   pkgs,
-  toolsPkgs,
   ...
 }:
 let
@@ -33,6 +32,17 @@ in
         default = null;
       };
 
+      pythonNamespacePath = lib.mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+      };
+
+      fullyQualifiedPackagePath = lib.mkOption {
+        readOnly = true;
+        type = types.listOf types.str;
+        default = cfg.pythonNamespacePath ++ [ config.packageName ];
+      };
+
       pythonPackages = lib.mkOption {
         type = types.attrs;
         default = pkgs.python3.pkgs;
@@ -49,13 +59,15 @@ in
           A python overlay that contains the python package.
 
 
-          This can be applied to a python package like so ([see documentation](https://nixos.org/manual/nixpkgs/stable/#how-to-override-a-python-package-using-overlays)):
+          This can be applied to a python package like so
+          ([see documentation](https://nixos.org/manual/nixpkgs/stable/#how-to-override-a-python-package-using-overlays)):
 
           ```
           python.override { packageOverrides = pythonOverlay; };
           ```
 
-          Or to all python packages in a pkgs by creating a nixpkgs overlay like so ([see documentation](https://nixos.org/manual/nixpkgs/stable/#how-to-override-a-python-package-for-all-python-versions-using-extensions)):
+          Or to all python packages in a pkgs by creating a nixpkgs overlay like so
+          ([see documentation](https://nixos.org/manual/nixpkgs/stable/#how-to-override-a-python-package-for-all-python-versions-using-extensions)):
 
           ```
           nixpkgsOverlay = _final: prev: {
@@ -79,12 +91,20 @@ in
         default = [ "tests" ];
       };
     };
+    subprojects = lib.mkOption {
+      type = types.attrsOf (
+        types.submodule {
+          # Children inherit the namespace path of their parent
+          languages.python.pythonNamespacePath = lib.mkDefault cfg.pythonNamespacePath;
+        }
+      );
+    };
   };
 
   config = lib.mkMerge [
     (lib.mkIf (cfg.callPackageFunction != null) {
-      languages.python.pythonOverlay = risingTideLib.mkOverlay config.fullyQualifiedPackagePath cfg.callPackageFunction;
-      languages.python.package = lib.getAttrFromPath config.fullyQualifiedPackagePath cfg.pythonPackages;
+      languages.python.pythonOverlay = risingTideLib.mkOverlay cfg.fullyQualifiedPackagePath cfg.callPackageFunction;
+      languages.python.package = lib.getAttrFromPath cfg.fullyQualifiedPackagePath cfg.pythonPackages;
       packages.${config.packageName} = cfg.package;
     })
     (lib.mkIf cfg.enable {
