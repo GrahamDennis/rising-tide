@@ -1,0 +1,14 @@
+
+# rising-tide-managed: start
+# Jetbrains-generated CMake build files
+cmake-build-*
+
+/.direnv
+
+# rising-tide-managed: end
+
+# nixago: ignore-linked-files
+/taskfile.yml
+/.lefthook.yml
+/.vscode/extensions.json
+/.vscode/settings.json
