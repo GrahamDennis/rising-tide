@@ -16,8 +16,6 @@ let
   getCfg = projectConfig: projectConfig.languages.python;
   pythonEnabledIn = projectConfig: (getCfg projectConfig).enable;
   cfg = getCfg config;
-  pyprojectSettingsFormat = toolsPkgs.formats.toml { };
-  pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" cfg.pyproject;
 in
 {
   options = {
@@ -33,17 +31,6 @@ in
         '';
         type = types.nullOr risingTideLib.types.callPackageFunction;
         default = null;
-      };
-
-      pyproject = lib.mkOption {
-        description = "Contents of a pyproject.toml file to generate";
-        type = pyprojectSettingsFormat.type;
-        default = { };
-      };
-
-      pyprojectFile = lib.mkOption {
-        type = types.pathInStore;
-        default = pyprojectConfigFile;
       };
 
       pythonPackages = lib.mkOption {
