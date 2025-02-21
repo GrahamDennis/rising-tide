@@ -35,7 +35,7 @@ in
             "cmake:build" = {
               desc = "Build using CMake.";
               cmds = [
-                "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -G Ninja -S . -B build"
+                "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -GNinja -S . -B build"
                 "cmake --build build"
               ];
             };
@@ -57,6 +57,10 @@ in
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode.settings = {
         "cmake.ctest.testExplorerIntegrationEnabled" = false;
+        "cmake.buildArgs" = [
+          "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE"
+          "-GNinja"
+        ];
       };
     })
   ];
