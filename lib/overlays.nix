@@ -1,5 +1,5 @@
 # rising-tide flake context
-{ ... }:
+{ lib, ... }:
 {
   mkOverlay =
     packagePath: callPackageFunction: final: prev:
@@ -27,7 +27,7 @@
                 prev.${name}.overrideScope (atDepth (n + 1))
               # Otherwise perform a recursive merge
               else
-                prev.${name} // (atDepth (n + 1) final { });
+                lib.recursiveUpdate prev.${name} (atDepth (n + 1) final { });
           };
     in
     atDepth 0 final prev;

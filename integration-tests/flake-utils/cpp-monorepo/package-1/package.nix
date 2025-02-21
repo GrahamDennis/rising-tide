@@ -4,7 +4,7 @@
   pkgs,
 }:
 stdenv.mkDerivation {
-  name = "cpp-package";
+  name = "package-1";
   src = ./.;
 
   nativeBuildInputs = with pkgs; [

@@ -27,6 +27,7 @@ let
         final: _prev: {
           nested = lib.makeScope final.newScope (_self: {
             inner = 42;
+            very.deeply.nested = 43;
           });
         }
       );
@@ -109,6 +110,29 @@ let
           nested = {
             inner = 42;
             baz = 45;
+          };
+        };
+      };
+
+      "test mkOverlay applies to a nested scope (deeply)" = filterExprToExpected {
+        expr = scopeWithNestedScope.${overrideScope} (
+          risingTideLib.mkOverlay [ "nested" "very" "deeply" "peer" ] (
+            {
+              a,
+              b,
+              very,
+            }:
+            a + b + very.deeply.nested
+          )
+        );
+        expected = {
+          a = 1;
+          b = 2;
+          c.d = 3;
+          nested = {
+            inner = 42;
+            very.deeply.nested = 43;
+            very.deeply.peer = 46;
           };
         };
       };

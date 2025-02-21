@@ -48,6 +48,7 @@ let
           default = config.relativePaths.toRoot == "./.";
         };
         relativePaths = {
+          # FIXME: The name is wrong, this should be fromRoot not toRoot
           toRoot = lib.mkOption {
             description = "The path from the project to the root of the flake";
             type = risingTideLib.types.subpath;
@@ -62,12 +63,14 @@ let
               ]
             '';
           };
+          # This should be fromParentProject
           toParentProject = lib.mkOption {
             description = "The path from the project to the parent project";
             type = risingTideLib.types.subpath;
             default = config.name;
             defaultText = lib.literalMD "The name of this project: `\${config.name}`";
           };
+          # This should be rootToParentProject or parentProjectFromRoot
           parentProjectToRoot = lib.mkOption {
             description = "The path from the parent project to the root of the flake";
             type = risingTideLib.types.subpath;
