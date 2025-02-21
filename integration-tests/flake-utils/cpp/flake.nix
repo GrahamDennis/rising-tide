@@ -17,12 +17,20 @@
       rising-tide = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
       );
+      scopedPackagesOverlay = _final: prev: {
+        rising-tide = prev.lib.makeScope prev.newScope (_self: {
+          foo = 12;
+        });
+      };
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
         let
           pkgs = import nixpkgs {
             inherit system;
-            overlays = [ self.overlays.default ];
+            overlays = [
+              scopedPackagesOverlay
+              self.overlays.default
+            ];
           };
           project = rising-tide.lib.mkProject { inherit pkgs; } {
             name = "cpp-package";
