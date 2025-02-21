@@ -57,7 +57,7 @@ in
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       tools.vscode.settings = {
         "cmake.ctest.testExplorerIntegrationEnabled" = false;
-        "cmake.buildArgs" = [
+        "cmake.configureArgs" = [
           "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE"
           "-GNinja"
         ];
