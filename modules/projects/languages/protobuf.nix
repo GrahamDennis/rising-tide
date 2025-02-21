@@ -197,8 +197,8 @@ in
         };
       ${cfg.subprojectNames.generatedSources.python} =
         { config, ... }:
-        {
-          languages.python.pyproject = {
+        let
+          pyproject = {
             project = {
               name = subprojects.python.name;
               version = "0.1.0";
@@ -221,6 +221,10 @@ in
               build-backend = "hatchling.build";
             };
           };
+          pyprojectSettingsFormat = toolsPkgs.formats.toml { };
+          pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" pyproject;
+        in
+        {
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -238,7 +242,7 @@ in
                   --python_out=$out/src --mypy_out=$out/src \
                   ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_python=${pkgs.grpc}/bin/grpc_python_plugin --grpc_python_out=$out/src --mypy_grpc_out=$out/src"}
                 find $out -name '*.py' -execdir touch __init__.py py.typed \;
-                cp ${config.languages.python.pyprojectFile} $out/pyproject.toml
+                cp ${pyprojectConfigFile} $out/pyproject.toml
               '';
             };
         };
