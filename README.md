@@ -90,7 +90,7 @@ project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system
 inherit (project) devShells packages legacyPackages;
 ```
 
-See \<integration-tests/flake-utils/cpp/> for a complete example.
+See the [C++ integration test](./integration-tests/flake-utils/cpp/) for a complete example.
 
 </details>
 
@@ -114,7 +114,7 @@ project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system
 inherit (project) devShells packages legacyPackages;
 ```
 
-See \<integration-tests/flake-utils/python-package/> for a complete example.
+See the [Python package integration test](./integration-tests/flake-utils/python-package/) for a complete example.
 
 </details>
 
@@ -142,7 +142,7 @@ For clarity, the project configuration is recommended to be broken out into a se
 }
 ```
 
-See \<integration-tests/flake-utils/python-monorepo> for a complete example.
+See the [Python monorepo integration test](./integration-tests/flake-utils/python-monorepo) for a complete example.
 
 </details>
 
@@ -170,7 +170,7 @@ Then place all protobufs under the `proto/` directory (nested under appropriate 
 - `my-protobuf-cpp`: C++-language bindings.
 - `my-protobuf-py`: Python-language bindings.
 
-See \<integration-tests/flake-utils/proto> for an example monorepo that has two dependent protobuf modules, and consumes the generated packages above in [gRPCurl] wrappers and a python library.
+See the [Protobuf integration test](./integration-tests/flake-utils/proto) for an example monorepo that has two dependent protobuf modules, and consumes the generated packages above in [gRPCurl] wrappers and a python library.
 
 </details>
 
