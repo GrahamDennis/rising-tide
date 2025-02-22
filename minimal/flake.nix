@@ -1,10 +1,8 @@
 {
-  description = "Standardardised nix utilities";
+  description = "Minimal flake interface to rising-tide";
 
   outputs =
-    {
-      self,
-    }:
+    { self }:
     let
       flakeOutputs = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"

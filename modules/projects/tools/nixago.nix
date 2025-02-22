@@ -27,7 +27,6 @@ in
 
           Each request is a set of arguments to `nixago.lib.make` such that the entire list can be passed to `nixago.lib.makeAll`.
         '';
-        # FIXME: Replace the attrs with a submodule with the noop engine as default.
         type = types.listOf (
           types.submodule {
             freeformType = types.anything;
