@@ -4,27 +4,39 @@ rec {
   mkBaseProject =
     {
       projectModules ? [ ],
-      system ? pkgs.system,
+      system ? (if pkgs != null then pkgs.system else basePkgs.system),
+      basePkgs ? null,
       pkgs ? null,
       root ? null,
     }:
     rootProjectModule:
-    (lib.evalModules {
-      specialArgs = {
-        inherit system;
-        projectModules = projectModules ++ [
-          { config._module.args.pkgs = lib.mkIf (pkgs != null) pkgs; }
-        ];
-      };
-      modules = [
-        self.modules.flake.project
-        rootProjectModule
-        {
-          relativePaths.toRoot = lib.mkDefault "./.";
-          absolutePath = lib.mkIf (root != null) root;
-        }
-      ];
-    }).config;
+    let
+      pkgs' =
+        if pkgs != null then
+          pkgs
+        else if basePkgs != null then
+          (basePkgs.extend projectConfig.overlay)
+        else
+          null;
+      projectConfig =
+        (lib.evalModules {
+          specialArgs = {
+            inherit system;
+            projectModules = projectModules ++ [
+              { config._module.args.pkgs = lib.mkIf (pkgs' != null) pkgs'; }
+            ];
+          };
+          modules = [
+            self.modules.flake.project
+            rootProjectModule
+            {
+              relativePaths.toRoot = lib.mkDefault "./.";
+              absolutePath = lib.mkIf (root != null) root;
+            }
+          ];
+        }).config;
+    in
+    projectConfig;
 
   mkProject =
     args@{
