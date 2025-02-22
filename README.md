@@ -151,10 +151,6 @@ See the [Python monorepo integration test](./integration-tests/flake-utils/pytho
 <summary>Protobuf API example</summary>
 
 ```nix
-# project context
-{
-  ...
-}:
 {
   name = "my-protobuf";
   languages.protobuf = {
