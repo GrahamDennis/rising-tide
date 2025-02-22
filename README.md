@@ -33,6 +33,8 @@ task subproject-2:build
 task test
 ```
 
+Additionally, a [VS Code][vscode] project will be generated at `.vscode/settings.json` that is ready-to-use with language server tooling integrated.
+
 ## Integrated tooling
 
 Integrated tooling includes:
