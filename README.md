@@ -74,7 +74,7 @@ A minimal `flake.nix` using Rising Tide:
 
 <details>
 
-<summary>flake.nix</summary>
+<summary><a name="minimal-flake-nix"></a>flake.nix</summary>
 
 ```nix
 {
@@ -251,11 +251,12 @@ customProjectModule = {
 };
 project = rising-tide.lib.mkProject {
   basePkgs = nixpkgs.legacyPackages.${system};
+  # customProjectModule will apply to the root project and all nested subprojects
   projectModules = [ customProjectModule ];
 } (import ./project.nix);
 ```
 
-This module can also be packaged up as a Nix module published from a flake and consumed by other Nix repositories. In this situation, the conventions packaged as the module should be able to be configured via `conventions.<my-convention>.*`. For example:
+This module can also be packaged up as a Nix module published from a flake and consumed by other Nix repositories. In this situation, the conventions packaged as the module should be able to be enabled/configured via `conventions.<my-convention>.*`. For example:
 
 ```nix
 customConventionModule = {config, ...}: {
@@ -295,7 +296,11 @@ The `project` variable above is expected to be evaluated inside a per-system con
 
 - `overlay`: A system-specific overlay that was applied on top of `basePkgs` to produce `legacyPackages` (or can be used to create the `pkgs` argument to `mkProject`). Similarly a system-specific python overlay is available at `languages.pythonOverlay`.
 
-  While `overlay` and `pythonOverlay` are system-specific, an `overlays` attribute can be constructed that supports all flake-supported systems using `risingTide.lib.project.mkSystemIndependentOutputs`. See the [python-monorepo integration test](./integration-tests/flake-utils/python-monorepo/flake.nix) for an example.
+  While `overlay` and `pythonOverlay` are system-specific, an `overlays` attribute can be constructed that supports all flake-supported systems using `risingTide.lib.project.mkSystemIndependentOutputs`. See the [minimal flake.nix example above](#minimal-flake-nix).
+
+### Trying Rising Tide
+
+Rising Tide contains several [integration tests](./integration-tests/flake-utils/) that also serve as working examples of Rising Tide functionality. These are all subflakes, so clone Rising Tide, `cd` into the integration test of your choice and run `nix develop` / `nix repl` / `nix build`.
 
 [alejandra]: https://github.com/kamadorueda/alejandra
 [asan]: https://github.com/google/sanitizers/wiki/addresssanitizer
