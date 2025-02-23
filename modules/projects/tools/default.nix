@@ -24,6 +24,7 @@
     ./jetbrains
     ./keep-sorted.nix
     ./lefthook.nix
+    ./managedFiles
     ./mdformat.nix
     ./mypy.nix
     ./nil.nix
