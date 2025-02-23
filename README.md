@@ -78,7 +78,7 @@ A minimal `flake.nix` using Rising Tide:
 
 ```nix
 {
-  description = "python-monorepo";
+  description = "Example flake using Rising Tide";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
