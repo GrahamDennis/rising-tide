@@ -63,14 +63,14 @@ Integrated tooling includes:
   - [clang-format] for formatting
   - [cmake-format] for CMake formatting
   - [clangd] for VS Code IDE support
-  - ASAN and TSAN variants of your package
+  - [ASAN] and [TSAN] variants of your package
 - Shell scripts
   - [shellcheck] for linting
   - [shfmt] for code formatting
 
-## Integrating with Rising Tide
+## Integrating Rising Tide
 
-Apply these tools to a project (using rising-tide's conventions) with:
+Apply rising-tide to a project (using rising-tide's conventions) with:
 
 <details>
 
@@ -172,21 +172,167 @@ See the [Protobuf integration test](./integration-tests/flake-utils/proto) for a
 
 </details>
 
+## Design overview
+
+### Projects
+
+The central concept in Rising Tide is that of a _project_. A project corresponds to either a single Nix package (and associated `nix develop` shell) or is the parent of a set of child `subprojects` for example in a monorepo. Subprojects may be nested arbitrarily.
+
+### Tooling
+
+Each project has associated _tooling_ which can be enabled and configured via the `tools.*` project options. Tooling includes linters, code formatters, VS Code settings, language servers, etc. Tooling can be enabled and configured separately, and while rising-tide includes default configurations of some tools via rising-tide _conventions_ (see below), those can be disabled or overridden.
+
+Tooling-related options and configuration are defined under [./modules/projects/tools/][tooling].
+
+### Languages
+
+Language-specific build settings are enabled and configured via the `languages.*` project options. For example:
+
+- For python, the python package set to build on top of is defined by `languages.python.pythonPackages`,
+- For C++, [ASAN] and [TSAN] can be enabled and configured by `languages.cpp.sanitizers.{asan,tsan}.*`. These features require configuring the base C++ package via `languages.cpp.callPackageFunction`.
+- For protobuf the source directory can be configured via `languages.protobuf.src`, gRPC enabled with `languages.protobuf.grpc.enable` and imported protobuf packages referenced via `languages.protobuf.importPaths`.
+
+Language-related options and configuration are defined under [./modules/projects/languages/][languages].
+
+### Conventions
+
+_Conventions_ (`conventions.*`) provide default configurations for tooling (e.g. code styles, linter settings) and defaults for which tooling should be enabled depending on which language has been configured for a project. Rising Tide provides its own conventions which are configured under `conventions.risingTide.*`. These conventions are default-enabled if a project is created via `risingTide.lib.mkProject`, however conventions can have their configurations overridden, or disabled. Additionally the default-enable of Rising Tide conventions can be avoided by using `risingTide.lib.mkBaseProject` in place of `risingTide.lib.mkProject` for creating projects. Additional conventions can be created and distributed separately from Rising Tide itself and applied via the `projectModules` argument to `mkProject` / `mkBaseProject`.
+
+Conventions are defined under [./modules/projects/conventions/][conventions].
+
+### Project configurations are Nix modules
+
+Rising Tide uses the [Nix module system][module-system] for project configuration. This is the same system used for configuring NixOS computers. Using the module system allows project configuration to be merged / overridden using the standard `lib.mkForce` / `lib.mkOverride` / `lib.mkBefore` / `lib.mkAfter` utilities commonly used in NixOS computer configuration. Additionally, this enables additional modules to be defined outside of Rising Tide and used to extend the project configuration options that it provides.
+
+For example, mypy can be configured to disallow expressions to have the type `Any` with:
+
+```nix
+# project.nix
+{lib, ...}:
+{
+  # Note: this will be merged with any other mypy configuration set via `tools.mypy.config`
+  tools.mypy.config.disallow_any_expr = true;
+}
+```
+
+In a monorepo, this would only apply to a single project and not any nested subprojects or other projects in the repo. To apply this configuration to all projects and its subprojects, one could write:
+
+```nix
+customProjectModule = {
+  tools.mypy.config.disallow_any_expr = true;
+};
+project = rising-tide.lib.mkProject {
+  basePkgs = nixpkgs.legacyPackages.${system};
+  projectModules = [ customProjectModule ];
+} (import ./project.nix);
+```
+
+This module can also be packaged up as a Nix module published from a flake and consumed by other Nix repositories. In this situation, the conventions packaged as the module should be able to be configured via `conventions.<my-convention>.*`. For example:
+
+```nix
+customConventionModule = {config, ...}: {
+  # This is just a Nix module
+  options = {
+    # Optionally this could be default-enabled if desired.
+    conventions.myConvention.enable = lib.mkEnableOption "Enable my custom convention";
+  };
+  config = lib.mkIf config.conventions.myConvention.enable {
+    tools.mypy.config.disallow_any_expr = true;
+  };
+};
+# This module can then be consumed inside this package or downstream via:
+project = rising-tide.lib.mkProject { # or lib.mkBaseProject to not default-enable rising-tide conventions
+  basePkgs = nixpkgs.legacyPackages.${system};
+  projectModules = [
+    customConventionModule
+    {
+      # If the convention isn't default-enabled
+      conventions.myConvention.enable = true;
+    }
+  ];
+};
+```
+
+### Evaluated project outputs
+
+The `project` variable above is expected to be evaluated inside a per-system context, e.g. `flake-utils.lib.eachSystem`. The generated project produces several attributes that should be included (or merged with) a flake's outputs. These include:
+
+- `packages`: A flat attribute set of the packages produced by Rising Tide.
+
+- `devShells`: A flat attribute set of the devShells configured by Rising Tide. These devShells match the corresponding packages and have all enabled tooling included.
+
+- `legacyPackages`: Rising Tide produces a package overlay and applies this on top of the `basePkgs` passed to `mkProject` (unless that has already been done and passed as the `pkgs` argument instead). `legacyPackages` is the upstream `basePkgs` with this overlay applied. Packages under `packages.*` are extracted from `legacyPackages`.
+
+- `hydraJobs`: Hydra Jobs for evaluating the `packages` produced by Rising Tide using [nix-eval-jobs], [nix-fast-build] or similar.
+
+- `overlay`: A system-specific overlay that was applied on top of `basePkgs` to produce `legacyPackages` (or can be used to create the `pkgs` argument to `mkProject`). Similarly a system-specific python overlay is available at `languages.pythonOverlay`.
+
+  While `overlay` and `pythonOverlay` are system-specific, an `overlays` attribute can be constructed that supports all flake-supported systems using `risingTide.lib.project.mkSystemIndependentOutputs`. See the [python-monorepo integration test](./integration-tests/flake-utils/python-monorepo/flake.nix) for an example.
+
+### Minimal flake.nix with Rising Tide
+
+A minimal `flake.nix` using Rising Tide might look like:
+
+```nix
+{
+  description = "python-monorepo";
+
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    rising-tide.url = "github:GrahamDennis/rising-tide";
+  };
+
+  outputs =
+    inputs@{
+      flake-utils,
+      nixpkgs,
+      rising-tide,
+      ...
+    }:
+    let
+      perSystemOutputs = flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system}; } (import ./project.nix);
+        in
+        rec {
+          inherit project;
+          inherit (project) packages devShells hydraJobs legacyPackages;
+        }
+      );
+      systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
+        rootProjectBySystem = perSystemOutputs.project;
+      };
+    in
+    perSystemOutputs
+    // systemIndependentOutputs;
+}
+```
+
+Where `project.nix` contains the configuration of the root Rising Tide project.
+
 [alejandra]: https://github.com/kamadorueda/alejandra
+[asan]: https://github.com/google/sanitizers/wiki/addresssanitizer
 [clang-format]: https://clang.llvm.org/docs/ClangFormat.html
 [clang-tidy]: https://clang.llvm.org/extra/clang-tidy/
 [clangd]: https://clangd.llvm.org/
 [cmake-format]: https://cmake-format.readthedocs.io/
+[conventions]: ./modules/projects/conventions/
 [deadnix]: https://github.com/astro/deadnix
 [fdset]: https://github.com/protocolbuffers/protobuf/blob/e390402c5e372de349af88ae0197c67529cf9360/src/google/protobuf/descriptor.proto#L54-L65
 [go-task]: https://taskfile.dev/
 [grpcurl]: https://github.com/fullstorydev/grpcurl
 [keep-sorted]: https://github.com/google/keep-sorted
+[languages]: ./modules/projects/languages/
 [lefthook]: https://evilmartians.github.io/lefthook/
 [mdformat]: https://mdformat.readthedocs.io/
+[module-system]: https://nix.dev/tutorials/module-system/
 [mypy]: https://mypy.readthedocs.io/en/stable/index.html
 [nil]: https://github.com/oxalica/nil
 [nix]: https://nixos.org/
+[nix-eval-jobs]: https://github.com/nix-community/nix-eval-jobs
+[nix-fast-build]: https://github.com/Mic92/nix-fast-build
 [nix-unit]: https://github.com/nix-community/nix-unit
 [nixfmt-rfc-style]: https://github.com/NixOS/nixfmt
 [pyright]: https://github.com/microsoft/pyright
@@ -197,6 +343,8 @@ See the [Protobuf integration test](./integration-tests/flake-utils/proto) for a
 [shellcheck]: https://www.shellcheck.net/
 [shfmt]: https://github.com/mvdan/sh
 [taplo]: https://taplo.tamasfe.dev/
+[tooling]: ./modules/projects/tools/
 [treefmt]: https://treefmt.com/
+[tsan]: https://github.com/google/sanitizers/wiki/ThreadSanitizerCppManual
 [uv]: https://github.com/astral-sh/uv
 [vscode]: https://code.visualstudio.com/
