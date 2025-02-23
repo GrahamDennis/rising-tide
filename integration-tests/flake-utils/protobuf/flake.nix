@@ -14,6 +14,8 @@
       ...
     }:
     let
+      # Consumers of rising-tide should add rising-tide as a flake input above. This unusual structure only exists
+      # inside of rising-tide to enable the integration tests to run against the local rising-tide repo.
       rising-tide = builtins.getFlake (
         builtins.unsafeDiscardStringContext "path:${self.sourceInfo}?narHash=${self.narHash}"
       );
@@ -25,41 +27,19 @@
             overlays = [ self.overlays.default ];
           };
 
-          project =
-            rising-tide.lib.mkProject
-              {
-                inherit pkgs;
-                root = ./.;
-              }
-              {
-                name = "protobuf-root";
-                # namespacePath = [
-                #   "rising-tide"
-                #   "integration-tests"
-                #   "protobuf"
-                # ];
-                subprojects = {
-                  example = import ./example/project.nix;
-                  example-curl = {
-                    callPackageFunction = import ./example-curl/package.nix;
-                  };
-                  example-extended = import ./example-extended/project.nix;
-                  example-extended-curl = {
-                    callPackageFunction = import ./example-extended-curl/package.nix;
-                  };
-                  python-package-1 = import ./python-package-1/project.nix;
-                };
-                tools.uv.enable = true;
-                mkShell.nativeBuildInputs = with pkgs; [
-                  nix-eval-jobs
-                  nix-fast-build
-                  nix-output-monitor
-                ];
-              };
+          project = rising-tide.lib.mkProject {
+            inherit pkgs;
+            root = ./.;
+          } (import ./project.nix);
         in
         {
           inherit project;
-          inherit (project) devShells packages hydraJobs;
+          inherit (project)
+            devShells
+            packages
+            hydraJobs
+            legacyPackages
+            ;
         }
       );
       systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
