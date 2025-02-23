@@ -300,7 +300,11 @@ The `project` variable above is expected to be evaluated inside a per-system con
 
 ### Trying Rising Tide
 
-Rising Tide contains several [integration tests](./integration-tests/flake-utils/) that also serve as working examples of Rising Tide functionality. These are all subflakes, so clone Rising Tide, `cd` into the integration test of your choice and run `nix develop` / `nix repl` / `nix build`.
+Rising Tide contains several [integration tests](./integration-tests/flake-utils/) that also serve as working examples of Rising Tide functionality. Play with these by:
+
+1. Clone Rising Tide
+1. `cd` into the integration test of your choice
+1. Run `nix develop` / `nix repl .`.
 
 [alejandra]: https://github.com/kamadorueda/alejandra
 [asan]: https://github.com/google/sanitizers/wiki/addresssanitizer
