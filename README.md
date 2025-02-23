@@ -104,6 +104,8 @@ A minimal `flake.nix` using Rising Tide:
           inherit (project) packages devShells hydraJobs legacyPackages;
         }
       );
+      # mkSystemIndependentOutput produces the `overlays` and `pythonOverlays` attributes combining the system-specific
+      # attributes above
       systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
         rootProjectBySystem = perSystemOutputs.project;
       };
@@ -296,7 +298,7 @@ The `project` variable above is expected to be evaluated inside a per-system con
 
 - `overlay`: A system-specific overlay that was applied on top of `basePkgs` to produce `legacyPackages` (or can be used to create the `pkgs` argument to `mkProject`). Similarly a system-specific python overlay is available at `languages.pythonOverlay`.
 
-  While `overlay` and `pythonOverlay` are system-specific, an `overlays` attribute can be constructed that supports all flake-supported systems using `risingTide.lib.project.mkSystemIndependentOutputs`. See the [minimal flake.nix example above](#minimal-flake-nix).
+  While `overlay` and `pythonOverlay` are system-specific, an `overlays` attribute (and `pythonOverlays` attribute) can be constructed that supports all systems supported by your flake using `risingTide.lib.project.mkSystemIndependentOutputs`. See the [minimal flake.nix example above](#minimal-flake-nix).
 
 ### Trying Rising Tide
 
