@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (lib) types;
   enabledIn = projectConfig: projectConfig.tools.cmake.enable;
   cfg = config.tools.cmake;
   cmakeExe = lib.getExe cfg.package;
@@ -16,6 +17,11 @@ in
     tools.cmake = {
       enable = lib.mkEnableOption "Enable cmake integration";
       package = lib.mkPackageOption toolsPkgs "cmake" { pkgsText = "toolsPkgs"; };
+      generator = lib.mkOption {
+        type = types.str;
+        description = "The CMake generator to use";
+        default = "Unix Makefiles";
+      };
     };
   };
 
@@ -35,7 +41,7 @@ in
             "cmake:build" = {
               desc = "Build using CMake.";
               cmds = [
-                "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -GNinja -S . -B build"
+                "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \"-G${cfg.generator}\" -S . -B build"
                 "cmake --build build"
               ];
             };
@@ -59,7 +65,7 @@ in
         "cmake.ctest.testExplorerIntegrationEnabled" = false;
         "cmake.configureArgs" = [
           "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE"
-          "-GNinja"
+          "-G${cfg.generator}"
         ];
       };
     })
