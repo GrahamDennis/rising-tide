@@ -22,13 +22,7 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        project = rising-tide.lib.mkProject { inherit system; } {
-          name = "treefmt-integration-test";
-          relativePaths.toRoot = "./.";
-          tools.treefmt = {
-            enable = true;
-          };
-        };
+        project = rising-tide.lib.mkProject { inherit system; } (import ./project.nix);
       in
       {
         inherit project;

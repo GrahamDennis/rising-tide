@@ -22,13 +22,7 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        project = rising-tide.lib.mkProject { inherit system; } {
-          name = "go-task-integration-test";
-          tools.go-task = {
-            enable = true;
-            taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
-          };
-        };
+        project = rising-tide.lib.mkProject { inherit system; } (import ./project.nix);
       in
       {
         inherit project;

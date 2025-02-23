@@ -38,18 +38,7 @@
               self.overlays.default
             ];
           };
-          project = rising-tide.lib.mkProject { inherit pkgs; } {
-            name = "cpp-package";
-            namespacePath = [
-              "rising-tide"
-              "integration-tests"
-              "cpp"
-            ];
-            languages.cpp = {
-              enable = true;
-              callPackageFunction = import ./package.nix;
-            };
-          };
+          project = rising-tide.lib.mkProject { inherit pkgs; } (import ./project.nix);
         in
         {
           inherit project;

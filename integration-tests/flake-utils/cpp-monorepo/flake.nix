@@ -22,13 +22,9 @@
       perSystemOutputs = flake-utils.lib.eachDefaultSystem (
         system:
         let
-          project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system}; } {
-            name = "cpp-monorepo";
-            subprojects = {
-              package-1 = import ./package-1/project.nix;
-              package-2 = import ./package-2/project.nix;
-            };
-          };
+          project = rising-tide.lib.mkProject {
+            basePkgs = nixpkgs.legacyPackages.${system};
+          } (import ./project.nix);
         in
         rec {
           inherit project;

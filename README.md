@@ -70,15 +70,59 @@ Integrated tooling includes:
 
 ## Integrating Rising Tide
 
-Apply rising-tide to a project (using rising-tide's conventions) with:
+A minimal `flake.nix` using Rising Tide:
 
 <details>
 
-<summary>C++ example</summary>
+<summary>flake.nix</summary>
 
 ```nix
-# Inside a flake-utils eachSystem block or similar
-project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system}; } {
+{
+  description = "python-monorepo";
+
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    rising-tide.url = "github:GrahamDennis/rising-tide";
+  };
+
+  outputs =
+    inputs@{
+      flake-utils,
+      nixpkgs,
+      rising-tide,
+      ...
+    }:
+    let
+      perSystemOutputs = flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system}; } (import ./project.nix);
+        in
+        rec {
+          inherit project;
+          inherit (project) packages devShells hydraJobs legacyPackages;
+        }
+      );
+      systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
+        rootProjectBySystem = perSystemOutputs.project;
+      };
+    in
+    perSystemOutputs
+    // systemIndependentOutputs;
+}
+```
+
+</details>
+
+`project.nix` contains the configuration of a Rising Tide project:
+
+<details>
+
+<summary>C++ <code>project.nix</code> example</summary>
+
+```nix
+{
   name = "my-cpp-package";
   languages.cpp = {
     enable = true;
@@ -87,9 +131,6 @@ project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system
     callPackageFunction = import ./package.nix;
   };
 };
-
-# `project` contains the following attributes that should be included in your flake outputs:
-inherit (project) devShells packages legacyPackages;
 ```
 
 See the [C++ integration test](./integration-tests/flake-utils/cpp/) for a complete example.
@@ -98,11 +139,10 @@ See the [C++ integration test](./integration-tests/flake-utils/cpp/) for a compl
 
 <details>
 
-<summary>Python (single-package) example</summary>
+<summary>Python (single-package) <code>project.nix</code> example</summary>
 
 ```nix
-# Inside a flake-utils eachSystem block or similar
-project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system}; } {
+{
   name = "my-python-package";
   languages.python = {
     enable = true;
@@ -111,9 +151,6 @@ project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system
     callPackageFunction = import ./package.nix;
   };
 };
-
-# `project` contains the following attributes that should be included in your flake outputs:
-inherit (project) devShells packages legacyPackages;
 ```
 
 See the [Python package integration test](./integration-tests/flake-utils/python-package/) for a complete example.
@@ -122,16 +159,7 @@ See the [Python package integration test](./integration-tests/flake-utils/python
 
 <details>
 
-<summary>Python (monorepo) example</summary>
-
-```nix
-project = rising-tide.lib.mkProject { inherit pkgs; } (import ./project.nix);
-
-# `project` contains the following attributes that should be included in your flake outputs:
-inherit (project) devShells packages legacyPackages;
-```
-
-For clarity, the project configuration is recommended to be broken out into a separate project.nix file which looks like:
+<summary>Python (monorepo) <code>project.nix</code> example</summary>
 
 ```nix
 {
@@ -150,7 +178,7 @@ See the [Python monorepo integration test](./integration-tests/flake-utils/pytho
 
 <details>
 
-<summary>Protobuf API example</summary>
+<summary>Protobuf API <code>project.nix</code> example</summary>
 
 ```nix
 {
@@ -268,49 +296,6 @@ The `project` variable above is expected to be evaluated inside a per-system con
 - `overlay`: A system-specific overlay that was applied on top of `basePkgs` to produce `legacyPackages` (or can be used to create the `pkgs` argument to `mkProject`). Similarly a system-specific python overlay is available at `languages.pythonOverlay`.
 
   While `overlay` and `pythonOverlay` are system-specific, an `overlays` attribute can be constructed that supports all flake-supported systems using `risingTide.lib.project.mkSystemIndependentOutputs`. See the [python-monorepo integration test](./integration-tests/flake-utils/python-monorepo/flake.nix) for an example.
-
-### Minimal flake.nix with Rising Tide
-
-A minimal `flake.nix` using Rising Tide might look like:
-
-```nix
-{
-  description = "python-monorepo";
-
-  inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
-    rising-tide.url = "github:GrahamDennis/rising-tide";
-  };
-
-  outputs =
-    inputs@{
-      flake-utils,
-      nixpkgs,
-      rising-tide,
-      ...
-    }:
-    let
-      perSystemOutputs = flake-utils.lib.eachDefaultSystem (
-        system:
-        let
-          project = rising-tide.lib.mkProject { basePkgs = nixpkgs.legacyPackages.${system}; } (import ./project.nix);
-        in
-        rec {
-          inherit project;
-          inherit (project) packages devShells hydraJobs legacyPackages;
-        }
-      );
-      systemIndependentOutputs = rising-tide.lib.project.mkSystemIndependentOutputs {
-        rootProjectBySystem = perSystemOutputs.project;
-      };
-    in
-    perSystemOutputs
-    // systemIndependentOutputs;
-}
-```
-
-Where `project.nix` contains the configuration of the root Rising Tide project.
 
 [alejandra]: https://github.com/kamadorueda/alejandra
 [asan]: https://github.com/google/sanitizers/wiki/addresssanitizer

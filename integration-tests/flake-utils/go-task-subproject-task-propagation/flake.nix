@@ -22,17 +22,7 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        project = rising-tide.lib.mkProject { inherit system; } {
-          name = "go-task-subproject-task-propagation-integration-test";
-          relativePaths.toRoot = "./.";
-          subprojects.subproject = {
-            relativePaths.toParentProject = "subproject";
-            tools.go-task = {
-              enable = true;
-              taskfile.tasks.hello.cmds = [ "echo 'Hello, World!'" ];
-            };
-          };
-        };
+        project = rising-tide.lib.mkProject { inherit system; } (import ./project.nix);
       in
       {
         inherit project;

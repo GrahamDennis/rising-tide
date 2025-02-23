@@ -26,11 +26,7 @@
             inherit system;
             overlays = [ self.overlays.default ];
           };
-          project = rising-tide.lib.mkProject { inherit pkgs; } {
-            name = "python-package";
-            languages.python.enable = true;
-            languages.python.callPackageFunction = import ./package.nix;
-          };
+          project = rising-tide.lib.mkProject { inherit pkgs; } (import ./project.nix);
         in
         {
           inherit project;
