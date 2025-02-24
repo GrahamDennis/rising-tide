@@ -47,6 +47,7 @@ in
             command = clangTidyExe;
             options = [
               "--fix"
+              "--format-style=file"
               "-p"
               "build"
             ];
