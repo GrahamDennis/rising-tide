@@ -46,6 +46,7 @@ in
           formatter.clang-tidy = {
             command = clangTidyExe;
             options = [
+              "--fix"
               "-p"
               "build"
             ];
