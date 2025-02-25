@@ -12,10 +12,17 @@
 /taskfile.yml
 /.lefthook.yml
 # rising-tide-managed: start
+# Ignore build outputs from performing a nix-build or `nix build` command
+/result
+/result-*
+
 # Jetbrains-generated CMake build files
 cmake-build-*
 
 /.direnv
+
+# CMake build directory
+/build/
 
 /.idea/toolchains.xml
 # rising-tide-managed: end

@@ -6,6 +6,10 @@
 /.vscode/settings.json
 /.ruff.toml
 # rising-tide-managed: start
+# Ignore build outputs from performing a nix-build or `nix build` command
+/result
+/result-*
+
 # Python-generated files
 __pycache__/
 *.py[oc]
