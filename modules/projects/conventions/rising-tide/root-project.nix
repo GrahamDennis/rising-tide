@@ -45,6 +45,14 @@ in
               use flake
             '';
           };
+          gitignore = {
+            enable = true;
+            rules = ''
+              # Ignore build outputs from performing a nix-build or `nix build` command
+              /result
+              /result-*
+            '';
+          };
           go-task.taskfile.tasks."ci:check-not-dirty" = {
             cmds = [
               "git status"

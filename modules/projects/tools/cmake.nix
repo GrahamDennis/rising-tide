@@ -33,7 +33,15 @@ in
       ];
       tasks.build.dependsOn = [ "cmake:build" ];
       tasks.test.dependsOn = [ "test:ctest" ];
+
       tools = {
+        gitignore = {
+          enable = true;
+          rules = ''
+            # CMake build directory
+            /build/
+          '';
+        };
         go-task = {
           enable = true;
           # FIXME: Add gtest/ctest integration
