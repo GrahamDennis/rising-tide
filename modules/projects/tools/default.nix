@@ -25,6 +25,7 @@
     ./keep-sorted.nix
     ./lefthook.nix
     ./mdformat.nix
+    ./minimal-flake.nix
     ./mypy.nix
     ./nil.nix
     ./nix-fast-build.nix

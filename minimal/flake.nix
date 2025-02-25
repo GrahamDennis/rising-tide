@@ -1,5 +1,5 @@
 {
-  description = "Minimal flake interface to rising-tide";
+  description = "Minimal flake interface to rising-tide-root";
 
   outputs =
     { self }:
@@ -14,14 +14,6 @@
       # the default `self` attribute and would make the import above not work. By explicitly listing the
       # attributes here, nix can identify that the `self` attribute must resolve to the usual one and therefore
       # can use it in the import above.
-      inherit (flakeOutputs)
-        devShells
-        debug
-        modules
-        project
-        lib
-        overlays
-        packages
-        ;
+      inherit (flakeOutputs) overlays pythonOverlays packages legacyPackages lib modules nixosModules nixosConfigurations;
     };
 }
