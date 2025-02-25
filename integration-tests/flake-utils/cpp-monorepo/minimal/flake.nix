@@ -14,15 +14,6 @@
       # the default `self` attribute and would make the import above not work. By explicitly listing the
       # attributes here, nix can identify that the `self` attribute must resolve to the usual one and therefore
       # can use it in the import above.
-      inherit (flakeOutputs)
-        overlays
-        pythonOverlays
-        packages
-        legacyPackages
-        lib
-        modules
-        nixosModules
-        nixosConfigurations
-        ;
+      inherit (flakeOutputs) overlays pythonOverlays packages legacyPackages lib modules nixosModules nixosConfigurations;
     };
 }

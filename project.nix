@@ -38,7 +38,7 @@ let
       circleci.enable = true;
       cue.enable = true;
       nix-unit.enable = true;
-      treefmt.config.excludes = [ "integration-tests" ];
+      treefmt.config.excludes = [ "integration-tests/**" ];
       go-task = {
         taskfile.tasks = {
           "test:integration-tests" = {
