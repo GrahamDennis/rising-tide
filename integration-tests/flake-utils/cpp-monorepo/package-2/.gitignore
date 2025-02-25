@@ -4,3 +4,8 @@
 /.clang-tidy
 /.clangd
 /taskfile.yml
+# rising-tide-managed: start
+# CMake build directory
+/build/
+
+# rising-tide-managed: end
