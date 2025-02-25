@@ -1,15 +1,15 @@
-# A minimal flake interface for rising-tide-root
+# A minimal flake interface for python-package
 
 This is an experimental minimal flake interface that attempts to provide a solution for ever-growing flake.lock files. Instead of consuming this flake normally with an input like:
 
 ```nix
-inputs.rising-tide-root.url = "insert-url-here";
+inputs.python-package.url = "insert-url-here";
 ```
 
 Instead use:
 
 ```nix
-inputs.rising-tide-root.url = "insert-url-here?dir=minimal";
+inputs.python-package.url = "insert-url-here?dir=minimal";
 ```
 
 This is a drop-in replacement, however your flake.lock will only reference this flake,

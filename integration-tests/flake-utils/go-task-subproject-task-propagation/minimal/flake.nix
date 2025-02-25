@@ -1,5 +1,5 @@
 {
-  description = "Minimal flake interface to rising-tide-root";
+  description = "Minimal flake interface to go-task-subproject-task-propagation-integration-test";
 
   outputs =
     { self }:

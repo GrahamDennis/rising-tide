@@ -75,6 +75,7 @@ in
             };
           };
           mdformat.enable = true;
+          minimal-flake.enable = true;
           nixfmt-rfc-style.enable = true;
           ripsecrets.enable = true;
           shellcheck.enable = true;

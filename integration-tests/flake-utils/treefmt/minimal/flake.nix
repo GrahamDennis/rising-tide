@@ -1,5 +1,5 @@
 {
-  description = "Minimal flake interface to rising-tide-root";
+  description = "Minimal flake interface to treefmt-integration-test";
 
   outputs =
     { self }:
