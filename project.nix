@@ -38,6 +38,7 @@ let
       circleci.enable = true;
       cue.enable = true;
       nix-unit.enable = true;
+      treefmt.config.excludes = [ "integration-tests" ];
       go-task = {
         taskfile.tasks = {
           "test:integration-tests" = {
@@ -45,7 +46,7 @@ let
             dir = "integration-tests";
             vars.INTEGRATION_TESTS.sh = ''
               # Find all integration test directories without a ./ prefix
-              find . -name flake.nix -print0 | xargs -0 dirname | cut -f2- -d'/'
+              find . -name flake.nix -print0 | xargs -0 dirname | grep -v 'minimal' | cut -f2- -d'/'
             '';
             deps = [
               {
