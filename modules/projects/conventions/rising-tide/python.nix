@@ -26,6 +26,9 @@ in
             config = {
               pretty = true;
               strict = true;
+              show_error_codes = true;
+              warn_unreachable = true;
+              local_partial_types = true;
               warn_return_any = true;
               warn_unused_configs = true;
               disallow_untyped_defs = true;
