@@ -46,10 +46,16 @@ in
           enable = true;
           # FIXME: Add gtest/ctest integration
           taskfile.tasks = {
-            "cmake:build" = {
-              desc = "Build using CMake.";
+            "cmake:configure" = {
+              desc = "Configure using CMake.";
               cmds = [
                 "${cmakeExe} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \"-G${cfg.generator}\" -S . -B build"
+              ];
+            };
+            "cmake:build" = {
+              desc = "Build using CMake.";
+              deps = [ "cmake:configure" ];
+              cmds = [
                 "cmake --build build"
               ];
             };
