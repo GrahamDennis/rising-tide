@@ -45,6 +45,8 @@ in
             header = {
               BasedOnStyle = "Google";
               ColumnLimit = 120;
+              AccessModifierOffset = -3;
+              IndentWidth = 4;
             };
           };
           clang-tidy.config = {
