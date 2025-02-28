@@ -3,7 +3,12 @@
 uvShellHook() {
   echo "Executing uvShellHook"
 
-  # FIXME: Rebuild on dev shell change
+  # Check if we need to recreate the virtual environment
+  if [ "$(readlink .venv/nix-env)" != "${NIX_GCROOT}" ]; then
+    # Remove the old virtual environment if it exists
+    rm -rf .venv
+  fi
+
   uv venv --allow-existing
   export VIRTUAL_ENV_DISABLE_PROMPT=1
   source .venv/bin/activate
@@ -16,6 +21,8 @@ uvShellHook() {
   for PYTHON_PATH_COMPONENT in $(echo "$PYTHONPATH" | tr ':' $'\n'); do
     echo "site.addsitedir(\"$PYTHON_PATH_COMPONENT\")" >>"$_SITE_PACKAGES_DIR/_nix_env.py"
   done
+
+  ln -fs "${NIX_GCROOT}" .venv/nix-env
 
   runHook postVenvCreation
   echo "Finished executing uvShellHook"
