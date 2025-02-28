@@ -51,9 +51,43 @@ in
           };
           clang-tidy.config = {
             Checks = [
+              "abseil-*"
               "bugprone-*"
               "cppcoreguidelines-*"
+              "performance-*"
+              "modernize-*"
+              "readability-*"
             ];
+            HeaderFilterRegex = ".*";
+            WarningsAsErrors = [
+              "bugprone-*"
+              "performance-*"
+            ];
+            CheckOptions = {
+              # keep-sorted start
+              "cppcoreguidelines-avoid-do-while.IgnoreMacros" = true;
+              "readability-identifier-naming.ClassCase" = "CamelCase";
+              "readability-identifier-naming.ClassConstantCase" = "CamelCase";
+              "readability-identifier-naming.ClassMemberCase" = "camelBack";
+              "readability-identifier-naming.ConstantMemberCase" = "CamelCase";
+              "readability-identifier-naming.ConstantParameterCase" = "camelBack";
+              "readability-identifier-naming.EnumCase" = "CamelCase";
+              "readability-identifier-naming.EnumConstantCase" = "CamelCase";
+              "readability-identifier-naming.FunctionCase" = "camelBack";
+              "readability-identifier-naming.GlobalConstantCase" = "CamelCase";
+              "readability-identifier-naming.GlobalVariableCase" = "CamelCase";
+              "readability-identifier-naming.LocalConstantCase" = "camelBack";
+              "readability-identifier-naming.LocalVariableCase" = "camelBack";
+              "readability-identifier-naming.MemberCase" = "camelBack";
+              "readability-identifier-naming.MethodCase" = "camelBack";
+              "readability-identifier-naming.NamespaceCase" = "lower_case";
+              "readability-identifier-naming.PrivateMemberCase" = "CamelCase";
+              "readability-identifier-naming.ProtectedMemberCase" = "CamelCase";
+              "readability-identifier-naming.PublicMemberCase" = "CamelCase";
+              "readability-identifier-naming.StructCase" = "CamelCase";
+              "readability-identifier-naming.VariableCase" = "camelBack";
+              # keep-sorted end
+            };
           };
           cmake-format.config = {
             format.line_width = 120;
