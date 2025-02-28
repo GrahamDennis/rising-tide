@@ -50,7 +50,10 @@ in
             };
           };
           clang-tidy.config = {
-            Checks = "bugprone-*,cppcoreguidelines-*";
+            Checks = [
+              "bugprone-*"
+              "cppcoreguidelines-*"
+            ];
           };
           cmake-format.config = {
             format.line_width = 120;
