@@ -1,6 +1,7 @@
 # rising-tide flake context
 {
   lib,
+  risingTideLib,
   ...
 }:
 # project context
@@ -21,9 +22,15 @@ in
       enable = lib.mkEnableOption "Enable llvm-cov integration";
       package = lib.mkPackageOption pkgs [ "llvmPackages" "libllvm" ] { };
       coverageTargets = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        description = "The targets to generate coverage data for";
+        type = lib.types.listOf risingTideLib.types.subpath;
+        description = "Relative paths to libraries / executables to generate coverage reports for";
         default = [ ];
+        # FIXME: Is this the most convenient thing? Also: requiring the build/ prefix feels redundant,
+        # however it's useful for discoverability.
+        example = [
+          "build/tests/dummy_test"
+          "build/src/greet"
+        ];
       };
     };
   };

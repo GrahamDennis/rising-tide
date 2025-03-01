@@ -13,6 +13,7 @@
   tools.experimental.llvm-cov = {
     enable = true;
     coverageTargets = [
+      # Relative paths to build executables / libraries to generate coverage reports for
       "build/tests/dummy_test"
       "build/src/greet"
     ];
