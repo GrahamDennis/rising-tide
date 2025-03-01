@@ -52,13 +52,15 @@ findconfig() {
   fi
 }
 
+if [ -z "${FLAKE_ROOT:-}" ]; then
+  FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
+fi
+
 @name@VenvPackagesHook() {
   echo "Executing @name@VenvPackagesHook"
-  local projectRoot
-  projectRoot="$(dirname "$(findconfig flake.nix)")"
-  if test -f "${projectRoot}/@relativePathToRoot@/pyproject.toml"; then
-    venvPackages+=(--editable "${projectRoot}/@relativePathToRoot@")
-    addToSearchPath PYTHONPATH "${projectRoot}/@relativePathToRoot@/src"
+  if test -f "${FLAKE_ROOT}/@relativePathToRoot@/pyproject.toml"; then
+    venvPackages+=(--editable "${FLAKE_ROOT}/@relativePathToRoot@")
+    addToSearchPath PYTHONPATH "${FLAKE_ROOT}/@relativePathToRoot@/src"
   fi
 }
 

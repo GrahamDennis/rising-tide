@@ -18,10 +18,14 @@ findconfig() {
   fi
 }
 
+if [ -z "${FLAKE_ROOT:-}" ]; then
+  FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
+fi
+
 function @bashSafeName@PreShell() {
   echo "Executing @bashSafeName@ (pre-shell)"
 
-  pushd "$(dirname "$(findconfig flake.nix)")" >/dev/null || return
+  pushd "$FLAKE_ROOT" >/dev/null || return
   # Ensure the subproject exists
   mkdir -p "@relativePathToRoot@"
   cd "@relativePathToRoot@" || return
