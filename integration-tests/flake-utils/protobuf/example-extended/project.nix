@@ -1,5 +1,6 @@
 # project context
 {
+  pkgs,
   ...
 }:
 {
@@ -7,7 +8,7 @@
     enable = true;
     grpc.enable = true;
     importPaths = {
-      example = ../example/proto;
+      example = pkgs.example-src;
     };
     cpp.extraDependencies = pkgs: [ pkgs.example-cpp ];
     python.extraDependencies = pythonPackages: [ pythonPackages.example-py ];
