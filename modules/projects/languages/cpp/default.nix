@@ -5,7 +5,12 @@
   ...
 }:
 # project context
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  toolsPkgs,
+  ...
+}:
 let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.languages.cpp;
@@ -26,6 +31,17 @@ in
         '';
         type = types.nullOr risingTideLib.types.callPackageFunction;
         default = null;
+      };
+
+      coverage = {
+        enable = lib.mkEnableOption "Enable coverage (in develop shell)";
+        package = lib.mkPackageOption toolsPkgs "lcov" { pkgsText = "toolsPkgs"; };
+        setupHook = lib.mkOption {
+          type = types.package;
+          default = pkgs.makeSetupHook {
+            name = "coverage-hook";
+          } ./hooks/coverage.sh;
+        };
       };
 
       sanitizers =
@@ -181,6 +197,7 @@ in
       mkShell.nativeBuildInputs = [
         (lib.mkIf cfg.sanitizers.asan.enableInDevelopShell (cfg.sanitizers.asan.setupHook))
         (lib.mkIf cfg.sanitizers.tsan.enableInDevelopShell (cfg.sanitizers.tsan.setupHook))
+        (lib.mkIf cfg.coverage.enable (cfg.coverage.setupHook))
       ];
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {

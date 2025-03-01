@@ -24,6 +24,7 @@
     ./jetbrains
     ./keep-sorted.nix
     ./lefthook.nix
+    ./llvm-cov.nix
     ./mdformat.nix
     ./minimal-flake.nix
     ./mypy.nix
