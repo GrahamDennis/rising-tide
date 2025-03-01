@@ -36,31 +36,6 @@ uvShellHook() {
   echo "Finished executing uvShellHook"
 }
 
-findconfig() {
-  # from: https://www.npmjs.com/package/find-config#algorithm
-  # 1. If X/file.ext exists and is a regular file, return it. STOP
-  # 2. If X has a parent directory, change X to parent. GO TO 1
-  # 3. Return NULL.
-
-  if [ -f "$1" ]; then
-    printf '%s\n' "${PWD%/}/$1"
-  elif [ "$PWD" = / ]; then
-    false
-  else
-    pushd .. >/dev/null || return
-    findconfig "$1"
-    popd >/dev/null || return
-  fi
-}
-
-set -x
-echo "FAIL FAIL FAIL"
-if [ -z "${FLAKE_RROOT:-}" ]; then
-  FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
-  echo "FLAKE_ROOT=${FLAKE_ROOT}"
-fi
-set +x
-
 @name@VenvPackagesHook() {
   echo "Executing @name@VenvPackagesHook"
   if test -f "${FLAKE_ROOT}/@relativePathToRoot@/pyproject.toml"; then

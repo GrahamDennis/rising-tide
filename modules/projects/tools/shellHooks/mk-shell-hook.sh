@@ -19,13 +19,6 @@ findconfig() {
   fi
 }
 
-set -x
-if [ -z "${FLAKE_RROOT:-}" ]; then
-  FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
-  echo "FLAKE_ROOT=${FLAKE_ROOT}"
-fi
-set +x
-
 function @bashSafeName@PreShell() {
   echo "Executing @bashSafeName@ (pre-shell)"
 
@@ -47,6 +40,11 @@ function uniqueArray() {
 
 function configShellHook() {
   echo "Executing configShellHook"
+
+  if [ -z "${FLAKE_ROOT:-}" ]; then
+    FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
+  fi
+
   uniqueArray preShellHooks
   runHook preShellHook
 
