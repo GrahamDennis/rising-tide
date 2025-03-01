@@ -13,15 +13,16 @@ findconfig() {
   elif [ "$PWD" = / ]; then
     false
   else
-    # a subshell so that we don't affect the caller's $PWD
-    (cd .. && findconfig "$1")
+    pushd .. >/dev/null || return
+    findconfig "$1"
+    popd >/dev/null || return
   fi
 }
 
 function @bashSafeName@PreShell() {
   echo "Executing @bashSafeName@ (pre-shell)"
 
-  pushd "$(dirname "$(findconfig flake.nix)")" >/dev/null || return
+  pushd "$FLAKE_ROOT" >/dev/null || return
   # Ensure the subproject exists
   mkdir -p "@relativePathToRoot@"
   cd "@relativePathToRoot@" || return
@@ -39,6 +40,11 @@ function uniqueArray() {
 
 function configShellHook() {
   echo "Executing configShellHook"
+
+  if [ -z "${FLAKE_ROOT:-}" ]; then
+    FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
+  fi
+
   uniqueArray preShellHooks
   runHook preShellHook
 
