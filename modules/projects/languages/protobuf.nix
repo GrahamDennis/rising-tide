@@ -20,9 +20,9 @@ let
   '';
   subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) cfg.subprojectNames;
 
-  absoluteProtoPaths = lib.fileset.toList (
-    lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src
-  );
+  protoFileset = lib.fileset.fileFilter (file: file.hasExt "proto") cfg.src;
+
+  absoluteProtoPaths = lib.fileset.toList protoFileset;
   relativeProtoPaths = builtins.map (lib.flip lib.pipe [
     # Strip the absolute path prefix containing the protobuf files,
     # e.g. /nix/store/eeeeee-source/my-subproject/proto/foo/bar.proto => "./foo/bar.proto"
@@ -30,6 +30,11 @@ let
     # Strip the relative path prefix "./" to get a path like "foo/bar.proto"
     (lib.removePrefix "./")
   ]) absoluteProtoPaths;
+
+  protoSrc = lib.fileset.toSource {
+    root = cfg.src;
+    fileset = protoFileset;
+  };
 
 in
 {
@@ -87,6 +92,10 @@ in
           type = types.str;
           default = "${config.packageName}-cpp";
         };
+        src = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-src";
+        };
         fileDescriptorSet = lib.mkOption {
           type = types.str;
           default = "${config.packageName}-file-descriptor-set";
@@ -96,6 +105,11 @@ in
   };
   config = lib.mkIf cfg.enable {
     subprojects = {
+      ${cfg.subprojectNames.src} =
+        { ... }:
+        {
+          callPackageFunction = { ... }: protoSrc;
+        };
       ${cfg.subprojectNames.fileDescriptorSet} =
         { config, ... }:
         {
@@ -103,7 +117,7 @@ in
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
               inherit (config) name;
-              src = cfg.src;
+              src = protoSrc;
               nativeBuildInputs = [ pkgs.protobuf ];
 
               installPhase = ''
@@ -128,7 +142,7 @@ in
             in
             stdenvNoCC.mkDerivation {
               inherit (config) name;
-              src = cfg.src;
+              src = protoSrc;
               nativeBuildInputs = [ pkgs.protobuf ];
 
               cmakeLists = ''
@@ -229,7 +243,7 @@ in
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
               inherit (config) name;
-              src = cfg.src;
+              src = protoSrc;
 
               nativeBuildInputs = [
                 pkgs.protobuf

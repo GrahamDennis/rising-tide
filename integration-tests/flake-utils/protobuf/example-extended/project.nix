@@ -1,13 +1,13 @@
 # project context
 {
-  ...
+  pkgs, ...
 }:
 {
   languages.protobuf = {
     enable = true;
     grpc.enable = true;
     importPaths = {
-      example = ../example/proto;
+      example = pkgs.example-src;
     };
     cpp.extraDependencies = pkgs: [ pkgs.example-cpp ];
     python.extraDependencies = pythonPackages: [ pythonPackages.example-py ];

@@ -30,6 +30,6 @@ in
     package = lib.getAttrFromPath config.fullyQualifiedPackagePath pkgs;
     packages.${config.packageName} = config.package;
     mkShell.inputsFrom = [ config.package ];
-    mkShell.stdenv = config.package.stdenv;
+    mkShell.stdenv = lib.mkIf (config.package ? stdenv) config.package.stdenv;
   };
 }
