@@ -89,6 +89,11 @@ in
           .coverage*
         '';
       };
+      tools.vscode = {
+        settings = {
+          "python.testing.pytestArgs" = lib.mkBefore [ "--cov-fail-under=0" ];
+        };
+      };
     })
   ];
 }
