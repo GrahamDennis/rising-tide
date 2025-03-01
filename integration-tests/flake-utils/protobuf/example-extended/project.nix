@@ -1,6 +1,7 @@
 # project context
 {
-  pkgs, ...
+  pkgs,
+  ...
 }:
 {
   languages.protobuf = {
