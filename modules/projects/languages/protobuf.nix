@@ -204,8 +204,10 @@ in
                   ++ (lib.optionals cfg.grpc.enable [
                     pkgs.grpc
                     pkgs.openssl
-                  ])
-                  ++ (cfg.cpp.extraDependencies pkgs);
+                  ]);
+
+                # FIXME: Should there be separate -dev and -out packages?
+                propagatedBuildInputs = (cfg.cpp.extraDependencies pkgs);
               };
           };
         };
