@@ -48,6 +48,8 @@ in
             "--cov"
             "--cov-config=${toString coverageConfigFile}"
             "--cov-report="
+            # Don't complain about total coverage during test execution, only during coverage report
+            "--cov-fail-under=0"
           ];
         };
 
@@ -86,6 +88,11 @@ in
         rules = ''
           .coverage*
         '';
+      };
+      tools.vscode = {
+        settings = {
+          "python.testing.pytestArgs" = lib.mkBefore [ "--cov-fail-under=0" ];
+        };
       };
     })
   ];
