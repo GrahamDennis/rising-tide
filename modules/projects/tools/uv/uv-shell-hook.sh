@@ -47,14 +47,19 @@ findconfig() {
   elif [ "$PWD" = / ]; then
     false
   else
-    # a subshell so that we don't affect the caller's $PWD
-    (cd .. && findconfig "$1")
+    pushd .. >/dev/null || return
+    findconfig "$1"
+    popd >/dev/null || return
   fi
 }
 
-if [ -z "${FLAKE_ROOT:-}" ]; then
+set -x
+echo "FAIL FAIL FAIL"
+if [ -z "${FLAKE_RROOT:-}" ]; then
   FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
+  echo "FLAKE_ROOT=${FLAKE_ROOT}"
 fi
+set +x
 
 @name@VenvPackagesHook() {
   echo "Executing @name@VenvPackagesHook"
