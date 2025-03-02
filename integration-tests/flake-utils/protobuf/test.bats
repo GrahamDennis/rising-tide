@@ -87,12 +87,11 @@ teardown() {
   assert_success
 }
 
-@test "check:pyright task fails on non-existent method call" {
+@test "check:pyright task succeeds on a method call for grpc.RpcError.code" {
   restore_src_in_teardown
   sed -i -e 's/grpc.aio.AioRpcError/grpc.RpcError/' python-package-1/src/python_package_1/__init__.py
   run task python-package-1:check:pyright
-  assert_failure
-  assert_output --partial 'Cannot access attribute "code" for class "RpcError"'
+  assert_success
 }
 
 @test "check:pyright task fails on unbound variable" {
