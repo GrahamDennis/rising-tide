@@ -42,9 +42,6 @@ in
             };
             # FIXME: Add grpc-stubs
             perModuleOverrides."grpc.*" = {
-              ignore_missing_imports = true;
-            };
-            perModuleOverrides."grpc.aio.*" = {
               follow_untyped_imports = true;
             };
           };
