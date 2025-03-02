@@ -4,20 +4,11 @@ uvShellHook() {
   echo "Executing uvShellHook"
 
   export VIRTUAL_ENV_DISABLE_PROMPT=1
+  uv venv --allow-existing
+  source .venv/bin/activate
 
-  local -a venvPackages
-  runHook venvPackages
-
-  # Check if we need to recreate the virtual environment
-  if [ "$(readlink .venv/nix-env)" == "${NIX_GCROOT}" ] && [ "${PYTHONPATH}" == "$(cat .venv/python-path)" ]; then
-    source .venv/bin/activate
-  else
-    # Remove the old virtual environment if it exists
-    rm -rf .venv
-    echo "Recreating the python virtual environment"
-    uv venv
-    source .venv/bin/activate
-
+  # Check if we need to update _nix_env.py
+  if [ "${PYTHONPATH}" != "$(cat .venv/python-path)" ]; then
     # Configure the virtual environment to automatically pick up the Nix PYTHONPATH even if it is not activated
     # inside a nix develop shell (for VSCode & PyCharm)
     _SITE_PACKAGES_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
@@ -26,18 +17,22 @@ uvShellHook() {
     for PYTHON_PATH_COMPONENT in $(echo "$PYTHONPATH" | tr ':' $'\n'); do
       echo "site.addsitedir(\"$PYTHON_PATH_COMPONENT\")" >>"$_SITE_PACKAGES_DIR/_nix_env.py"
     done
-
-    uv pip install --no-deps --offline --no-cache --no-build-isolation "${venvPackages[@]}"
-
-    ln -fs "${NIX_GCROOT}" .venv/nix-env
     echo "${PYTHONPATH}" >.venv/python-path
+  fi
+
+  local -a venvPackages
+  runHook venvPackages
+
+  # Check if we need to re-run uv pip install
+  if [ "${venvPackages[*]}" != "$(cat .venv/venv-packages)" ]; then
+    uv pip install --no-deps --offline --no-cache --no-build-isolation "${venvPackages[@]}"
+    echo "${venvPackages[@]}" >.venv/venv-packages
   fi
 
   echo "Finished executing uvShellHook"
 }
 
 @name@VenvPackagesHook() {
-  echo "Executing @name@VenvPackagesHook"
   if test -f "${FLAKE_ROOT}/@relativePathToRoot@/pyproject.toml"; then
     venvPackages+=(--editable "${FLAKE_ROOT}/@relativePathToRoot@")
     addToSearchPath PYTHONPATH "${FLAKE_ROOT}/@relativePathToRoot@/src"
