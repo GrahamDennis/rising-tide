@@ -8,7 +8,10 @@ uvShellHook() {
   source .venv/bin/activate
 
   # Check if we need to update _nix_env.py
-  if [ "${PYTHONPATH}" != "$(cat .venv/python-path)" ]; then
+  if [ -f ".venv/python-path" ] && [ "${PYTHONPATH}" == "$(cat .venv/python-path)" ]; then
+    true
+  else
+    echo "Updating _nix_env.py"
     # Configure the virtual environment to automatically pick up the Nix PYTHONPATH even if it is not activated
     # inside a nix develop shell (for VSCode & PyCharm)
     _SITE_PACKAGES_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
@@ -24,7 +27,9 @@ uvShellHook() {
   runHook venvPackages
 
   # Check if we need to re-run uv pip install
-  if [ "${venvPackages[*]}" != "$(cat .venv/venv-packages)" ]; then
+  if [ -f ".venv/venv-packages" ] && [ "${venvPackages[*]}" == "$(cat .venv/venv-packages)" ]; then
+    true
+  else
     uv pip install --no-deps --offline --no-cache --no-build-isolation "${venvPackages[@]}"
     echo "${venvPackages[@]}" >.venv/venv-packages
   fi
