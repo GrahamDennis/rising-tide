@@ -195,19 +195,15 @@ in
                 name = config.packageName;
                 src = subprojects.generatedSources.cpp.package;
 
+                nativeBuildInputs = [ pkgs.cmake ];
+
                 buildInputs =
-                  with pkgs;
-                  [
-                    cmake
-                    protobuf
-                  ]
+                  [ pkgs.protobuf ]
                   ++ (lib.optionals cfg.grpc.enable [
                     pkgs.grpc
                     pkgs.openssl
-                  ]);
-
-                # FIXME: Should there be separate -dev and -out packages?
-                propagatedBuildInputs = (cfg.cpp.extraDependencies pkgs);
+                  ])
+                  ++ (cfg.cpp.extraDependencies pkgs);
               };
           };
         };
