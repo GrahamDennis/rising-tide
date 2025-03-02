@@ -40,10 +40,6 @@ in
               disallow_untyped_calls = false;
               disallow_incomplete_defs = false;
             };
-            # FIXME: Add grpc-stubs
-            perModuleOverrides."grpc.*" = {
-              ignore_missing_imports = true;
-            };
           };
           pytest = {
             config = {
