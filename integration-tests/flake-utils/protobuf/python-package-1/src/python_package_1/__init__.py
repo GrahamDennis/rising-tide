@@ -1,6 +1,6 @@
 import grpc
 import grpc.aio
-from example.v1 import greeter_pb2
+from example.v1 import greeter_pb2, greeter_pb2_grpc
 from example_extended.v1 import greeter_pb2 as greeter_pb2_extended
 
 
@@ -33,6 +33,12 @@ def check_typing_in_exception() -> None:
         print(f"error code {e.code()}")
         raise
     foo.name
+
+
+async def check_typing_of_asynchronous_rpc(
+    stub: greeter_pb2_grpc.GreeterServiceAsyncStub,
+) -> greeter_pb2.SayHelloResponse:
+    return await stub.SayHello(greeter_pb2.SayHelloRequest(name="Python Package 1"))
 
 
 def cli() -> None:
