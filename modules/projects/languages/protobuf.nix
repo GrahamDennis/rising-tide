@@ -215,15 +215,10 @@ in
               name = subprojects.python.name;
               version = "0.1.0";
               description = "Generated protobuf bindings for ${subprojects.python.name}";
-              dependencies =
-                [
-                  "protobuf"
-                  "types-protobuf"
-                ]
-                ++ (lib.optionals cfg.grpc.enable [
-                  "grpcio"
-                  "grpc-stubs"
-                ]);
+              dependencies = [
+                "protobuf"
+                "types-protobuf"
+              ] ++ (lib.optionals cfg.grpc.enable [ "grpcio" ]);
             };
             tool.hatch.build.targets.wheel = {
               include = [ "src" ];
@@ -295,10 +290,7 @@ in
                     protobuf
                     types-protobuf
                   ])
-                  ++ (lib.optionals cfg.grpc.enable ([
-                    pythonPackages.grpcio
-                    (pythonPackages.grpc-stubs or (pythonPackages.callPackage ./grpc-stubs.nix { }))
-                  ]))
+                  ++ (lib.optionals cfg.grpc.enable (with pythonPackages; [ grpcio ]))
                   ++ (cfg.python.extraDependencies pythonPackages);
 
                 build-system = [ pythonPackages.hatchling ];

@@ -8,7 +8,7 @@
 {
   imports = injector.injectModules [
     ./cpp
-    ./protobuf
+    ./protobuf.nix
     ./python.nix
   ];
 }
