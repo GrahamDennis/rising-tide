@@ -3,8 +3,11 @@
 uvShellHook() {
   echo "Executing uvShellHook"
 
+  if [ ! -d .venv ]; then
+    uv venv
+  fi
+
   export VIRTUAL_ENV_DISABLE_PROMPT=1
-  uv venv --allow-existing
   source .venv/bin/activate
 
   # Check if we need to update _nix_env.py
