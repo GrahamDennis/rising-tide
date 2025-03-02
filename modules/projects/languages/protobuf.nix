@@ -253,6 +253,15 @@ in
                 ${protoc} \
                   --python_out=$out/src --mypy_out=$out/src \
                   ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_python=${pkgs.grpc}/bin/grpc_python_plugin --grpc_python_out=$out/src --mypy_grpc_out=$out/src"}
+                ${lib.optionalString cfg.grpc.enable ''
+                  for grpc_proto in $(find $out/src -name '*_grpc.py'); do
+                    sed -i -e '/import grpc/a import typing' $grpc_proto
+                    echo >> $grpc_proto
+                    for grpc_stub in $(grep -E --only-matching '\w+Stub' $grpc_proto); do
+                      echo "''${grpc_stub/%Stub/AsyncStub}: typing.TypeAlias = ''${grpc_stub}" >> $grpc_proto
+                    done
+                  done
+                ''}
                 find $out -name '*.py' -execdir touch __init__.py py.typed \;
                 cp ${pyprojectConfigFile} $out/pyproject.toml
               '';
