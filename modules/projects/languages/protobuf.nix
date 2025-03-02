@@ -254,6 +254,17 @@ in
                   --python_out=$out/src --mypy_out=$out/src \
                   ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_python=${pkgs.grpc}/bin/grpc_python_plugin --grpc_python_out=$out/src --mypy_grpc_out=$out/src"}
                 ${lib.optionalString cfg.grpc.enable ''
+                  # Create type aliases in the *_grpc.py files to correspond to the 
+                  # aliases created in the *_grpc.pyi files. Without this, these type aliases only
+                  # exist at type checking time, and trying to reference those types except in quotation marks
+                  # will cause a runtime failure.
+                  # For example, without this, the code:
+                  #   stub: greeter_pb2_grpc.GreeterServiceAsyncStub = ...
+                  # will fail but
+                  #   stub: "greeter_pb2_grpc.GreeterServiceAsyncStub" = ...
+                  # will succeed. We want to use the *AsyncStub types, but also want the convenience of
+                  # just referencing them without quotes. This logic below just creates the *AsyncStub variables in the
+                  # *_pb2_grpc.py files as type aliases for the *Stub classes.
                   for grpc_proto in $(find $out/src -name '*_grpc.py'); do
                     sed -i -e '/import grpc/a import typing' $grpc_proto
                     echo >> $grpc_proto
