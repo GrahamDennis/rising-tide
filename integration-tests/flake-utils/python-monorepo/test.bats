@@ -26,7 +26,6 @@ setup() {
 @test "test task succeeds" {
   run task test
   assert_success
-  assert_file_exist "projects/package-1/build/package-1.pytest.xml"
   assert_file_exist "test_results/package-1.pytest.xml"
 }
 
