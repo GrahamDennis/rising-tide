@@ -13,6 +13,7 @@
 .ruff_cache/
 
 .pytest_cache/
+/test_results/
 
 .mypy_cache/
 
