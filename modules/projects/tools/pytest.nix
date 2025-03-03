@@ -87,7 +87,7 @@ in
           desc = "Collect pytest results";
           cmds = [
             "mkdir -p ./test_results/"
-            "find . -name '*.pytest.xml' -exec cp {} ./test_results/ \\;"
+            "find . -path ./test_results -prune -o -name '*.pytest.xml' -exec cp {} ./test_results/ \\;"
           ];
         };
       };
