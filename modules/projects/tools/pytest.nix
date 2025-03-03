@@ -61,7 +61,7 @@ in
                   desc = "Run pytest";
                   # Only run pytest if there is a test directory
                   cmds = [
-                    (callPytest "--junitxml=./build/test.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
+                    (callPytest "--junit-xml=./build/${config.name}.pytest.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
                   ];
                 };
                 "tool:pytest" = {
@@ -74,11 +74,22 @@ in
       };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+      tasks.test.serialTasks = lib.mkAfter [ "pytest:collect-results" ];
       tools.gitignore = {
         enable = true;
         rules = ''
           .pytest_cache/
+          /test_results/
         '';
+      };
+      tools.go-task.taskfile = {
+        tasks."pytest:collect-results" = {
+          desc = "Collect pytest results";
+          cmds = [
+            "mkdir -p ./test_results/"
+            "find . -name '*.pytest.xml' -exec cp {} ./test_results/ \\;"
+          ];
+        };
       };
       tools.vscode = {
         settings = {
