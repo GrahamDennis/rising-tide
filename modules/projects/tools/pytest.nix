@@ -61,7 +61,8 @@ in
                   desc = "Run pytest";
                   # Only run pytest if there is a test directory
                   cmds = [
-                    (callPytest "--junit-xml=./build/${config.name}.pytest.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
+                    "mkdir -p $FLAKE_ROOT/test_results/pytest"
+                    (callPytest "--junit-xml=$FLAKE_ROOT/test_results/pytest/${config.name}.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
                   ];
                 };
                 "tool:pytest" = {
@@ -74,7 +75,6 @@ in
       };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
-      tasks.test.serialTasks = lib.mkAfter [ "pytest:collect-results" ];
       tools.gitignore = {
         enable = true;
         rules = ''
