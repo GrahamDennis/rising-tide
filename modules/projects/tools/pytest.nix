@@ -62,7 +62,9 @@ in
                   # Only run pytest if there is a test directory
                   cmds = [
                     "mkdir -p $FLAKE_ROOT/test_results/pytest"
-                    (callPytest "--junit-xml=$FLAKE_ROOT/test_results/pytest/${config.name}.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
+                    # Suppress Ctrl-C to pytest because when run in parallel and a test fails, pytest creates sprurious errors from
+                    # the cancelled tests. This is a workaround to prevent that.
+                    "nohup ${(callPytest "--junit-xml=$FLAKE_ROOT/test_results/pytest/${config.name}.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")}"
                   ];
                 };
                 "tool:pytest" = {
@@ -81,15 +83,6 @@ in
           .pytest_cache/
           /test_results/
         '';
-      };
-      tools.go-task.taskfile = {
-        tasks."pytest:collect-results" = {
-          desc = "Collect pytest results";
-          cmds = [
-            "mkdir -p ./test_results/"
-            "find . -path ./test_results -prune -o -name '*.pytest.xml' -exec cp {} ./test_results/ \\;"
-          ];
-        };
       };
       tools.vscode = {
         settings = {
