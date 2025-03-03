@@ -43,6 +43,7 @@ function configShellHook() {
 
   if [ -z "${FLAKE_ROOT:-}" ]; then
     FLAKE_ROOT="$(dirname "$(findconfig flake.nix)")"
+    export FLAKE_ROOT
   fi
 
   uniqueArray preShellHooks

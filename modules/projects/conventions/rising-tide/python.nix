@@ -48,6 +48,7 @@ in
           pytest = {
             config = {
               markers = [ "integration" ];
+              junit_logging = "all";
             };
           };
           coverage-py.config = {

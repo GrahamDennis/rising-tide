@@ -64,6 +64,7 @@ in
                 desc = "Generate a coverage report";
                 cmds = [
                   "coverage combine"
+                  "coverage html --fail-under=0 --directory=$FLAKE_ROOT/test_results/coverage-py/${config.name}/"
                   "coverage report"
                 ];
                 env = {
@@ -87,6 +88,7 @@ in
         enable = true;
         rules = ''
           .coverage*
+          /test_results/
         '';
       };
       tools.vscode = {
