@@ -23,5 +23,6 @@ cmake-build-*
 /.direnv
 
 .coverage*
+/test_results/
 
 # rising-tide-managed: end

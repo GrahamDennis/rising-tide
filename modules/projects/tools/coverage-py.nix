@@ -88,6 +88,7 @@ in
         enable = true;
         rules = ''
           .coverage*
+          /test_results/
         '';
       };
       tools.vscode = {
