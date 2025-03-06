@@ -297,7 +297,7 @@ in
                 ) relativeProtoPaths;
               in
               { pythonPackages }:
-              pythonPackages.buildPythonPackage {
+              pythonPackages.buildPythonPackage rec {
                 inherit (config) name;
                 pyproject = true;
                 src = subprojects.generatedSources.python.package;
@@ -312,9 +312,12 @@ in
                   ])
                   ++ (lib.optionals cfg.grpc.enable (with pythonPackages; [ grpcio ]))
                   ++ (cfg.python.extraDependencies pythonPackages);
+                # Legacy attribute
+                propagatedBuildInputs = dependencies;
 
-                nativeBuildInputs = [ pythonPackages.hatchling ];
                 build-system = [ pythonPackages.hatchling ];
+                # Legacy attribute
+                nativeBuildInputs = build-system;
               };
           };
         };
