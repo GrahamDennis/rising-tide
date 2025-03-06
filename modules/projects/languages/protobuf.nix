@@ -313,6 +313,7 @@ in
                   ++ (lib.optionals cfg.grpc.enable (with pythonPackages; [ grpcio ]))
                   ++ (cfg.python.extraDependencies pythonPackages);
 
+                nativeBuildInputs = [ pythonPackages.hatchling ];
                 build-system = [ pythonPackages.hatchling ];
               };
           };
