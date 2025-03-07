@@ -130,10 +130,20 @@ in
         {
           callPackageFunction =
             let
-              # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.pb.cc"
+              # Turn the protobuf file path into a .pb.cc filename, e.g. "foo/bar.proto" -> "foo.pb.cc"
               srcFiles = builtins.map (builtins.replaceStrings [ ".proto" ] [ ".pb.cc" ]) relativeProtoPaths;
-              # Turn the file path into a python module name, e.g. "foo/bar.proto" -> "foo.pb.h"
+              # Turn the protobuf file path into a .pb.h filename, e.g. "foo/bar.proto" -> "foo.pb.h"
               headerFiles = builtins.map (builtins.replaceStrings [ ".proto" ] [ ".pb.h" ]) relativeProtoPaths;
+              # Turn the protobuf file path into a .grpc.pb.cc filename, e.g. "foo/bar.proto" -> "foo.grpc.pb.cc"
+              grpcSrcFiles = builtins.map (builtins.replaceStrings
+                [ ".proto" ]
+                [ ".grpc.pb.cc" ]
+              ) relativeProtoPaths;
+              # Turn the protobuf file path into a .grpc.pb.h filename, e.g. "foo/bar.proto" -> "foo.grpc.pb.h"
+              grpcHeaderFiles = builtins.map (builtins.replaceStrings
+                [ ".proto" ]
+                [ ".grpc.pb.h" ]
+              ) relativeProtoPaths;
               pathsInSrcDirectory = lib.concatMapStringsSep " " (file: "src/" + file);
             in
             { pkgs, stdenvNoCC, ... }:
@@ -162,12 +172,17 @@ in
                 target_include_directories(${subprojects.cpp.packageName} PUBLIC src/)
 
                 ${lib.optionalString cfg.grpc.enable ''
+                  set(GRPC_HEADER ${pathsInSrcDirectory grpcHeaderFiles})
+                  set(GRPC_SRC ${pathsInSrcDirectory grpcSrcFiles})
+
                   find_package(gRPC CONFIG REQUIRED)
                   message(STATUS "Using gRPC ''${gRPC_VERSION}")
+                  target_sources(${subprojects.cpp.packageName} INTERFACE ''${GRPC_HEADER} PRIVATE ''${GRPC_SRC})
                   target_link_libraries(${subprojects.cpp.packageName}
                     PUBLIC
                       gRPC::grpc++
                   )
+                  # FIXME: produce a separate library for the gRPC bindings from the protobuf bindings
                 ''}
 
                 install(DIRECTORY ./src/ DESTINATION "include/" FILES_MATCHING PATTERN "*.pb.h")
