@@ -65,8 +65,8 @@ let
             label = "integration-test:{{.INTEGRATION_TEST}}";
             prefix = "integration-test:{{.INTEGRATION_TEST}}";
             cmds = [
-              # don't propagate the FLAKE_ROOT environment variable
-              "FLAKE_ROOT= nix develop --show-trace --command ${batsExe} ./test.bats"
+              # Control the environment for test execution as much as possible
+              "nix develop --ignore-env --keep-env-var HOME --keep-env-var PATH --show-trace --command ${batsExe} ./test.bats"
             ];
           };
           "docs:generate" = {
