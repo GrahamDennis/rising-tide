@@ -102,3 +102,8 @@ teardown() {
   assert_failure
   assert_output --partial '"foo" is unbound'
 }
+
+@test "Can build protobuf src packages" {
+  run nix build .#example-src
+  assert_success
+}
