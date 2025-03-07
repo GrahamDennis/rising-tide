@@ -10,7 +10,13 @@
     importPaths = {
       example = pkgs.example-src;
     };
-    cpp.extraDependencies = pkgs: [ pkgs.example-cpp ];
+    cpp.extraDependencies = pkgs: [
+      {
+        package = pkgs.example-cpp;
+        protobufLibraryNames = [ "example-cpp-proto" ];
+        grpcLibraryNames = [ "example-cpp-grpc" ];
+      }
+    ];
     python.extraDependencies = pythonPackages: [ pythonPackages.example-py ];
   };
   # Demonstrate naming the generated package as something different from the subproject name.

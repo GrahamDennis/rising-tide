@@ -56,16 +56,32 @@ in
         '';
         type = types.path;
       };
-      cpp = {
-        extraDependencies = lib.mkOption {
-          description = ''
-            A function from `pkgs` to a list of additional dependencies
-            for the generated C++ library.
-          '';
-          type = types.functionTo (types.listOf types.package);
-          default = _pkgs: [ ];
+      cpp =
+        let
+          dependencySubmodule = types.submodule {
+            options = {
+              package = lib.mkOption { type = types.package; };
+              protobufLibraryNames = lib.mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+              };
+              grpcLibraryNames = lib.mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+              };
+            };
+          };
+        in
+        {
+          extraDependencies = lib.mkOption {
+            description = ''
+              A function from `pkgs` to a list of additional dependencies
+              for the generated C++ library.
+            '';
+            type = types.functionTo (types.listOf dependencySubmodule);
+            default = _pkgs: [ ];
+          };
         };
-      };
       python = {
         extraDependencies = lib.mkOption {
           description = ''
@@ -149,7 +165,7 @@ in
             in
             { pkgs, stdenvNoCC, ... }:
             let
-              extraPackages = (cfg.cpp.extraDependencies pkgs);
+              extraDependencies = (cfg.cpp.extraDependencies pkgs);
             in
             stdenvNoCC.mkDerivation {
               inherit (config) name;
@@ -164,13 +180,22 @@ in
                 set(PROTO_SRC ${pathsInSrcDirectory srcFiles})
 
                 find_package(protobuf CONFIG REQUIRED)
-                add_library(${subprojects.cpp.packageName} SHARED ''${PROTO_HEADER} ''${PROTO_SRC})
-                target_link_libraries(${subprojects.cpp.packageName}
+                add_library(${subprojects.cpp.packageName} SHARED ${toolsPkgs.emptyFile})
+                set_target_properties(${subprojects.cpp.packageName} PROPERTIES LINKER_LANGUAGE CXX)
+                install(TARGETS ${subprojects.cpp.packageName} LIBRARY DESTINATION "lib/")
+
+                add_library(${subprojects.cpp.packageName}-proto SHARED ''${PROTO_HEADER} ''${PROTO_SRC})
+                target_link_libraries(${subprojects.cpp.packageName}-proto
                   PUBLIC
                     protobuf::libprotobuf
-                    ${lib.concatMapStringsSep " " (package: package.name) extraPackages}
+                    ${lib.concatStringsSep " " (
+                      builtins.concatMap (dependency: dependency.protobufLibraryNames) extraDependencies
+                    )}
                 )
-                target_include_directories(${subprojects.cpp.packageName} PUBLIC src/)
+                target_include_directories(${subprojects.cpp.packageName}-proto PUBLIC src/)
+                install(TARGETS ${subprojects.cpp.packageName}-proto LIBRARY DESTINATION "lib/")
+
+                target_link_libraries(${subprojects.cpp.packageName} PUBLIC ${subprojects.cpp.packageName}-proto)
 
                 ${lib.optionalString cfg.grpc.enable ''
                   set(GRPC_HEADER ${pathsInSrcDirectory grpcHeaderFiles})
@@ -178,16 +203,21 @@ in
 
                   find_package(gRPC CONFIG REQUIRED)
                   message(STATUS "Using gRPC ''${gRPC_VERSION}")
-                  target_sources(${subprojects.cpp.packageName} INTERFACE ''${GRPC_HEADER} PRIVATE ''${GRPC_SRC})
-                  target_link_libraries(${subprojects.cpp.packageName}
+                  add_library(${subprojects.cpp.packageName}-grpc SHARED ''${GRPC_HEADER} ''${GRPC_SRC})
+                  target_link_libraries(${subprojects.cpp.packageName}-grpc
                     PUBLIC
                       gRPC::grpc++
+                      ${subprojects.cpp.packageName}-proto
+                      ${lib.concatStringsSep " " (
+                        builtins.concatMap (dependency: dependency.grpcLibraryNames) extraDependencies
+                      )}
                   )
-                  # FIXME: produce a separate library for the gRPC bindings from the protobuf bindings
+                  install(TARGETS ${subprojects.cpp.packageName}-grpc LIBRARY DESTINATION "lib/")
+
+                  target_link_libraries(${subprojects.cpp.packageName} PUBLIC ${subprojects.cpp.packageName}-grpc)
                 ''}
 
                 install(DIRECTORY ./src/ DESTINATION "include/" FILES_MATCHING PATTERN "*.pb.h")
-                install(TARGETS ${subprojects.cpp.packageName} LIBRARY DESTINATION "lib/")
               '';
 
               passAsFile = [ "cmakeLists" ];
@@ -219,7 +249,7 @@ in
                     pkgs.grpc
                     pkgs.openssl
                   ])
-                  ++ (cfg.cpp.extraDependencies pkgs);
+                  ++ (builtins.map (dependency: dependency.package) (cfg.cpp.extraDependencies pkgs));
 
                 separateDebugInfo = true;
               };
