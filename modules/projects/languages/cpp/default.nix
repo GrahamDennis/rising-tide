@@ -194,6 +194,7 @@ in
         lib.mkIf cfg.sanitizers.tsan.enable config.package.passthru.withTsan;
     })
     (lib.mkIf cfg.enable {
+      mkShell.enable = true;
       mkShell.nativeBuildInputs = [
         (lib.mkIf cfg.sanitizers.asan.enableInDevelopShell (cfg.sanitizers.asan.setupHook))
         (lib.mkIf cfg.sanitizers.tsan.enableInDevelopShell (cfg.sanitizers.tsan.setupHook))

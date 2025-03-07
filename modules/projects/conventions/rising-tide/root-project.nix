@@ -32,6 +32,7 @@ in
           ];
           serialTasks = [ "ci:check-not-dirty" ];
         };
+        mkShell.enable = true;
         tools = {
           # keep-sorted start block=yes
           deadnix.enable = true;

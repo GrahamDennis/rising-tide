@@ -109,13 +109,11 @@ in
       ${cfg.subprojectNames.src} =
         { ... }:
         {
-          mkShell.enable = false;
           callPackageFunction = { ... }: protoSrc;
         };
       ${cfg.subprojectNames.fileDescriptorSet} =
         { config, ... }:
         {
-          mkShell.enable = false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -131,7 +129,6 @@ in
       ${cfg.subprojectNames.generatedSources.cpp} =
         { config, ... }:
         {
-          mkShell.enable = false;
           callPackageFunction =
             let
               # Turn the protobuf file path into a .pb.cc filename, e.g. "foo/bar.proto" -> "foo.pb.cc"
@@ -207,7 +204,6 @@ in
       ${cfg.subprojectNames.cpp} =
         { config, ... }:
         {
-          mkShell.enable = false;
           languages.cpp = {
             callPackageFunction =
               { pkgs, stdenv, ... }:
@@ -259,7 +255,6 @@ in
           pyprojectConfigFile = pyprojectSettingsFormat.generate "pyproject.toml" pyproject;
         in
         {
-          mkShell.enable = false;
           callPackageFunction =
             { pkgs, stdenvNoCC, ... }:
             stdenvNoCC.mkDerivation {
@@ -304,8 +299,6 @@ in
       ${cfg.subprojectNames.python} =
         { config, ... }:
         {
-          mkShell.enable = false;
-          mkShell.nativeBuildInputs = [ config.languages.python.package ];
           languages.python = {
             callPackageFunction =
               let

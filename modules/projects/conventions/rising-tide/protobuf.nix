@@ -29,6 +29,7 @@ in
       }
       # Enable protobuf tools in protobuf projects
       (lib.mkIf (protobufEnabledIn config) {
+        mkShell.enable = true;
         conventions.risingTide.python.enable = lib.mkForce false;
         languages.protobuf.src = lib.path.append config.absolutePath "./proto";
         tools = {

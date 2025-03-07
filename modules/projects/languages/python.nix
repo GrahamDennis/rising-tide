@@ -108,6 +108,7 @@ in
       packages.${config.packageName} = cfg.package;
     })
     (lib.mkIf cfg.enable {
+      mkShell.enable = true;
       mkShell.inputsFrom = [ cfg.package ];
     })
     # Inherit parent python overlays
