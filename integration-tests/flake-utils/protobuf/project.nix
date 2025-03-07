@@ -9,6 +9,7 @@
     example-extended-curl = {
       callPackageFunction = import ./example-extended-curl/package.nix;
     };
+    example-grandchild = import ./example-grandchild/project.nix;
     python-package-1 = import ./python-package-1/project.nix;
   };
   tools.uv.enable = true;

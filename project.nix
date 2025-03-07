@@ -66,7 +66,7 @@ let
             prefix = "integration-test:{{.INTEGRATION_TEST}}";
             cmds = [
               # Control the environment for test execution as much as possible
-              "nix develop --ignore-env --keep-env-var HOME --keep-env-var PATH --show-trace --command ${batsExe} ./test.bats"
+              "nix develop --ignore-env --keep-env-var HOME --keep-env-var PATH --keep-env-var CI --show-trace --command ${batsExe} ./test.bats"
             ];
           };
           "docs:generate" = {
