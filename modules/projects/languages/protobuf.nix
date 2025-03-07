@@ -146,8 +146,8 @@ in
               nativeBuildInputs = [ pkgs.protobuf ];
 
               cmakeLists = ''
-                PROJECT(${subprojects.cpp.packageName})
                 CMAKE_MINIMUM_REQUIRED (VERSION 3.24)
+                PROJECT(${subprojects.cpp.packageName})
 
                 set(PROTO_HEADER ${pathsInSrcDirectory headerFiles})
                 set(PROTO_SRC ${pathsInSrcDirectory srcFiles})
@@ -204,6 +204,8 @@ in
                     pkgs.openssl
                   ])
                   ++ (cfg.cpp.extraDependencies pkgs);
+
+                separateDebugInfo = true;
               };
           };
         };
