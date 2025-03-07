@@ -11,7 +11,9 @@
 }:
 let
   inherit (lib) types;
-  cfg = config.mkShell;
+  getCfg = projectConfig: projectConfig.mkShell;
+  cfg = getCfg config;
+  enabledIn = projectConfig: (getCfg projectConfig).enable;
 in
 {
   options.mkShell = {
@@ -46,12 +48,12 @@ in
   config = {
     mkShell = lib.mkMerge [
       {
-        inputsFrom = builtins.concatMap (
-          projectConfig: projectConfig.mkShell.inputsFrom
-        ) config.subprojectsList;
-        nativeBuildInputs = builtins.concatMap (
-          projectConfig: projectConfig.mkShell.nativeBuildInputs
-        ) config.subprojectsList;
+        inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
+          builtins.filter enabledIn config.subprojectsList
+        );
+        nativeBuildInputs = builtins.concatMap (projectConfig: projectConfig.mkShell.nativeBuildInputs) (
+          builtins.filter enabledIn config.subprojectsList
+        );
       }
     ];
   };
