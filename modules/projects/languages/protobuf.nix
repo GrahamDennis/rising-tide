@@ -243,7 +243,7 @@ in
 
                 nativeBuildInputs = [ pkgs.cmake ];
 
-                buildInputs =
+                propagatedBuildInputs =
                   [ pkgs.protobuf ]
                   ++ (lib.optionals cfg.grpc.enable [
                     pkgs.grpc

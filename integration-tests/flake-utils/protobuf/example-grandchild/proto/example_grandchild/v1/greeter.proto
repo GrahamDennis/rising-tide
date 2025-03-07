@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package example_grandchild.v1;
+
+import "example_extended/v1/greeter.proto";
+
+message MessageList {
+  repeated example_extended.v1.MessageList messages = 1;
+}

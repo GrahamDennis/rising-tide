@@ -73,7 +73,7 @@ teardown() {
 }
 
 @test "can build C++ projects" {
-  run nix build .#example-cpp .#example-extended-cpp
+  run nix build .#example-cpp .#example-extended-cpp .#example-grandchild-cpp
   assert_success
 }
 
