@@ -172,6 +172,11 @@ in
               src = protoSrc;
               nativeBuildInputs = [ pkgs.protobuf ];
 
+              # This CMake package produces 2-3 libraries:
+              # * libfoo-cpp-proto: the protobuf C++ bindings (only)
+              # * (optionally) libfoo-cpp-grpc: The gRPC C++ bindings (links against libfoo-cpp-proto)
+              # * libfoo-cpp: An empty library that links against both libfoo-cpp-grpc (if present) and libfoo-cpp-proto for simplicity
+              #   and backwards-compatibility
               cmakeLists = ''
                 CMAKE_MINIMUM_REQUIRED (VERSION 3.24)
                 PROJECT(${subprojects.cpp.packageName})
