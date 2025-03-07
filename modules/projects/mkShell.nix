@@ -17,9 +17,7 @@ let
 in
 {
   options.mkShell = {
-    enable = (lib.mkEnableOption "Create a dev shell for this project") // {
-      default = (cfg.inputsFrom != [ ]) || (cfg.nativeBuildInputs != [ ]);
-    };
+    enable = lib.mkEnableOption "Create a dev shell for this project";
     name = lib.mkOption {
       type = types.str;
       default = config.packageName;
