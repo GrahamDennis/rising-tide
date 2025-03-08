@@ -114,6 +114,18 @@ in
           cmake.enable = true;
           direnv.enable = true;
           vscode.enable = true;
+          vscode.launch = {
+            version = "0.2.0";
+            configurations = [
+              {
+                type = "lldb";
+                request = "launch";
+                name = "Debug";
+                args = [ ];
+                cwd = "\${workspaceFolder}";
+              }
+            ];
+          };
           # keep-sorted end
         };
       })

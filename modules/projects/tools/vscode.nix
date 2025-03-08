@@ -61,6 +61,13 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      launch = lib.mkOption {
+        description = ''
+          Contents of the VSCode `launch.json` file to generate.
+        '';
+        type = settingsFormat.type;
+        default = { };
+      };
       settingsFile = lib.mkOption {
         description = "The VSCode settings file to use";
         type = types.pathInStore;
@@ -75,6 +82,11 @@ in
         description = "The VSCode workspace file to generate";
         type = types.pathInStore;
         default = settingsFormat.generate "${config.name}.code-workspace" cfg.workspace;
+      };
+      launchFile = lib.mkOption {
+        description = "The VSCode launch.json file to generate";
+        type = types.pathInStore;
+        default = settingsFormat.generate "launch.json" cfg.launch;
       };
     };
   };
@@ -102,6 +114,13 @@ in
               hook.mode = "copy";
             }
           ])
+          (lib.mkIf (cfg.launch != { }) [
+            {
+              data = cfg.launchFile;
+              output = ".vscode/launch.json";
+              hook.mode = "copy";
+            }
+          ])
         ];
       };
     })
@@ -109,7 +128,8 @@ in
       tools.gitignore = {
         enable = true;
         rules = ''
-          .vscode/*.code-workspace
+          /.vscode/*.code-workspace
+          .vscode/launch.json
         '';
       };
       tools.vscode.workspace = {

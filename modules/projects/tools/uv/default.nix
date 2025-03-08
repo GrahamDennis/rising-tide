@@ -13,7 +13,6 @@
 let
   getCfg = projectConfig: projectConfig.tools.uv;
   cfg = getCfg config;
-  isEnabledIn = projectConfig: (getCfg projectConfig).enable;
   bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
 in
 {
@@ -43,11 +42,15 @@ in
           };
         } ./uv-shell-hook.sh)
       ];
-    })
-
-    (lib.mkIf (config.isRootProject && (builtins.any isEnabledIn config.allProjectsList)) {
-      tools.vscode = {
-        settings."python.defaultInterpreterPath" = ".venv/bin/python";
+      tools.vscode = lib.mkIf (!config.isRootProject) {
+        settings."python.defaultInterpreterPath" = (
+          lib.pipe config.relativePaths.toRoot [
+            lib.path.subpath.components
+            (builtins.map (_: ".."))
+            (components: components ++ [ ".venv/bin/python" ])
+            (builtins.concatStringsSep "/")
+          ]
+        );
       };
     })
   ];

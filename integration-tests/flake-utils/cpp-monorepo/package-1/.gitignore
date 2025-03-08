@@ -7,6 +7,8 @@
 /.clangd
 /taskfile.yml
 # rising-tide-managed: start
+/.direnv
+
 # CMake build directory
 /build/
 
