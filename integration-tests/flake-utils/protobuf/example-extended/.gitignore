@@ -1,4 +1,9 @@
 
 # nixago: ignore-linked-files
+/.vscode/extensions.json
 /.vscode/settings.json
 /taskfile.yml
+# rising-tide-managed: start
+/.direnv
+
+# rising-tide-managed: end

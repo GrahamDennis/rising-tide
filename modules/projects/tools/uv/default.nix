@@ -47,7 +47,7 @@ in
 
     (lib.mkIf (config.isRootProject && (builtins.any isEnabledIn config.allProjectsList)) {
       tools.vscode = {
-        settings."python.defaultInterpreterPath" = "\${workspaceFolder}/.venv/bin/python";
+        settings."python.defaultInterpreterPath" = ".venv/bin/python";
       };
     })
   ];

@@ -112,6 +112,7 @@ in
           clangd.enable = true;
           cmake-format.enable = true;
           cmake.enable = true;
+          direnv.enable = true;
           vscode.enable = true;
           # keep-sorted end
         };
