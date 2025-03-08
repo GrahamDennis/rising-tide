@@ -1,5 +1,7 @@
 
 # nixago: ignore-linked-files
+/.vscode/extensions.json
+/.vscode/settings.json
 /.clang-format
 /.clang-tidy
 /.clangd

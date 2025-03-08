@@ -10,7 +10,6 @@ let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.tools.pyright;
   cfg = getCfg config;
-  enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.json { };
   pyrightExe = lib.getExe cfg.package;
 in
@@ -34,45 +33,39 @@ in
     };
   };
 
-  config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
-      tasks.check.dependsOn = [ "check:pyright" ];
-      tools = {
-        go-task = {
-          enable = true;
-          taskfile.tasks =
-            let
-              callPyright = args: "${pyrightExe} --project=${toString cfg.configFile} ${args}";
-            in
-            {
-              "check:pyright" = {
-                desc = "Run pyright type checker";
-                cmds = [
-                  (callPyright (
-                    builtins.concatStringsSep " " (
-                      config.languages.python.sourceRoots ++ config.languages.python.testRoots
-                    )
-                  ))
-                ];
-              };
-              "tool:pyright" = {
-                desc = "Run pyright. Additional CLI arguments after `--` are forwarded to pyright";
-                cmds = [ (callPyright "{{.CLI_ARGS}}") ];
-              };
+  config = lib.mkIf cfg.enable {
+    tasks.check.dependsOn = [ "check:pyright" ];
+    tools = {
+      go-task = {
+        enable = true;
+        taskfile.tasks =
+          let
+            callPyright = args: "${pyrightExe} --project=${toString cfg.configFile} ${args}";
+          in
+          {
+            "check:pyright" = {
+              desc = "Run pyright type checker";
+              cmds = [
+                (callPyright (
+                  builtins.concatStringsSep " " (
+                    config.languages.python.sourceRoots ++ config.languages.python.testRoots
+                  )
+                ))
+              ];
             };
-        };
-      };
-    })
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
-      tools = {
-        vscode = {
-          settings = {
-            "python.analysis.languageServerMode" = "full";
-            "python.analysis.typeCheckingMode" = "standard";
+            "tool:pyright" = {
+              desc = "Run pyright. Additional CLI arguments after `--` are forwarded to pyright";
+              cmds = [ (callPyright "{{.CLI_ARGS}}") ];
+            };
           };
-          recommendedExtensions."ms-python.vscode-pylance".enable = true;
-        };
       };
-    })
-  ];
+      vscode = {
+        settings = {
+          "python.analysis.languageServerMode" = "full";
+          "python.analysis.typeCheckingMode" = "standard";
+        };
+        recommendedExtensions."ms-python.vscode-pylance".enable = true;
+      };
+    };
+  };
 }

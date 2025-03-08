@@ -81,6 +81,12 @@ in
             };
           };
         };
+
+        vscode = {
+          settings = {
+            "python.testing.pytestArgs" = lib.mkBefore [ "--cov-fail-under=0" ];
+          };
+        };
       };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
@@ -90,11 +96,6 @@ in
           .coverage*
           /test_results/
         '';
-      };
-      tools.vscode = {
-        settings = {
-          "python.testing.pytestArgs" = lib.mkBefore [ "--cov-fail-under=0" ];
-        };
       };
     })
   ];

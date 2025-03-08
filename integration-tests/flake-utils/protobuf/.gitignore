@@ -8,6 +8,8 @@
 /result
 /result-*
 
+.vscode/*.code-workspace
+
 # uv virtual environment
 /.venv
 

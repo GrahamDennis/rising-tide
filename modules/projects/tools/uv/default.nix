@@ -11,7 +11,9 @@
   ...
 }:
 let
-  cfg = config.tools.uv;
+  getCfg = projectConfig: projectConfig.tools.uv;
+  cfg = getCfg config;
+  isEnabledIn = projectConfig: (getCfg projectConfig).enable;
   bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
 in
 {
@@ -22,23 +24,31 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    tools.gitignore = {
-      enable = true;
-      rules = ''
-        # uv virtual environment
-        /.venv
-      '';
-    };
-    mkShell.nativeBuildInputs = [
-      (toolsPkgs.makeSetupHook {
-        name = "uv-shell-hook.sh";
-        propagatedBuildInputs = [ cfg.package ];
-        substitutions = {
-          name = bashSafeName;
-          relativePathToRoot = config.relativePaths.toRoot;
-        };
-      } ./uv-shell-hook.sh)
-    ];
-  };
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      tools.gitignore = {
+        enable = true;
+        rules = ''
+          # uv virtual environment
+          /.venv
+        '';
+      };
+      mkShell.nativeBuildInputs = [
+        (toolsPkgs.makeSetupHook {
+          name = "uv-shell-hook.sh";
+          propagatedBuildInputs = [ cfg.package ];
+          substitutions = {
+            name = bashSafeName;
+            relativePathToRoot = config.relativePaths.toRoot;
+          };
+        } ./uv-shell-hook.sh)
+      ];
+    })
+
+    (lib.mkIf (config.isRootProject && (builtins.any isEnabledIn config.allProjectsList)) {
+      tools.vscode = {
+        settings."python.defaultInterpreterPath" = "\${workspaceFolder}/.venv/bin/python";
+      };
+    })
+  ];
 }

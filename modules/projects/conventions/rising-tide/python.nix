@@ -121,6 +121,7 @@ in
           ruff.format.enable = true;
           ruff.lint.enable = true;
           uv.enable = true;
+          vscode.enable = true;
           # keep-sorted end
         };
       })

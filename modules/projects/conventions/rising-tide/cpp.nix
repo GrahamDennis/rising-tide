@@ -92,6 +92,9 @@ in
           cmake-format.config = {
             format.line_width = 120;
           };
+          vscode.settings = {
+            "cmake.ctest.testExplorerIntegrationEnabled" = false;
+          };
           # keep-sorted end
         };
       }
@@ -103,11 +106,14 @@ in
           toolsPkgs.gdb
         ];
         tools = {
-          clangd.enable = true;
+          # keep-sorted start
           clang-format.enable = true;
           clang-tidy.enable = true;
+          clangd.enable = true;
           cmake-format.enable = true;
           cmake.enable = true;
+          vscode.enable = true;
+          # keep-sorted end
         };
       })
     ]

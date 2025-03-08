@@ -8,7 +8,9 @@
 }:
 let
   inherit (lib) types;
-  cfg = config.tools.vscode;
+  getCfg = projectConfig: projectConfig.tools.vscode;
+  cfg = getCfg config;
+  enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.json { };
 in
 {
@@ -52,6 +54,13 @@ in
           );
         };
       };
+      workspace = lib.mkOption {
+        description = ''
+          Contents of the VSCode `${config.name}.code-workspace` file to generate.
+        '';
+        type = settingsFormat.type;
+        default = { };
+      };
       settingsFile = lib.mkOption {
         description = "The VSCode settings file to use";
         type = types.pathInStore;
@@ -62,25 +71,63 @@ in
         type = types.pathInStore;
         default = settingsFormat.generate "extensions.json" cfg.extensions;
       };
+      workspaceFile = lib.mkOption {
+        description = "The VSCode workspace file to generate";
+        type = types.pathInStore;
+        default = settingsFormat.generate "${config.name}.code-workspace" cfg.workspace;
+      };
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    tools = {
-      nixago.requests = lib.mkMerge [
-        (lib.mkIf (cfg.settings != { }) [
-          {
-            data = cfg.settingsFile;
-            output = ".vscode/settings.json";
-          }
-        ])
-        (lib.mkIf (cfg.extensions != { }) [
-          {
-            data = cfg.extensionsFile;
-            output = ".vscode/extensions.json";
-          }
-        ])
-      ];
-    };
-  };
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      tools = {
+        nixago.requests = lib.mkMerge [
+          [
+            {
+              data = cfg.settingsFile;
+              output = ".vscode/settings.json";
+            }
+          ]
+          (lib.mkIf ((cfg.extensions.recommendations or [ ]) != [ ]) [
+            {
+              data = cfg.extensionsFile;
+              output = ".vscode/extensions.json";
+            }
+          ])
+          (lib.mkIf (cfg.workspace != { }) [
+            {
+              data = cfg.workspaceFile;
+              output = ".vscode/${config.name}.code-workspace";
+              hook.mode = "copy";
+            }
+          ])
+        ];
+      };
+    })
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.subprojectsList)) {
+      tools.gitignore = {
+        enable = true;
+        rules = ''
+          .vscode/*.code-workspace
+        '';
+      };
+      tools.vscode.workspace = {
+        settings = cfg.settings;
+        extensions = cfg.extensions;
+        folders = lib.mkMerge [
+          (builtins.map (subproject: {
+            path = "../${subproject.relativePaths.toRoot}";
+            name = subproject.name;
+          }) (builtins.filter enabledIn config.subprojectsList))
+          (lib.mkIf cfg.enable [
+            {
+              path = "..";
+              name = "<root>";
+            }
+          ])
+        ];
+      };
+    })
+  ];
 }

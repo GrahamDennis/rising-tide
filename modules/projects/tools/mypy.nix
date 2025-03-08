@@ -117,6 +117,17 @@ in
               };
             };
         };
+        vscode = {
+          settings = {
+            "mypy-type-checker.path" = [
+              mypyExe
+            ];
+            "mypy-type-checker.args" = [
+              "--config-file=${toString cfg.configFile}"
+            ];
+          };
+          recommendedExtensions."ms-python.mypy-type-checker".enable = true;
+        };
       };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
@@ -130,17 +141,6 @@ in
         mypy.perModuleOverrides = lib.mkMerge (
           builtins.map (projectConfig: (getCfg projectConfig).perModuleOverrides) config.subprojectsList
         );
-        vscode = {
-          settings = {
-            "mypy-type-checker.path" = [
-              mypyExe
-            ];
-            "mypy-type-checker.args" = [
-              "--config-file=${toString cfg.configFile}"
-            ];
-          };
-          recommendedExtensions."ms-python.mypy-type-checker".enable = true;
-        };
       };
     })
   ];

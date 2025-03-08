@@ -4,6 +4,8 @@
 /result
 /result-*
 
+.vscode/*.code-workspace
+
 # Jetbrains-generated CMake build files
 cmake-build-*
 

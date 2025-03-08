@@ -36,6 +36,7 @@ in
           buf.lint.enable = true;
           buf.format.enable = true;
           buf.breaking.enable = true;
+          vscode.enable = true;
         };
       })
     ]

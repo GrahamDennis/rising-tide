@@ -8,8 +8,9 @@
 }:
 let
   inherit (lib) types;
-  enabledIn = projectConfig: projectConfig.tools.cmake.enable;
-  cfg = config.tools.cmake;
+  getCfg = projectConfig: projectConfig.tools.cmake;
+  cfg = getCfg config;
+  isEnabledIn = projectConfig: (getCfg projectConfig).enable;
   cmakeExe = lib.getExe cfg.package;
 in
 {
@@ -72,15 +73,18 @@ in
             };
           };
         };
+        vscode.settings = {
+          "cmake.configureArgs" = [
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE"
+            "-G${cfg.generator}"
+          ];
+        };
       };
     })
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+
+    (lib.mkIf (!cfg.enable && (builtins.any isEnabledIn config.subprojectsList)) {
       tools.vscode.settings = {
-        "cmake.ctest.testExplorerIntegrationEnabled" = false;
-        "cmake.configureArgs" = [
-          "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE"
-          "-G${cfg.generator}"
-        ];
+        "cmake.ignoreCMakeListsMissing" = true;
       };
     })
   ];
