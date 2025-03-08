@@ -1,5 +1,7 @@
 
 # nixago: ignore-linked-files
+/.vscode/extensions.json
+/.vscode/settings.json
 /taskfile.yml
 /.ruff.toml
 # rising-tide-managed: start
@@ -13,5 +15,7 @@ wheels/
 
 # uv virtual environment
 /.venv
+
+/.direnv
 
 # rising-tide-managed: end

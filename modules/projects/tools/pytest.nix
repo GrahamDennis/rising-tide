@@ -74,6 +74,16 @@ in
               };
           };
         };
+        vscode = {
+          enable = true;
+          settings = {
+            "python.testing.pytestEnabled" = true;
+            "python.testing.unittestEnabled" = false;
+            "python.testing.pytestArgs" = [
+              "--config-file=${toString configFile}"
+            ] ++ (config.languages.python.testRoots);
+          };
+        };
       };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
@@ -83,29 +93,6 @@ in
           .pytest_cache/
           /test_results/
         '';
-      };
-      tools.vscode = {
-        settings = {
-          "python.testing.pytestEnabled" = true;
-          "python.testing.unittestEnabled" = false;
-          "python.testing.pytestArgs" =
-            [
-              "--config-file=${toString configFile}"
-              "--override-ini=consider_namespace_packages=true"
-              "--override-ini=pythonpath=."
-              "--rootdir=."
-            ]
-            ++ (builtins.concatMap (
-              projectConfig:
-              builtins.map (
-                testRoot:
-                lib.path.subpath.join [
-                  projectConfig.relativePaths.toRoot
-                  testRoot
-                ]
-              ) projectConfig.languages.python.testRoots
-            ) (builtins.filter enabledIn config.allProjectsList));
-        };
       };
     })
   ];

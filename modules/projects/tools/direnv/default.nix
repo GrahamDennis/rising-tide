@@ -11,7 +11,6 @@
 }:
 let
   inherit (lib) types;
-  enabledIn = projectConfig: projectConfig.tools.direnv.enable;
   cfg = config.tools.direnv;
 in
 {
@@ -29,27 +28,23 @@ in
     };
   };
 
-  config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
-      tools = {
-        gitignore = {
-          enable = true;
-          rules = ''
-            /.direnv
-          '';
-        };
-        nixago.requests = [
-          {
-            data = toolsPkgs.writeText "envrc" cfg.contents;
-            output = ".envrc";
-            hook.mode = "copy";
-          }
-        ];
+  config = lib.mkIf cfg.enable {
+    tools = {
+      gitignore = {
+        enable = true;
+        rules = ''
+          /.direnv
+        '';
       };
-    })
+      nixago.requests = [
+        {
+          data = toolsPkgs.writeText "envrc" cfg.contents;
+          output = ".envrc";
+          hook.mode = "copy";
+        }
+      ];
 
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
-      tools.vscode = {
+      vscode = {
         settings = {
           "direnv.path.executable" = lib.getExe cfg.package;
           "direnv.watchForChanges" = false;
@@ -57,6 +52,7 @@ in
 
         recommendedExtensions."mkhl.direnv".enable = true;
       };
-    })
-  ];
+
+    };
+  };
 }

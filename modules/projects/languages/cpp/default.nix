@@ -200,6 +200,14 @@ in
         (lib.mkIf cfg.sanitizers.tsan.enableInDevelopShell (cfg.sanitizers.tsan.setupHook))
         (lib.mkIf cfg.coverage.enable (cfg.coverage.setupHook))
       ];
+      tools.vscode = {
+        recommendedExtensions = {
+          "ms-vscode.cpptools-extension-pack".enable = true;
+          "matepek.vscode-catch2-test-adapter".enable = true;
+          "vadimcn.vscode-lldb".enable = true;
+          "llvm-vs-code-extensions.vscode-clangd".enable = true;
+        };
+      };
     })
     (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
       # To use CLion with nix, create a new toolchain where the environment file is
@@ -280,14 +288,6 @@ in
           hook.extra = "chmod +x .idea/scripts/cmake";
         }
       ];
-      tools.vscode = {
-        recommendedExtensions = {
-          "ms-vscode.cpptools-extension-pack".enable = true;
-          "matepek.vscode-catch2-test-adapter".enable = true;
-          "vadimcn.vscode-lldb".enable = true;
-          "llvm-vs-code-extensions.vscode-clangd".enable = true;
-        };
-      };
     })
   ];
 }

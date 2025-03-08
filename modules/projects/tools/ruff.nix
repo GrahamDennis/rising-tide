@@ -81,6 +81,14 @@ in
             };
           };
         };
+        vscode = {
+          recommendedExtensions = {
+            "charliermarsh.ruff".enable = true;
+          };
+          settings = {
+            "ruff.path" = [ ruffExe ];
+          };
+        };
       };
     })
 
@@ -90,14 +98,6 @@ in
         rules = ''
           .ruff_cache/
         '';
-      };
-      tools.vscode = {
-        recommendedExtensions = {
-          "charliermarsh.ruff".enable = true;
-        };
-        settings = {
-          "ruff.path" = [ ruffExe ];
-        };
       };
       tools.jetbrains = {
         requiredPlugins."com.koxudaxi.ruff" = true;

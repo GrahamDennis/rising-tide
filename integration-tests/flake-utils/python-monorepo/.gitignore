@@ -1,14 +1,11 @@
 
-# nixago: ignore-linked-files
-/.vscode/extensions.json
-/.vscode/settings.json
-/taskfile.yml
-/.lefthook.yml
-
 # rising-tide-managed: start
 # Ignore build outputs from performing a nix-build or `nix build` command
 /result
 /result-*
+
+/.vscode/*.code-workspace
+.vscode/launch.json
 
 .ruff_cache/
 
@@ -26,3 +23,9 @@ cmake-build-*
 /test_results/
 
 # rising-tide-managed: end
+
+# nixago: ignore-linked-files
+/taskfile.yml
+/.lefthook.yml
+/.vscode/extensions.json
+/.vscode/settings.json

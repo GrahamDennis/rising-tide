@@ -7,7 +7,6 @@
   ...
 }:
 let
-  enabledIn = projectConfig: projectConfig.tools.alejandra.enable;
   cfg = config.tools.alejandra;
   alejandraExe = lib.getExe cfg.package;
 in
@@ -19,32 +18,28 @@ in
     };
   };
 
-  config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
-      tools = {
-        nil.enable = true;
-        treefmt = {
-          enable = true;
-          config = {
-            formatter.alejandra = {
-              command = alejandraExe;
-              includes = [ "*.nix" ];
-            };
-          };
-        };
-        go-task = {
-          enable = true;
-          taskfile.tasks = {
-            "tool:alejandra" = {
-              desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
-              cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
-            };
+  config = lib.mkIf cfg.enable {
+    tools = {
+      nil.enable = true;
+      treefmt = {
+        enable = true;
+        config = {
+          formatter.alejandra = {
+            command = alejandraExe;
+            includes = [ "*.nix" ];
           };
         };
       };
-    })
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
-      tools.vscode.settings = {
+      go-task = {
+        enable = true;
+        taskfile.tasks = {
+          "tool:alejandra" = {
+            desc = "Run alejandra. Additional CLI arguments after `--` are forwarded to alejandra";
+            cmds = [ "${alejandraExe} {{.CLI_ARGS}}" ];
+          };
+        };
+      };
+      vscode.settings = {
         "nix.formatterPath" = [ alejandraExe ];
         "nix.serverSettings" = {
           "nil" = {
@@ -54,6 +49,6 @@ in
           };
         };
       };
-    })
-  ];
+    };
+  };
 }

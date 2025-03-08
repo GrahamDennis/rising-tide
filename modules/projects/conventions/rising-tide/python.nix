@@ -103,6 +103,7 @@ in
         tools = {
           # keep-sorted start block=yes
           coverage-py.enable = (getLangCfg config).testRoots != [ ];
+          direnv.enable = true;
           gitignore = {
             enable = true;
             rules = ''
@@ -121,6 +122,7 @@ in
           ruff.format.enable = true;
           ruff.lint.enable = true;
           uv.enable = true;
+          vscode.enable = true;
           # keep-sorted end
         };
       })
