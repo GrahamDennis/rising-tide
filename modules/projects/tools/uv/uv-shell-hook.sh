@@ -4,7 +4,7 @@ uvShellHook() {
   echo "Executing uvShellHook"
 
   if [ ! -d .venv ]; then
-    uv venv
+    @uvExe@ venv
   fi
 
   export VIRTUAL_ENV_DISABLE_PROMPT=1
@@ -31,9 +31,9 @@ uvShellHook() {
 
   # Check if we need to re-run uv pip install
   if [ -f ".venv/venv-packages" ] && [ "${venvPackages[*]}" == "$(cat .venv/venv-packages)" ]; then
-    true
+    :
   else
-    uv pip install --no-deps --offline --no-cache --no-build-isolation "${venvPackages[@]}"
+    @uvExe@ pip install --no-deps --offline --no-cache --no-build-isolation "${venvPackages[@]}"
     echo "${venvPackages[@]}" >.venv/venv-packages
   fi
 
