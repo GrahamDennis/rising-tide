@@ -35,11 +35,25 @@ in
       type = types.listOf types.package;
       default = [ ];
     };
+    parentShell = lib.mkOption {
+      type = types.nullOr types.package;
+      default = null;
+      description = "mkShell to inherit from";
+    };
     package = lib.mkOption {
       type = types.package;
-      default = (toolsPkgs.mkShell.override { stdenv = cfg.stdenv; }) {
-        inherit (cfg) name inputsFrom nativeBuildInputs;
-      };
+      default =
+        (
+          if cfg.parentShell != null then
+            cfg.parentShell
+          else
+            (toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } { })
+        ).overrideAttrs
+          (previousAttrs: {
+            inherit (cfg) name;
+            inputsFrom = (previousAttrs.inputsFrom or [ ]) ++ cfg.inputsFrom;
+            nativeBuildInputs = (previousAttrs.nativeBuildInputs or [ ]) ++ cfg.nativeBuildInputs;
+          });
       defaultText = lib.literalMD "A `pkgs.mkShell` package";
     };
   };
