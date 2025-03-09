@@ -43,16 +43,21 @@ in
     package = lib.mkOption {
       type = types.package;
       default =
-        (
-          if cfg.parentShell != null then
-            cfg.parentShell
-          else
-            (toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } { })
-        ).overrideAttrs
-          (previousAttrs: {
+        let
+          projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
+            inherit (cfg) name inputsFrom nativeBuildInputs;
+          };
+        in
+        if cfg.parentShell == null then
+          projectShell
+        else
+          cfg.parentShell.overrideAttrs (previousAttrs: {
             inherit (cfg) name;
-            inputsFrom = (previousAttrs.inputsFrom or [ ]) ++ cfg.inputsFrom;
-            nativeBuildInputs = (previousAttrs.nativeBuildInputs or [ ]) ++ cfg.nativeBuildInputs;
+            buildInputs = previousAttrs.buildInputs ++ projectShell.buildInputs;
+            nativeBuildInputs = previousAttrs.nativeBuildInputs ++ projectShell.nativeBuildInputs;
+            propagatedBuildInputs = previousAttrs.propagatedBuildInputs ++ projectShell.propagatedBuildInputs;
+            propagatedNativeBuildInputs =
+              previousAttrs.propagatedNativeBuildInputs ++ projectShell.propagatedNativeBuildInputs;
           });
       defaultText = lib.literalMD "A `pkgs.mkShell` package";
     };
