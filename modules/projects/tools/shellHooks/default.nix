@@ -19,10 +19,6 @@ in
   options = {
     tools.shellHooks = {
       enable = lib.mkEnableOption "Enable shell hooks";
-      propagatedBuildInputs = lib.mkOption {
-        type = types.listOf types.package;
-        default = [ ];
-      };
       hooks = lib.mkOption {
         type = types.attrsOf types.str;
         default = { };
@@ -31,22 +27,28 @@ in
   };
 
   config = lib.mkIf (cfg.enable && cfg.hooks != { }) {
-    mkShell.nativeBuildInputs = [
-      (toolsPkgs.makeSetupHook {
-        name = "shell-hooks.sh";
-        propagatedBuildInputs = cfg.propagatedBuildInputs;
-        substitutions = {
-          inherit bashSafeName;
-          relativePathToRoot = config.relativePaths.toRoot;
-          bashCompletionPackage = toolsPkgs.bash-completion;
-          shellHooks = lib.mapAttrsToList (name: script: ''
-            ## Begin ${name}
-            ${script}
-            ## End ${name}
+    mkShell.shellHook =
+      let
+        combinedShellHooks = lib.concatMapAttrsStringSep "\n" (name: script: ''
+          ## Begin ${name}
+          ${script}
+          ## End ${name}
 
-          '') cfg.hooks;
-        };
-      } ./mk-shell-hook.sh)
-    ];
+        '') cfg.hooks;
+      in
+      lib.mkMerge [
+        (builtins.replaceStrings
+          [ "@relativePathToRoot@" "@bashCompletionPackage@" "@bashSafeName@" "@shellHooks@" ]
+          [
+            config.relativePaths.toRoot
+            (builtins.toString toolsPkgs.bash-completion)
+            bashSafeName
+            combinedShellHooks
+          ]
+          (builtins.readFile ./mk-shell-hook.sh)
+        )
+
+        (lib.mkOrder (lib.modules.defaultOrderPriority * 100) "configShellHook")
+      ];
   };
 }
