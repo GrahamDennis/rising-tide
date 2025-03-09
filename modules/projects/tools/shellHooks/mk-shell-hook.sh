@@ -58,4 +58,4 @@ function configShellHook() {
 
 preShellHooks+=(@bashSafeName@PreShell)
 # shellcheck disable=SC2034
-shellHook=configShellHook
+shellHook+=" configShellHook"
