@@ -54,8 +54,10 @@ function configShellHook() {
   uniqueArray postShellHooks
   runHook postShellHook
   echo "Finished executing configShellHook"
+
+  # Redefine function to avoid re-execution
+  # shellcheck disable=SC2317
+  function configShellHook() { :; }
 }
 
 preShellHooks+=(@bashSafeName@PreShell)
-# shellcheck disable=SC2034
-shellHook+=" configShellHook"
