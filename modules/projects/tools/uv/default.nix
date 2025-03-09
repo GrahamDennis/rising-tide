@@ -32,16 +32,14 @@ in
           /.venv
         '';
       };
-      mkShell.nativeBuildInputs = [
-        (toolsPkgs.makeSetupHook {
-          name = "uv-shell-hook.sh";
-          propagatedBuildInputs = [ cfg.package ];
-          substitutions = {
-            name = bashSafeName;
-            relativePathToRoot = config.relativePaths.toRoot;
-          };
-        } ./uv-shell-hook.sh)
-      ];
+      tools.shellHooks = {
+        enable = true;
+        hooks.uv =
+          builtins.replaceStrings
+            [ "@name@" "@relativePathToRoot@" "@uvExe@" ]
+            [ bashSafeName config.relativePaths.toRoot (lib.getExe cfg.package) ]
+            (builtins.readFile ./uv-shell-hook.sh);
+      };
       tools.vscode = lib.mkIf (!config.isRootProject) {
         settings."python.defaultInterpreterPath" = (
           lib.pipe config.relativePaths.toRoot [
