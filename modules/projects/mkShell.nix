@@ -40,22 +40,12 @@ in
       default = null;
       description = "mkShell to inherit from";
     };
-    shellHook = lib.mkOption {
-      type = types.lines;
-      default = "";
-      description = "Shell hook";
-    };
     package = lib.mkOption {
       type = types.package;
       default =
         let
           projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
-            inherit (cfg)
-              name
-              inputsFrom
-              nativeBuildInputs
-              shellHook
-              ;
+            inherit (cfg) name inputsFrom nativeBuildInputs;
           };
         in
         if cfg.parentShell == null then
@@ -68,7 +58,6 @@ in
             propagatedBuildInputs = previousAttrs.propagatedBuildInputs ++ projectShell.propagatedBuildInputs;
             propagatedNativeBuildInputs =
               previousAttrs.propagatedNativeBuildInputs ++ projectShell.propagatedNativeBuildInputs;
-            shellHook = previousAttrs.shellHook + "\n${projectShell.shellHook}";
           });
       defaultText = lib.literalMD "A `pkgs.mkShell` package";
     };
@@ -76,9 +65,6 @@ in
   config = {
     mkShell = lib.mkMerge [
       {
-        shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
-          builtins.filter enabledIn config.subprojectsList
-        );
         inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
           builtins.filter enabledIn config.subprojectsList
         );
