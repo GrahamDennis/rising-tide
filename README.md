@@ -42,7 +42,7 @@ Integrated tooling includes:
 - Generic tooling
   - [go-task] for running project tasks like building, linting, running tests, etc.
   - [treefmt] for multiplexing all code formatters & linters.
-  - [VS Code][vscode] project generation.
+  - [VS Code][vscode] project generation, including multi-root projects for monorepos.
   - [lefthook] for git pre-commit hooks.
   - [keep-sorted] for language-agnostic sorting of lines / code blocks
   - [mdformat] for formatting Markdown
@@ -67,6 +67,33 @@ Integrated tooling includes:
 - Shell scripts
   - [shellcheck] for linting
   - [shfmt] for code formatting
+
+## Using Rising Tide
+
+### VS Code
+
+Rising Tide will automatically generate `.vscode` directories with VS Code project settings and recommended extensions. Additionally for monorepos (aka Rising Tide projects that use the `subprojects` attribute) a VS Code [multi-root workspace][vscode-multi-root-workspace] is generated in `.vscode/${rootProjectName}.code-workspace`. Multi-root workspaces are necessary for correct Pytest integration in monorepos for example.
+
+The VS Code generated projects support:
+
+- General:
+  - Use [direnv] to automatically inherit the `nix develop` environment
+- Nix:
+  - Nix Language server using [nil]
+- Python:
+  - [pytest] integration including with the Python debugger. For python monorepos this requires using the generated multi-root workspace in `.vscode/${rootProjectName}.code-workspace`.
+  - [mypy] and [ruff] language server integration for type linting and code formatting respectively
+- C++:
+  - [gtest] test discovery and execution including using the debugger.
+
+### JetBrains IDEs
+
+For Python projects a PyCharm `.idea` project is generated and preconfigured.
+
+For C++ projects, a CLion `.idea` project is generated, however some additional steps are required for CLion to become aware of the full `nix develop` environment:
+
+1. Create a new Toolchain in CLion where the environment file is `.idea/scripts/env.sh` (inside your project), and the path to CMake is `.idea/scripts/cmake`.
+1. Select this Toolchain for your project.
 
 ## Integrating Rising Tide
 
@@ -316,9 +343,11 @@ Rising Tide contains several [integration tests](./integration-tests/flake-utils
 [cmake-format]: https://cmake-format.readthedocs.io/
 [conventions]: ./modules/projects/conventions/
 [deadnix]: https://github.com/astro/deadnix
+[direnv]: https://direnv.net/
 [fdset]: https://github.com/protocolbuffers/protobuf/blob/e390402c5e372de349af88ae0197c67529cf9360/src/google/protobuf/descriptor.proto#L54-L65
 [go-task]: https://taskfile.dev/
 [grpcurl]: https://github.com/fullstorydev/grpcurl
+[gtest]: https://github.com/google/googletest
 [keep-sorted]: https://github.com/google/keep-sorted
 [languages]: ./modules/projects/languages/
 [lefthook]: https://evilmartians.github.io/lefthook/
@@ -344,3 +373,4 @@ Rising Tide contains several [integration tests](./integration-tests/flake-utils
 [tsan]: https://github.com/google/sanitizers/wiki/ThreadSanitizerCppManual
 [uv]: https://github.com/astral-sh/uv
 [vscode]: https://code.visualstudio.com/
+[vscode-multi-root-workspace]: https://code.visualstudio.com/docs/editor/workspaces/multi-root-workspaces
