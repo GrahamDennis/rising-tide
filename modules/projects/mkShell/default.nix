@@ -40,12 +40,25 @@ in
       default = null;
       description = "mkShell to inherit from";
     };
+    shellHook = lib.mkOption {
+      type = types.lines;
+      default = "";
+    };
     package = lib.mkOption {
       type = types.package;
       default =
         let
+          coda =
+            builtins.replaceStrings
+              [ "@bashCompletionPackage@" ]
+              [ (builtins.toString toolsPkgs.bash-completion) ]
+              (builtins.readFile ./mk-shell-hook.sh);
           projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
             inherit (cfg) name inputsFrom nativeBuildInputs;
+            shellHook = builtins.concatStringsSep "\n" [
+              cfg.shellHook
+              coda
+            ];
           };
         in
         if cfg.parentShell == null then
@@ -58,6 +71,10 @@ in
             propagatedBuildInputs = previousAttrs.propagatedBuildInputs ++ projectShell.propagatedBuildInputs;
             propagatedNativeBuildInputs =
               previousAttrs.propagatedNativeBuildInputs ++ projectShell.propagatedNativeBuildInputs;
+            shellHook = builtins.concatStringsSep "\n" [
+              previousAttrs.shellHook
+              projectShell.shellHook
+            ];
           });
       defaultText = lib.literalMD "A `pkgs.mkShell` package";
     };
@@ -65,6 +82,9 @@ in
   config = {
     mkShell = lib.mkMerge [
       {
+        shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
+          builtins.filter enabledIn config.subprojectsList
+        );
         inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
           builtins.filter enabledIn config.subprojectsList
         );

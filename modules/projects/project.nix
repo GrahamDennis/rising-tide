@@ -25,7 +25,7 @@ let
           ./hydraJobs.nix
           ./languages
           ./legacyPackages.nix
-          ./mkShell.nix
+          ./mkShell
           ./namespace.nix
           ./overlay.nix
           ./package.nix
