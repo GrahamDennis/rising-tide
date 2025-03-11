@@ -49,11 +49,7 @@ in
       default =
         let
           projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
-            inherit (cfg)
-              name
-              inputsFrom
-              nativeBuildInputs
-              ;
+            inherit (cfg) name inputsFrom nativeBuildInputs;
             shellHook =
               let
                 coda =
@@ -78,7 +74,10 @@ in
             propagatedBuildInputs = previousAttrs.propagatedBuildInputs ++ projectShell.propagatedBuildInputs;
             propagatedNativeBuildInputs =
               previousAttrs.propagatedNativeBuildInputs ++ projectShell.propagatedNativeBuildInputs;
-            shellHook = previousAttrs.shellHook + "\n${projectShell.shellHook}";
+            shellHook = builtins.concatStringsSep "\n" [
+              previousAttrs.shellHook
+              projectShell.shellHook
+            ];
           });
       defaultText = lib.literalMD "A `pkgs.mkShell` package";
     };
