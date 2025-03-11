@@ -43,7 +43,6 @@ in
     shellHook = lib.mkOption {
       type = types.lines;
       default = "";
-      description = "Shell hook";
     };
     package = lib.mkOption {
       type = types.package;
@@ -54,8 +53,19 @@ in
               name
               inputsFrom
               nativeBuildInputs
-              shellHook
               ;
+            shellHook =
+              let
+                coda =
+                  builtins.replaceStrings
+                    [ "@bashCompletionPackage@" ]
+                    [ (builtins.toString toolsPkgs.bash-completion) ]
+                    (builtins.readFile ./mk-shell-hook.sh);
+              in
+              builtins.concatStringsSep "\n" [
+                cfg.shellHook
+                coda
+              ];
           };
         in
         if cfg.parentShell == null then

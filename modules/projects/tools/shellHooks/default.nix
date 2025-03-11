@@ -7,7 +7,6 @@
 # project context
 {
   config,
-  toolsPkgs,
   ...
 }:
 let
@@ -36,19 +35,10 @@ in
 
         '') cfg.hooks;
       in
-      lib.mkMerge [
-        (builtins.replaceStrings
-          [ "@relativePathToRoot@" "@bashCompletionPackage@" "@bashSafeName@" "@shellHooks@" ]
-          [
-            config.relativePaths.toRoot
-            (builtins.toString toolsPkgs.bash-completion)
-            bashSafeName
-            combinedShellHooks
-          ]
-          (builtins.readFile ./mk-shell-hook.sh)
-        )
-
-        (lib.mkOrder (lib.modules.defaultOrderPriority * 100) "configShellHook")
-      ];
+      (builtins.replaceStrings
+        [ "@relativePathToRoot@" "@bashSafeName@" "@shellHooks@" ]
+        [ config.relativePaths.toRoot bashSafeName combinedShellHooks ]
+        (builtins.readFile ./mk-shell-hook.sh)
+      );
   };
 }
