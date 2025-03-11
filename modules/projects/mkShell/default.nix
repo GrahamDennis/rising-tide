@@ -48,20 +48,17 @@ in
       type = types.package;
       default =
         let
+          coda =
+            builtins.replaceStrings
+              [ "@bashCompletionPackage@" ]
+              [ (builtins.toString toolsPkgs.bash-completion) ]
+              (builtins.readFile ./mk-shell-hook.sh);
           projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
             inherit (cfg) name inputsFrom nativeBuildInputs;
-            shellHook =
-              let
-                coda =
-                  builtins.replaceStrings
-                    [ "@bashCompletionPackage@" ]
-                    [ (builtins.toString toolsPkgs.bash-completion) ]
-                    (builtins.readFile ./mk-shell-hook.sh);
-              in
-              builtins.concatStringsSep "\n" [
-                cfg.shellHook
-                coda
-              ];
+            shellHook = builtins.concatStringsSep "\n" [
+              cfg.shellHook
+              coda
+            ];
           };
         in
         if cfg.parentShell == null then
