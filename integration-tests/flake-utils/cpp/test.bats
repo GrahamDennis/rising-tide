@@ -42,6 +42,11 @@ teardown() {
   assert_success
 }
 
+@test "ci task" {
+  run task ci
+  assert_success
+}
+
 @test "ASAN build catches invalid memory access" {
   restore_in_teardown
   cat <<EOF >>tests/dummy_test.cpp

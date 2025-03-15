@@ -2,10 +2,18 @@
 {
   clangStdenv,
   pkgs,
+  lib,
 }:
 clangStdenv.mkDerivation {
   name = "cpp-package";
-  src = ./.;
+  src = lib.fileset.toSource {
+    root = ./.;
+    fileset = lib.fileset.unions [
+      ./CMakeLists.txt
+      ./src
+      ./tests
+    ];
+  };
 
   nativeBuildInputs = with pkgs; [
     cmake
