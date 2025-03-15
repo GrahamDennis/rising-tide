@@ -1,9 +1,18 @@
 # python packages context
-{ pythonPackages }:
+{ lib, pythonPackages }:
 pythonPackages.buildPythonPackage {
   name = "python-package";
   pyproject = true;
-  src = ./.;
+  
+  # Minimise rebuilds due to changes to files that don't impact the build
+  src = lib.fileset.toSource {
+    root = ./.;
+    fileset = lib.fileset.unions [
+      ./pyproject.toml
+      ./src
+      ./tests
+    ];
+  };
 
   dependencies = with pythonPackages; [
     requests

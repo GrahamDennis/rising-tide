@@ -6,6 +6,8 @@
 }:
 clangStdenv.mkDerivation {
   name = "cpp-package";
+
+  # Minimise rebuilds due to changes to files that don't impact the build
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
