@@ -1,5 +1,8 @@
 # rising-tide flake context
 { lib, self, ... }:
+let
+  inherit (lib) types;
+in
 rec {
   mkBaseProject =
     {
@@ -73,4 +76,20 @@ rec {
     {
       inherit pythonOverlays overlays;
     };
+
+  mkLifecycleTaskOption = name: {
+    enable = (lib.mkEnableOption "Enable the ${name} task") // {
+      default = true;
+    };
+    dependsOn = lib.mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "A list of task names that must complete before this task";
+    };
+    serialTasks = lib.mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "A list of task names that will be run serially by this task after all dependencies have completed.";
+    };
+  };
 }

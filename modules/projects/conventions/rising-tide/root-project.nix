@@ -30,8 +30,12 @@ in
             "check"
             "test"
           ];
-          serialTasks = [ "ci:check-not-dirty" ];
+          serialTasks = [
+            "ci:check-not-dirty"
+            "ci:check-derivation-unchanged"
+          ];
         };
+        tasks.ci.check-derivation-unchanged.enable = true;
         mkShell.enable = true;
         tools = {
           # keep-sorted start block=yes
