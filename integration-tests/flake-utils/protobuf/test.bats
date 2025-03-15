@@ -107,3 +107,8 @@ teardown() {
   run nix build .#example-src
   assert_success
 }
+
+@test "ci task passes" {
+  run task ci
+  assert_success
+}

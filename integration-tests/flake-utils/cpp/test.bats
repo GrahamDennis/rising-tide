@@ -42,7 +42,7 @@ teardown() {
   assert_success
 }
 
-@test "ci task" {
+@test "ci task passes" {
   run task ci
   assert_success
 }
