@@ -3,7 +3,7 @@
 pythonPackages.buildPythonPackage {
   name = "python-package";
   pyproject = true;
-  
+
   # Minimise rebuilds due to changes to files that don't impact the build
   src = lib.fileset.toSource {
     root = ./.;
