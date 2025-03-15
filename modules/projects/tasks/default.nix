@@ -1,6 +1,8 @@
 # rising-tide flake context
 {
   lib,
+  risingTideLib,
+  injector,
   ...
 }:
 # project context
@@ -9,37 +11,26 @@
   ...
 }:
 let
-  inherit (lib) types;
   cfg = config.tasks;
-  mkTasks =
-    names:
-    lib.genAttrs names (name: {
-      enable = (lib.mkEnableOption "Enable the ${name} task") // {
-        default = true;
-      };
-      dependsOn = lib.mkOption {
-        type = types.listOf types.str;
-        default = [ ];
-        description = "A list of task names that must complete before this task";
-      };
-      serialTasks = lib.mkOption {
-        type = types.listOf types.str;
-        default = [ ];
-        description = "A list of task names that will be run serially by this task after all dependencies have completed.";
-      };
-    });
   tasksToCmds = builtins.map (name: {
     task = name;
   });
   ifNotEmpty = tasks: lib.mkIf (tasks != [ ]) tasks;
 in
 {
-  options.tasks = mkTasks [
+  imports = injector.injectModules [
+    # keep-sorted start
+    ./ci/check-derivation-unchanged.nix
+    ./ci/check-not-dirty.nix
+    # keep-sorted end
+  ];
+
+  options.tasks = lib.genAttrs [
     "build"
     "ci"
     "check"
     "test"
-  ];
+  ] risingTideLib.project.mkLifecycleTaskOption;
   config = lib.mkMerge [
     (lib.mkIf cfg.build.enable {
       tools.go-task = {

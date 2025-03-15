@@ -30,7 +30,7 @@ let
           ./overlay.nix
           ./package.nix
           ./packages.nix
-          ./tasks.nix
+          ./tasks
           ./tools
           # keep-sorted end
         ])

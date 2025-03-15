@@ -30,8 +30,9 @@ in
             "check"
             "test"
           ];
-          serialTasks = [ "ci:check-not-dirty" ];
         };
+        tasks.ci.check-derivation-unchanged.enable = true;
+        tasks.ci.check-not-dirty.enable = true;
         mkShell.enable = true;
         tools = {
           # keep-sorted start block=yes
@@ -43,12 +44,6 @@ in
               /result
               /result-*
             '';
-          };
-          go-task.taskfile.tasks."ci:check-not-dirty" = {
-            cmds = [
-              "git status"
-              "git diff-files --compact-summary --exit-code ."
-            ];
           };
           keep-sorted.enable = true;
           lefthook = {

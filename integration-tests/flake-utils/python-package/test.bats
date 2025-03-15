@@ -111,3 +111,8 @@ teardown() {
   assert_failure
   assert_output --partial 'python_package/__init__.py'
 }
+
+@test "ci task passes" {
+  run task ci
+  assert_success
+}
