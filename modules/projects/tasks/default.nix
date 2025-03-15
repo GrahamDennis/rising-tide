@@ -18,7 +18,12 @@ let
   ifNotEmpty = tasks: lib.mkIf (tasks != [ ]) tasks;
 in
 {
-  imports = injector.injectModules [ ./ci/check-derivation-unchanged.nix ];
+  imports = injector.injectModules [
+    # keep-sorted start
+    ./ci/check-derivation-unchanged.nix
+    ./ci/check-not-dirty.nix
+    # keep-sorted end
+  ];
 
   options.tasks = lib.genAttrs [
     "build"

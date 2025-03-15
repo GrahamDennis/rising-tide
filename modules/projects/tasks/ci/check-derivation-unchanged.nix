@@ -23,6 +23,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    tasks.ci.serialTasks = [ "ci:check-derivation-unchanged" ];
     tools.go-task = {
       taskfile.tasks = {
         "ci:check-derivation-unchanged" = {

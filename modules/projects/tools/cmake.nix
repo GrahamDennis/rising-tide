@@ -62,6 +62,7 @@ in
             };
             "test:ctest" = {
               desc = "Run CTest";
+              deps = [ "cmake:build" ];
               dir = "build/tests";
               cmds = [
                 "ctest"
