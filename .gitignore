@@ -42,7 +42,7 @@ build/
 # Jetbrains-generated CMake build files
 cmake-build-*
 
-.env
+/.env
 
 /.direnv
 

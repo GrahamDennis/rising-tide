@@ -31,6 +31,8 @@ wheels/
 # Jetbrains-generated CMake build files
 cmake-build-*
 
+/.env
+
 /.direnv
 
 .coverage*
