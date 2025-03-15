@@ -1,9 +1,9 @@
 # python packages context
 {
-  stdenv,
+  clangStdenv,
   pkgs,
 }:
-stdenv.mkDerivation {
+clangStdenv.mkDerivation {
   name = "package-2";
   src = ./.;
 

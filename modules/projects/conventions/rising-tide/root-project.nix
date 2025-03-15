@@ -53,7 +53,8 @@ in
               pre-commit = {
                 commands = {
                   check = {
-                    run = "${lib.getExe' config.tools.go-task.package "task"} check";
+                    # Only run treefmt because that should be fast
+                    run = "${lib.getExe' config.tools.go-task.package "task"} check:treefmt";
                     stage_fixed = true;
                   };
                 };
