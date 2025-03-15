@@ -31,3 +31,8 @@ teardown() {
   run nix build .#_all-project-packages
   assert_success
 }
+
+@test "ci task passes" {
+  run task ci
+  assert_success
+}
