@@ -16,7 +16,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    tasks.ci.serialTasks = [ "ci:check-not-dirty" ];
+    tasks.ci.serialTasks = lib.mkAfter [ "ci:check-not-dirty" ];
     tools.go-task = {
       taskfile.tasks = {
         "ci:check-not-dirty" = {
