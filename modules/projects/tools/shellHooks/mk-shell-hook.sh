@@ -5,8 +5,8 @@ function @bashSafeName@PreShell() {
 
   pushd "$FLAKE_ROOT" >/dev/null || return
   # Ensure the subproject exists
-  mkdir -p "@relativePathToRoot@"
-  cd "@relativePathToRoot@" || return
+  mkdir -p "@relativePathFromRoot@"
+  cd "@relativePathFromRoot@" || return
   @shellHooks@
   popd >/dev/null || return
 }

@@ -18,7 +18,8 @@
     ./coverage-py.nix
     ./cue.nix
     ./deadnix.nix
-    ./direnv
+    ./direnv.nix
+    ./dotenv.nix
     ./gitignore.nix
     ./go-task
     ./jetbrains

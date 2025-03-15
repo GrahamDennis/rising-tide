@@ -33,7 +33,7 @@ rec {
             self.modules.flake.project
             rootProjectModule
             {
-              relativePaths.toRoot = lib.mkDefault "./.";
+              relativePaths.fromRoot = lib.mkDefault "./.";
               absolutePath = lib.mkIf (root != null) root;
             }
           ];

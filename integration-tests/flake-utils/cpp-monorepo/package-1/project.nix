@@ -3,7 +3,7 @@
   ...
 }:
 {
-  relativePaths.toParentProject = "package-1";
+  relativePaths.fromParentProject = "package-1";
   name = "package-1";
   namespacePath = [
     "rising-tide"

@@ -137,7 +137,7 @@ in
         extensions = cfg.extensions;
         folders = lib.mkMerge [
           (builtins.map (subproject: {
-            path = "../${subproject.relativePaths.toRoot}";
+            path = "../${subproject.relativePaths.fromRoot}";
             name = subproject.name;
           }) (builtins.filter enabledIn config.subprojectsList))
           (lib.mkIf cfg.enable [

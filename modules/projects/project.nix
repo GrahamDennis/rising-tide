@@ -46,36 +46,46 @@ let
           description = "Whether this is the root project";
           type = types.bool;
           readOnly = true;
-          default = config.relativePaths.toRoot == "./.";
+          default = config.relativePaths.fromRoot == "./.";
         };
         relativePaths = {
-          # FIXME: The name is wrong, this should be fromRoot not toRoot
-          toRoot = lib.mkOption {
+          # FIXME: The name is wrong, this should be fromRoot not fromRoot
+          fromRoot = lib.mkOption {
             description = "The path from the project to the root of the flake";
             type = risingTideLib.types.subpath;
             default = lib.path.subpath.join [
-              config.relativePaths.parentProjectToRoot
-              config.relativePaths.toParentProject
+              config.relativePaths.parentProjectFromRoot
+              config.relativePaths.fromParentProject
             ];
             defaultText = lib.literalExpression ''
               lib.path.subpath.join [
-                config.relativePaths.parentProjectToRoot
-                config.relativePaths.toParentProject
+                config.relativePaths.parentProjectFromRoot
+                config.relativePaths.fromParentProject
               ]
             '';
           };
           # This should be fromParentProject
-          toParentProject = lib.mkOption {
+          fromParentProject = lib.mkOption {
             description = "The path from the project to the parent project";
             type = risingTideLib.types.subpath;
             default = config.name;
             defaultText = lib.literalMD "The name of this project: `\${config.name}`";
           };
           # This should be rootToParentProject or parentProjectFromRoot
-          parentProjectToRoot = lib.mkOption {
+          parentProjectFromRoot = lib.mkOption {
             description = "The path from the parent project to the root of the flake";
             type = risingTideLib.types.subpath;
             readOnly = true;
+          };
+          toRoot = lib.mkOption {
+            readOnly = true;
+            type = types.str;
+            default = lib.pipe config.relativePaths.fromRoot [
+              lib.path.subpath.components
+              (builtins.map (_: ".."))
+              (components: if (builtins.length components) == 0 then [ "." ] else components)
+              (builtins.concatStringsSep "/")
+            ];
           };
         };
         absolutePath = lib.mkOption {
@@ -101,8 +111,8 @@ let
                     { name, config, ... }:
                     {
                       inherit name;
-                      relativePaths.parentProjectToRoot = parentProjectConfig.relativePaths.toRoot;
-                      absolutePath = lib.path.append parentProjectConfig.absolutePath config.relativePaths.toParentProject;
+                      relativePaths.parentProjectFromRoot = parentProjectConfig.relativePaths.fromRoot;
+                      absolutePath = lib.path.append parentProjectConfig.absolutePath config.relativePaths.fromParentProject;
                     }
                   )
                 ];

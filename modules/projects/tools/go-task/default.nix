@@ -75,8 +75,8 @@ in
           includes = lib.mkMerge (
             lib.mapAttrsToList (name: subprojectConfig: {
               ${name} = {
-                taskfile = subprojectConfig.relativePaths.toParentProject;
-                dir = subprojectConfig.relativePaths.toParentProject;
+                taskfile = subprojectConfig.relativePaths.fromParentProject;
+                dir = subprojectConfig.relativePaths.fromParentProject;
               };
             }) enabledSubprojects
           );

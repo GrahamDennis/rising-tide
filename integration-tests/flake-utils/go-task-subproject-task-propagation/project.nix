@@ -1,8 +1,7 @@
 {
   name = "go-task-subproject-task-propagation-integration-test";
-  relativePaths.toRoot = "./.";
   subprojects.subproject = {
-    relativePaths.toParentProject = "subproject";
+    relativePaths.fromParentProject = "subproject";
     mkShell.enable = true;
     tools.go-task = {
       enable = true;

@@ -30,7 +30,7 @@ in
           # And if it's a logical path, it shouldn't use `/` as the separator but `.` or `:`.
           (builtins.map (
             subproject:
-            lib.nameValuePair (lib.removePrefix "./" subproject.relativePaths.toRoot) subproject.mkShell.package
+            lib.nameValuePair (lib.removePrefix "./" subproject.relativePaths.fromRoot) subproject.mkShell.package
           ))
         ]
       );

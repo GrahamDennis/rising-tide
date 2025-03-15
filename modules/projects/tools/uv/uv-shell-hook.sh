@@ -41,9 +41,9 @@ uvShellHook() {
 }
 
 @name@VenvPackagesHook() {
-  if test -f "${FLAKE_ROOT}/@relativePathToRoot@/pyproject.toml"; then
-    venvPackages+=(--editable "${FLAKE_ROOT}/@relativePathToRoot@")
-    addToSearchPath PYTHONPATH "${FLAKE_ROOT}/@relativePathToRoot@/src"
+  if test -f "${FLAKE_ROOT}/@relativePathFromRoot@/pyproject.toml"; then
+    venvPackages+=(--editable "${FLAKE_ROOT}/@relativePathFromRoot@")
+    addToSearchPath PYTHONPATH "${FLAKE_ROOT}/@relativePathFromRoot@/src"
   fi
 }
 
