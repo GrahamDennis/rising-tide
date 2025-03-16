@@ -37,6 +37,8 @@ in
         tools = {
           # keep-sorted start block=yes
           deadnix.enable = true;
+          direnv.enable = true;
+          dotenv.enable = true;
           gitignore = {
             enable = true;
             rules = ''
@@ -45,6 +47,7 @@ in
               /result-*
             '';
           };
+          jetbrains.enable = true;
           keep-sorted.enable = true;
           lefthook = {
             enable = true;
@@ -100,15 +103,18 @@ in
               }
             ];
           };
-          vscode.recommendedExtensions = {
-            "jnoortheen.nix-ide".enable = true;
-          };
-          vscode.settings = {
-            # See https://github.com/nix-community/vscode-nix-ide/pull/417
-            "nix.hiddenLanguageServerErrors" = [
-              "textDocument/definition"
-              "textDocument/documentSymbol"
-            ];
+          vscode = {
+            enable = true;
+            recommendedExtensions = {
+              "jnoortheen.nix-ide".enable = true;
+            };
+            settings = {
+              # See https://github.com/nix-community/vscode-nix-ide/pull/417
+              "nix.hiddenLanguageServerErrors" = [
+                "textDocument/definition"
+                "textDocument/documentSymbol"
+              ];
+            };
           };
           # keep-sorted end
         };
