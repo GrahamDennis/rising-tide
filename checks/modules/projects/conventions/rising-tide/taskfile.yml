@@ -1,3 +1,5 @@
+dotenv:
+  - .env
 version: "3"
 output: prefixed
 run: when_changed
