@@ -10,7 +10,7 @@ in
     };
     expected = {
       name = "example-project";
-      relativePaths.toRoot = "./.";
+      relativePaths.fromRoot = "./.";
       subprojects = { };
       subprojectsList = [ ];
       tools.go-task = {

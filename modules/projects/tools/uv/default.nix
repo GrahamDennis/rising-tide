@@ -13,7 +13,7 @@
 let
   getCfg = projectConfig: projectConfig.tools.uv;
   cfg = getCfg config;
-  bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.toRoot}";
+  bashSafeName = risingTideLib.sanitizeBashIdentifier "uvShellHook-${config.relativePaths.fromRoot}";
 in
 {
   options = {
@@ -38,19 +38,12 @@ in
           propagatedBuildInputs = [ cfg.package ];
           substitutions = {
             name = bashSafeName;
-            relativePathToRoot = config.relativePaths.toRoot;
+            relativePathFromRoot = config.relativePaths.fromRoot;
           };
         } ./uv-shell-hook.sh)
       ];
       tools.vscode = lib.mkIf (!config.isRootProject) {
-        settings."python.defaultInterpreterPath" = (
-          lib.pipe config.relativePaths.toRoot [
-            lib.path.subpath.components
-            (builtins.map (_: ".."))
-            (components: components ++ [ ".venv/bin/python" ])
-            (builtins.concatStringsSep "/")
-          ]
-        );
+        settings."python.defaultInterpreterPath" = "${config.relativePaths.toRoot}/.venv/bin/python";
       };
     })
   ];

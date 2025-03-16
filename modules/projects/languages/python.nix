@@ -168,11 +168,11 @@ in
                     (builtins.concatMap (
                       projectConfig:
                       (builtins.map (srcRoot: {
-                        url = "file://$MODULE_DIR$/${projectConfig.relativePaths.toRoot}/${srcRoot}";
+                        url = "file://$MODULE_DIR$/${projectConfig.relativePaths.fromRoot}/${srcRoot}";
                         isTestSource = false;
                       }) (getCfg projectConfig).sourceRoots)
                       ++ (builtins.map (testRoot: {
-                        url = "file://$MODULE_DIR$/${projectConfig.relativePaths.toRoot}/${testRoot}";
+                        url = "file://$MODULE_DIR$/${projectConfig.relativePaths.fromRoot}/${testRoot}";
                         isTestSource = true;
                       }) (getCfg projectConfig).testRoots)
                     ))

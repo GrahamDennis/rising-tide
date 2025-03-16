@@ -19,7 +19,6 @@ let
   batsExe = lib.getExe' batsWithLibraries "bats";
   project = risingTideLib.mkProject { inherit system; } {
     name = "rising-tide-root";
-    relativePaths.toRoot = "./.";
     mkShell = {
       nativeBuildInputs = with pkgs; [
         batsWithLibraries

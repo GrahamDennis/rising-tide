@@ -3,7 +3,7 @@
   ...
 }:
 {
-  relativePaths.toParentProject = "projects/package-2";
+  relativePaths.fromParentProject = "projects/package-2";
   languages.python = {
     enable = true;
     callPackageFunction = import ./package.nix;

@@ -18,7 +18,7 @@ let
       name = "‹name›";
       _module.args.pkgs = pkgs;
       toolsPkgs = pkgs;
-      relativePaths.toRoot = "./.";
+      relativePaths.fromRoot = "./.";
     };
   };
 

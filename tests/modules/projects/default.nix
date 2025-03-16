@@ -26,41 +26,42 @@ in
     expectRenderedConfig
       {
         name = "my-awesome-project";
-        relativePaths.toRoot = ".";
+        relativePaths.fromRoot = ".";
       }
       {
         name = "my-awesome-project";
-        relativePaths.toRoot = "./.";
+        relativePaths.fromRoot = "./.";
+        relativePaths.toRoot = ".";
         subprojectsList = [ ];
       };
   "test project with path to parent" =
     expectRenderedConfig
       {
-        relativePaths.parentProjectToRoot = ".";
-        relativePaths.toParentProject = "my-awesome-project";
+        relativePaths.parentProjectFromRoot = ".";
+        relativePaths.fromParentProject = "my-awesome-project";
       }
       {
-        relativePaths.toRoot = "./my-awesome-project";
-        relativePaths.parentProjectToRoot = "./.";
-        relativePaths.toParentProject = "./my-awesome-project";
+        relativePaths.fromRoot = "./my-awesome-project";
+        relativePaths.parentProjectFromRoot = "./.";
+        relativePaths.fromParentProject = "./my-awesome-project";
       };
 
   "test single subproject" =
     expectRenderedConfig
       {
         name = "root";
-        relativePaths.toRoot = ".";
-        subprojects.subproject.relativePaths.toParentProject = "./subproject";
+        relativePaths.fromRoot = ".";
+        subprojects.subproject.relativePaths.fromParentProject = "./subproject";
       }
       {
         name = "root";
-        relativePaths.toRoot = "./.";
+        relativePaths.fromRoot = "./.";
         subprojects.subproject = {
           name = "subproject";
           relativePaths = {
-            toRoot = "./subproject";
-            parentProjectToRoot = "./.";
-            toParentProject = "./subproject";
+            fromRoot = "./subproject";
+            parentProjectFromRoot = "./.";
+            fromParentProject = "./subproject";
           };
         };
       };

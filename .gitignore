@@ -42,6 +42,8 @@ build/
 # Jetbrains-generated CMake build files
 cmake-build-*
 
+/.env
+
 /.direnv
 
 # rising-tide-managed: end

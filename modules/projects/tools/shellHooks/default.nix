@@ -12,7 +12,7 @@
 let
   inherit (lib) types;
   cfg = config.tools.shellHooks;
-  bashSafeName = risingTideLib.sanitizeBashIdentifier "shellHooks-${config.relativePaths.toRoot}";
+  bashSafeName = risingTideLib.sanitizeBashIdentifier "shellHooks-${config.relativePaths.fromRoot}";
 in
 {
   options = {
@@ -36,8 +36,8 @@ in
         '') cfg.hooks;
       in
       (builtins.replaceStrings
-        [ "@relativePathToRoot@" "@bashSafeName@" "@shellHooks@" ]
-        [ config.relativePaths.toRoot bashSafeName combinedShellHooks ]
+        [ "@relativePathFromRoot@" "@bashSafeName@" "@shellHooks@" ]
+        [ config.relativePaths.fromRoot bashSafeName combinedShellHooks ]
         (builtins.readFile ./mk-shell-hook.sh)
       );
   };

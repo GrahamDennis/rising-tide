@@ -113,6 +113,7 @@ in
           cmake-format.enable = true;
           cmake.enable = true;
           direnv.enable = true;
+          dotenv.enable = true;
           vscode.enable = true;
           vscode.launch = {
             version = "0.2.0";
