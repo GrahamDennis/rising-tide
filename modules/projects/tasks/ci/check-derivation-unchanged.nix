@@ -28,11 +28,10 @@ in
       taskfile.tasks = {
         "ci:check-derivation-unchanged" = {
           desc = "Check if the derivation has changed";
-          vars.TEMPORARY_FILE.sh = "mktemp -p ./";
           cmds = [
-            { defer = "git rm --ignore-unmatch --force {{.TEMPORARY_FILE}}"; }
             "nix build --out-link build/check-derivation-unchanged/original.drv $(nix derivation show .#${cfg.derivationAttrPath} | ${jqExe} --raw-output 'keys[]')"
-            "git add --intent-to-add {{.TEMPORARY_FILE}}"
+            "echo >> flake.nix"
+            { defer = "truncate --size=-1 flake.nix"; }
             "nix build --out-link build/check-derivation-unchanged/modified.drv $(nix derivation show .#${cfg.derivationAttrPath} | ${jqExe} --raw-output 'keys[]')"
             ''
               if [ "$(readlink build/check-derivation-unchanged/original.drv)" != "$(readlink build/check-derivation-unchanged/modified.drv)" ]; then
