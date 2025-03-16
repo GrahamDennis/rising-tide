@@ -19,7 +19,7 @@
     ./cue.nix
     ./deadnix.nix
     ./direnv.nix
-    ./dotenv.nix
+    ./dotenv
     ./gitignore.nix
     ./go-task
     ./jetbrains
