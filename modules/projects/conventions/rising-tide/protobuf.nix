@@ -33,8 +33,6 @@ in
         conventions.risingTide.python.enable = lib.mkForce false;
         languages.protobuf.src = lib.path.append config.absolutePath "./proto";
         tools = {
-          direnv.enable = true;
-          dotenv.enable = true;
           buf.lint.enable = true;
           buf.format.enable = true;
           buf.breaking.enable = true;

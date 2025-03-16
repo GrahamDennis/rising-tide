@@ -103,8 +103,6 @@ in
         tools = {
           # keep-sorted start block=yes
           coverage-py.enable = (getLangCfg config).testRoots != [ ];
-          direnv.enable = true;
-          dotenv.enable = true;
           gitignore = {
             enable = true;
             rules = ''

@@ -23,12 +23,6 @@ in
           config.disable = [ "SC1091" ];
         };
       }
-      (lib.mkIf config.isRootProject {
-        tools.direnv.enable = true;
-        tools.dotenv.enable = true;
-        tools.vscode.enable = true;
-        tools.jetbrains.enable = true;
-      })
     ]
   );
 }

@@ -28,14 +28,6 @@ in
           use flake
         '';
       };
-      experimental.dotenv = {
-        enable = lib.mkEnableOption "Enable exporting only particular environment variables in .envrc";
-        variables = lib.mkOption {
-          type = types.listOf types.str;
-          description = "The environment variables to export";
-          default = [ "PYTHONPATH" ];
-        };
-      };
       package = lib.mkPackageOption toolsPkgs "direnv" { pkgsText = "toolsPkgs"; };
     };
   };

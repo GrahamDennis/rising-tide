@@ -31,9 +31,9 @@ tasks:
     desc: Run CI workflow
   ci:check-derivation-unchanged:
     cmds:
-      - defer: git rm --ignore-unmatch --force {{.TEMPORARY_FILE}}
       - nix build --out-link build/check-derivation-unchanged/original.drv $(nix derivation show .#_all-project-packages | /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/jq --raw-output 'keys[]')
-      - git add --intent-to-add {{.TEMPORARY_FILE}}
+      - echo >> flake.nix
+      - defer: truncate --size=-1 flake.nix
       - nix build --out-link build/check-derivation-unchanged/modified.drv $(nix derivation show .#_all-project-packages | /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/jq --raw-output 'keys[]')
       - |
         if [ "$(readlink build/check-derivation-unchanged/original.drv)" != "$(readlink build/check-derivation-unchanged/modified.drv)" ]; then
@@ -41,9 +41,6 @@ tasks:
           /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/nix-diff build/check-derivation-unchanged/original.drv build/check-derivation-unchanged/modified.drv
         fi
     desc: Check if the derivation has changed
-    vars:
-      TEMPORARY_FILE:
-        sh: mktemp -p ./
   ci:check-not-dirty:
     cmds:
       - git status
