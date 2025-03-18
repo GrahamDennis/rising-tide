@@ -8,11 +8,24 @@
 /result
 /result-*
 
+/.vscode/*.code-workspace
+.vscode/launch.json
+
+.ruff_cache/
+
+.pytest_cache/
+/test_results/
+
+.mypy_cache/
+
 # Jetbrains-generated CMake build files
 cmake-build-*
 
 /.env
 
 /.direnv
+
+.coverage*
+/test_results/
 
 # rising-tide-managed: end
