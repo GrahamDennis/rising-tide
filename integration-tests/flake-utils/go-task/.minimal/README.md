@@ -1,15 +1,15 @@
-# A minimal flake interface for base-devshell-integration-test
+# A minimal flake interface for go-task-integration-test
 
 This is an experimental minimal flake interface that attempts to provide a solution for ever-growing flake.lock files. Instead of consuming this flake normally with an input like:
 
 ```nix
-inputs.base-devshell-integration-test.url = "insert-url-here";
+inputs.go-task-integration-test.url = "insert-url-here";
 ```
 
 Instead use:
 
 ```nix
-inputs.base-devshell-integration-test.url = "insert-url-here?dir=minimal";
+inputs.go-task-integration-test.url = "insert-url-here?dir=.minimal";
 ```
 
 This is a drop-in replacement, however your flake.lock will only reference this flake,

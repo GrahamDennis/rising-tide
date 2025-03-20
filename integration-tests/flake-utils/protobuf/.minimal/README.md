@@ -9,7 +9,7 @@ inputs.protobuf-root.url = "insert-url-here";
 Instead use:
 
 ```nix
-inputs.protobuf-root.url = "insert-url-here?dir=minimal";
+inputs.protobuf-root.url = "insert-url-here?dir=.minimal";
 ```
 
 This is a drop-in replacement, however your flake.lock will only reference this flake,

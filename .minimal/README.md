@@ -1,15 +1,15 @@
-# A minimal flake interface for go-task-integration-test
+# A minimal flake interface for rising-tide-root
 
 This is an experimental minimal flake interface that attempts to provide a solution for ever-growing flake.lock files. Instead of consuming this flake normally with an input like:
 
 ```nix
-inputs.go-task-integration-test.url = "insert-url-here";
+inputs.rising-tide-root.url = "insert-url-here";
 ```
 
 Instead use:
 
 ```nix
-inputs.go-task-integration-test.url = "insert-url-here?dir=minimal";
+inputs.rising-tide-root.url = "insert-url-here?dir=.minimal";
 ```
 
 This is a drop-in replacement, however your flake.lock will only reference this flake,
