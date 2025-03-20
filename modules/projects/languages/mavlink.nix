@@ -24,6 +24,13 @@ in
         '';
         type = types.path;
       };
+      dialectRoot = lib.mkOption {
+        description = ''
+          Root XML file for the mavlink protocol
+        '';
+        type = types.nullOr types.str;
+        default = null;
+      };
       subprojectNames = {
         generatedSources.python = lib.mkOption {
           type = types.str;
@@ -59,7 +66,7 @@ in
                 mkdir -p $out/include/${cfg.subprojectNames.generatedSources.cpp}
                 mavgen.py --wire-protocol 2.0 --lang C++11 \
                   --output=$out/include/${cfg.subprojectNames.generatedSources.cpp} \
-                  $(find ${cfg.src} -name '*.xml')
+                  ${if cfg.dialectRoot != null then cfg.dialectRoot else "$(find ${cfg.src} -name '*.xml')"}
               '';
         };
       ${cfg.subprojectNames.generatedSources.python} =
@@ -67,9 +74,9 @@ in
         let
           pyproject = {
             project = {
-              name = subprojects.python.name;
+              name = cfg.subprojectNames.python;
               version = "0.1.0";
-              description = "Generated mavlink bindings for ${subprojects.python.name}";
+              description = "Generated mavlink bindings for ${cfg.subprojectNames.python}";
               dependencies = [
                 "pymavlink"
               ];
@@ -100,10 +107,10 @@ in
                 ];
               }
               ''
-                mkdir -p $out/src/${subprojects.python.name}
+                mkdir -p $out/src/${cfg.subprojectNames.python}
                 mavgen.py --wire-protocol 2.0 --lang Python3 \
-                  --output $out/src/${subprojects.python.name}/__init__ \
-                  $(find ${cfg.src} -name '*.xml')
+                  --output $out/src/${cfg.subprojectNames.python}/__init__ \
+                  ${if cfg.dialectRoot != null then cfg.dialectRoot else "$(find ${cfg.src} -name '*.xml')"}
                 cp ${pyprojectConfigFile} $out/pyproject.toml
               '';
         };
