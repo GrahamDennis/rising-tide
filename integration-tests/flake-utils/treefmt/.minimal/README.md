@@ -1,15 +1,15 @@
-# A minimal flake interface for cpp-package
+# A minimal flake interface for treefmt-integration-test
 
 This is an experimental minimal flake interface that attempts to provide a solution for ever-growing flake.lock files. Instead of consuming this flake normally with an input like:
 
 ```nix
-inputs.cpp-package.url = "insert-url-here";
+inputs.treefmt-integration-test.url = "insert-url-here";
 ```
 
 Instead use:
 
 ```nix
-inputs.cpp-package.url = "insert-url-here?dir=minimal";
+inputs.treefmt-integration-test.url = "insert-url-here?dir=.minimal";
 ```
 
 This is a drop-in replacement, however your flake.lock will only reference this flake,

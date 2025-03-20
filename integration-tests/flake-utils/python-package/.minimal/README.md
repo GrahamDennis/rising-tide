@@ -9,7 +9,7 @@ inputs.python-package.url = "insert-url-here";
 Instead use:
 
 ```nix
-inputs.python-package.url = "insert-url-here?dir=minimal";
+inputs.python-package.url = "insert-url-here?dir=.minimal";
 ```
 
 This is a drop-in replacement, however your flake.lock will only reference this flake,
