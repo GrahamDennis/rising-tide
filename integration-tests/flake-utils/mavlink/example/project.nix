@@ -5,6 +5,6 @@
 {
   languages.mavlink = {
     enable = true;
-    dialectXml = ./mavlink/example.xml;
+    src = ./mavlink;
   };
 }

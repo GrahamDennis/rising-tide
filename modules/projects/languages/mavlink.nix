@@ -18,9 +18,9 @@ in
   options = {
     languages.mavlink = {
       enable = lib.mkEnableOption "Enable mavlink language configuration";
-      dialectXml = lib.mkOption {
+      src = lib.mkOption {
         description = ''
-          MAVLink XML root
+          Protobuf sources
         '';
         type = types.path;
       };
@@ -59,7 +59,7 @@ in
                 mkdir -p $out/include/${cfg.subprojectNames.generatedSources.cpp}
                 mavgen.py --wire-protocol 2.0 --lang C++11 \
                   --output=$out/include/${cfg.subprojectNames.generatedSources.cpp} \
-                  ${cfg.dialectXml}
+                  $(find ${cfg.src} -name '*.xml')
               '';
         };
       ${cfg.subprojectNames.generatedSources.python} =
@@ -103,7 +103,7 @@ in
                 mkdir -p $out/src/${subprojects.python.name}
                 mavgen.py --wire-protocol 2.0 --lang Python3 \
                   --output $out/src/${subprojects.python.name}/__init__ \
-                  ${cfg.dialectXml}
+                  $(find ${cfg.src} -name '*.xml')
                 cp ${pyprojectConfigFile} $out/pyproject.toml
               '';
         };
