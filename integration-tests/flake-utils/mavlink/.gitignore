@@ -8,6 +8,16 @@
 /result
 /result-*
 
+/.vscode/*.code-workspace
+.vscode/launch.json
+
+# uv virtual environment
+/.venv
+
+.ruff_cache/
+
+.mypy_cache/
+
 # Jetbrains-generated CMake build files
 cmake-build-*
 

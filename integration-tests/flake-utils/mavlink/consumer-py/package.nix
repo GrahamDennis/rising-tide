@@ -1,20 +1,15 @@
 { pythonPackages }:
-pythonPackages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage {
   name = "consumer-py";
   pyproject = true;
   src = ./.;
 
   dependencies = with pythonPackages; [
     pymavlink
+    example-py
   ];
 
-  optional-dependencies = {
-    dev = with pythonPackages; [
-      pytest
-    ];
-  };
-
-  nativeCheckInputs = optional-dependencies.dev;
+  pythonImportsCheck = [ "consumer_py" ];
 
   build-system = with pythonPackages; [ hatchling ];
 }

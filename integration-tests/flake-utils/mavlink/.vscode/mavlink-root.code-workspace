@@ -18,22 +18,22 @@
   ],
   "settings": {
     "cmake.ctest.testExplorerIntegrationEnabled": false,
-    "direnv.path.executable": "/nix/store/j2q2x2g7kvjymp3qjr0qfa8rmm2sjfvv-direnv-2.35.0/bin/direnv",
+    "direnv.path.executable": "/nix/store/iy47slqbd810jhczw3sd9d192sngxsz4-direnv-2.35.0/bin/direnv",
     "direnv.watchForChanges": false,
     "nix.enableLanguageServer": true,
     "nix.formatterPath": [
-      "/nix/store/kp0zf7932mn4alsn8m8gcib2lvm83h26-nixfmt-unstable-2025-03-03/bin/nixfmt"
+      "/nix/store/pygwzn2fazaak1dlhc1j0msjnra07jj4-nixfmt-unstable-2025-03-03/bin/nixfmt"
     ],
     "nix.hiddenLanguageServerErrors": [
       "textDocument/definition",
       "textDocument/documentSymbol"
     ],
-    "nix.serverPath": "/nix/store/5mf2a8cm19f4qm8qf30r4hbi90viay9h-nil-2024-08-06/bin/nil",
+    "nix.serverPath": "/nix/store/8rz4cwj93bkgxs8rj86b8nh83dg0x6vb-nil-2024-08-06/bin/nil",
     "nix.serverSettings": {
       "nil": {
         "formatting": {
           "command": [
-            "/nix/store/kp0zf7932mn4alsn8m8gcib2lvm83h26-nixfmt-unstable-2025-03-03/bin/nixfmt"
+            "/nix/store/pygwzn2fazaak1dlhc1j0msjnra07jj4-nixfmt-unstable-2025-03-03/bin/nixfmt"
           ]
         }
       }

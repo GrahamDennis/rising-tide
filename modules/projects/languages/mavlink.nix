@@ -13,6 +13,7 @@ let
   inherit (lib) types;
   cfg = config.languages.mavlink;
   subprojects = lib.mapAttrsRecursive (_path: value: config.subprojects.${value}) cfg.subprojectNames;
+  pythonModuleName = builtins.replaceStrings [ "-" ] [ "_" ] cfg.subprojectNames.python;
 in
 {
   options = {
@@ -152,11 +153,12 @@ in
                 ];
               }
               ''
-                mkdir -p $out/src/${cfg.subprojectNames.python}
+                mkdir -p $out/src/${pythonModuleName}
                 mavgen.py --wire-protocol 2.0 --lang Python3 \
-                  --output $out/src/${cfg.subprojectNames.python}/__init__ \
+                  --output $out/src/${pythonModuleName}/__init__ \
                   ${cfg.src}/${cfg.dialectName}.xml
                 cp ${pyprojectConfigFile} $out/pyproject.toml
+                touch $out/src/${pythonModuleName}/py.typed
               '';
         };
       ${cfg.subprojectNames.python} =
@@ -171,7 +173,7 @@ in
                 src = subprojects.generatedSources.python.package;
 
                 # Validate that the generated python is importable
-                pythonImportsCheck = [ name ];
+                pythonImportsCheck = [ pythonModuleName ];
 
                 dependencies = with pythonPackages; [
                   pymavlink

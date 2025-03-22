@@ -3,7 +3,6 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder isTestSource="false" url="file://$MODULE_DIR$/./consumer-py/./src"/>
-      <sourceFolder isTestSource="true" url="file://$MODULE_DIR$/./consumer-py/./tests"/>
       <excludeFolder url="file://$MODULE_DIR$/.venv"/>
     </content>
     <orderEntry jdkName="Python 3.12 (mavlink)" jdkType="Python SDK" type="jdk"/>

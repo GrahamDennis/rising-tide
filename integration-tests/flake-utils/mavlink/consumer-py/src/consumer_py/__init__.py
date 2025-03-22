@@ -1,0 +1,3 @@
+from example_py import MAVLink_rally_fetch_point2_message
+
+assert MAVLink_rally_fetch_point2_message is not None
