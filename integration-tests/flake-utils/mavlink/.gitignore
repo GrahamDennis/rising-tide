@@ -1,0 +1,28 @@
+# nixago: ignore-linked-files
+/.vscode/extensions.json
+/.vscode/settings.json
+/taskfile.yml
+/.lefthook.yml
+# rising-tide-managed: start
+# Ignore build outputs from performing a nix-build or `nix build` command
+/result
+/result-*
+
+/.vscode/*.code-workspace
+.vscode/launch.json
+
+# uv virtual environment
+/.venv
+
+.ruff_cache/
+
+.mypy_cache/
+
+# Jetbrains-generated CMake build files
+cmake-build-*
+
+/.env
+
+/.direnv
+
+# rising-tide-managed: end

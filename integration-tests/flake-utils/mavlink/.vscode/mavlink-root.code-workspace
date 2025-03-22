@@ -1,0 +1,42 @@
+{
+  "extensions": {
+    "recommendations": [
+      "jnoortheen.nix-ide",
+      "mkhl.direnv",
+      "task.vscode-task"
+    ]
+  },
+  "folders": [
+    {
+      "name": "consumer-py",
+      "path": ".././consumer-py"
+    },
+    {
+      "name": "<root>",
+      "path": ".."
+    }
+  ],
+  "settings": {
+    "cmake.ctest.testExplorerIntegrationEnabled": false,
+    "direnv.path.executable": "/nix/store/iy47slqbd810jhczw3sd9d192sngxsz4-direnv-2.35.0/bin/direnv",
+    "direnv.watchForChanges": false,
+    "nix.enableLanguageServer": true,
+    "nix.formatterPath": [
+      "/nix/store/pygwzn2fazaak1dlhc1j0msjnra07jj4-nixfmt-unstable-2025-03-03/bin/nixfmt"
+    ],
+    "nix.hiddenLanguageServerErrors": [
+      "textDocument/definition",
+      "textDocument/documentSymbol"
+    ],
+    "nix.serverPath": "/nix/store/8rz4cwj93bkgxs8rj86b8nh83dg0x6vb-nil-2024-08-06/bin/nil",
+    "nix.serverSettings": {
+      "nil": {
+        "formatting": {
+          "command": [
+            "/nix/store/pygwzn2fazaak1dlhc1j0msjnra07jj4-nixfmt-unstable-2025-03-03/bin/nixfmt"
+          ]
+        }
+      }
+    }
+  }
+}

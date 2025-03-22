@@ -8,6 +8,7 @@
 {
   imports = injector.injectModules [
     ./cpp
+    ./mavlink.nix
     ./protobuf.nix
     ./python.nix
   ];
