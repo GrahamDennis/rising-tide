@@ -61,34 +61,36 @@ in
               {
                 nativeBuildInputs = [ pkgs.python3Packages.pymavlink ];
 
+                mavlinkTestsCpp = ''
+                  #include "${cfg.dialectName}/gtestsuite.hpp"
+                '';
+
                 cmakeLists = ''
                   CMAKE_MINIMUM_REQUIRED (VERSION 3.24)
                   PROJECT(${cfg.subprojectNames.cpp})
-                  set(CMAKE_VERBOSE_MAKEFILE on)
-
-                  file(GLOB_RECURSE HEADERS *.h *.hpp)
 
                   find_package(GTest)
 
-                  add_executable(mavlink_tests src/${cfg.dialectName}/gtestsuite.hpp ''${HEADERS})
-                  set_target_properties(mavlink_tests PROPERTIES LINKER_LANGUAGE CXX)
-                  target_link_libraries(mavlink_tests PRIVATE GTest::gtest_main)
-
-                  include(GoogleTest)
-                  gtest_discover_tests(mavlink_tests)
+                  # C++ tests
+                  add_executable(mavlink_tests_cpp src/mavlink_tests.cc)
+                  target_link_libraries(mavlink_tests_cpp PRIVATE GTest::gtest_main)
 
                   # This causes tests to be run by running 'make test' and automatically as part of a nix build.
-                  add_custom_target(test COMMAND mavlink_tests)
-                  add_dependencies(test mavlink_tests)
+                  add_custom_target(test COMMAND mavlink_tests_cpp)
+                  add_dependencies(test mavlink_tests_cpp)
 
                   install(DIRECTORY ./src/ DESTINATION "include/${cfg.subprojectNames.cpp}" FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
                 '';
 
-                passAsFile = [ "cmakeLists" ];
+                passAsFile = [
+                  "cmakeLists"
+                  "mavlinkTestsCpp"
+                ];
               }
               ''
                 mkdir -p $out/src/
                 cp "$cmakeListsPath" $out/CMakeLists.txt
+                cp "$mavlinkTestsCppPath" $out/src/mavlink_tests.cc
                 mavgen.py --wire-protocol 2.0 --lang C++11 \
                   --output=$out/src/ \
                   ${cfg.src}/${cfg.dialectName}.xml
