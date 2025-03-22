@@ -24,12 +24,11 @@ in
         '';
         type = types.path;
       };
-      dialectRoot = lib.mkOption {
+      dialectName = lib.mkOption {
         description = ''
-          Root XML file for the mavlink protocol
+          Dialect name for the mavlink protocol
         '';
-        type = types.nullOr types.str;
-        default = null;
+        type = types.str;
       };
       subprojectNames = {
         generatedSources.python = lib.mkOption {
@@ -61,13 +60,57 @@ in
             pkgs.runCommand config.name
               {
                 nativeBuildInputs = [ pkgs.python3Packages.pymavlink ];
+
+                cmakeLists = ''
+                  CMAKE_MINIMUM_REQUIRED (VERSION 3.24)
+                  PROJECT(${cfg.subprojectNames.cpp})
+
+                  file(GLOB_RECURSE HEADERS *.h *.hpp)
+
+                  enable_testing()
+
+                  find_package(GTest)
+
+                  add_executable(mavlink_tests ${cfg.dialectName}/gtestsuite.hpp)
+                  target_link_libraries(mavlink_tests PRIVATE GTest::gtest_main)
+
+                  include(GoogleTest)
+                  gtest_discover_tests(mavlink_tests)
+
+                  # This causes tests to be run by running 'make test' and automatically as part of a nix build.
+                  add_custom_target(test COMMAND ''${CMAKE_CTEST_COMMAND})
+                  add_dependencies(test mavlink_tests)
+
+                  install(DIRECTORY ./src/ DESTINATION "include/" FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+                '';
+
+                passAsFile = [ "cmakeLists" ];
               }
               ''
-                mkdir -p $out/include/${cfg.subprojectNames.generatedSources.cpp}
+                mkdir -p $out/src/
+                cp "$cmakeListsPath" $out/CMakeLists.txt
                 mavgen.py --wire-protocol 2.0 --lang C++11 \
-                  --output=$out/include/${cfg.subprojectNames.generatedSources.cpp} \
-                  ${if cfg.dialectRoot != null then cfg.dialectRoot else "$(find ${cfg.src} -name '*.xml')"}
+                  --output=$out/src/ \
+                  ${cfg.src}/${cfg.dialectName}.xml
               '';
+        };
+      ${cfg.subprojectNames.cpp} =
+        { config, ... }:
+        {
+          languages.cpp = {
+            callPackageFunction =
+              { pkgs, stdenv, ... }:
+              stdenv.mkDerivation {
+                name = config.packageName;
+                src = subprojects.generatedSources.cpp.package;
+
+                nativeBuildInputs = [ pkgs.cmake ];
+                doCheck = true;
+                checkInputs = with pkgs; [ gtest ];
+
+                separateDebugInfo = true;
+              };
+          };
         };
       ${cfg.subprojectNames.generatedSources.python} =
         { config, ... }:
@@ -110,7 +153,7 @@ in
                 mkdir -p $out/src/${cfg.subprojectNames.python}
                 mavgen.py --wire-protocol 2.0 --lang Python3 \
                   --output $out/src/${cfg.subprojectNames.python}/__init__ \
-                  ${if cfg.dialectRoot != null then cfg.dialectRoot else "$(find ${cfg.src} -name '*.xml')"}
+                  ${cfg.src}/${cfg.dialectName}.xml
                 cp ${pyprojectConfigFile} $out/pyproject.toml
               '';
         };
