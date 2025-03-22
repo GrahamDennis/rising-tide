@@ -36,6 +36,12 @@ let
     tools = {
       circleci.enable = true;
       cue.enable = true;
+      # The new (2025-03-21) default is `.minimal` but some downstream consumers are using "minimal".
+      # Using "minimal" is deprecated and will be removed no earlier than 2025-05-01.
+      minimal-flake.generatedDirectories = [
+        ".minimal"
+        "minimal"
+      ];
       nix-unit.enable = true;
       treefmt.config.excludes = [ "integration-tests/**" ];
       go-task = {
