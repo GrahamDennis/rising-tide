@@ -64,24 +64,24 @@ in
                 cmakeLists = ''
                   CMAKE_MINIMUM_REQUIRED (VERSION 3.24)
                   PROJECT(${cfg.subprojectNames.cpp})
+                  set(CMAKE_VERBOSE_MAKEFILE on)
 
                   file(GLOB_RECURSE HEADERS *.h *.hpp)
 
-                  enable_testing()
-
                   find_package(GTest)
 
-                  add_executable(mavlink_tests ${cfg.dialectName}/gtestsuite.hpp)
+                  add_executable(mavlink_tests src/${cfg.dialectName}/gtestsuite.hpp ''${HEADERS})
+                  set_target_properties(mavlink_tests PROPERTIES LINKER_LANGUAGE CXX)
                   target_link_libraries(mavlink_tests PRIVATE GTest::gtest_main)
 
                   include(GoogleTest)
                   gtest_discover_tests(mavlink_tests)
 
                   # This causes tests to be run by running 'make test' and automatically as part of a nix build.
-                  add_custom_target(test COMMAND ''${CMAKE_CTEST_COMMAND})
+                  add_custom_target(test COMMAND mavlink_tests)
                   add_dependencies(test mavlink_tests)
 
-                  install(DIRECTORY ./src/ DESTINATION "include/" FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+                  install(DIRECTORY ./src/ DESTINATION "include/${cfg.subprojectNames.cpp}" FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
                 '';
 
                 passAsFile = [ "cmakeLists" ];
