@@ -12,6 +12,7 @@ in
   imports = injector.injectModules [
     ./common.nix
     ./cpp.nix
+    ./mavlink.nix
     ./protobuf.nix
     ./python.nix
     ./root-project.nix
