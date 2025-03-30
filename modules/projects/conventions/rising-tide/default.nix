@@ -26,6 +26,7 @@ in
       # keep-sorted start
       common.enable = lib.mkDefault true;
       cpp.enable = lib.mkDefault true;
+      mavlink.enable = lib.mkDefault true;
       protobuf.enable = lib.mkDefault true;
       python.enable = lib.mkDefault true;
       rootProject.enable = lib.mkDefault true;

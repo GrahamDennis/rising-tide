@@ -17,6 +17,7 @@ in
   };
 
   config = lib.mkIf (cfg.enable && (mavlinkEnabledIn config)) {
+    mkShell.enable = true;
     tools = {
       cue-schema = {
         enable = true;
