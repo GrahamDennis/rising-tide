@@ -49,7 +49,7 @@ teardown() {
 
 @test "check task fails on breaking change (new field)" {
   restore_src_in_teardown
-  sed -i -e '/name="idx"/a <field type="uint8_t" name="idx2">Point index (first point is 0).<\/field>/' example/mavlink/example.xml
+  sed -i -e '/name="idx"/a <field type="uint8_t" name="idx2">Point index (first point is 0).<\/field>' example/mavlink/example.xml
   run task example:test:cue-schema-breaking
   assert_failure
   assert_output --partial 'does not subsume'
