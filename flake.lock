@@ -94,6 +94,23 @@
         "type": "github"
       }
     },
+    "mavlink2cue": {
+      "locked": {
+        "dir": ".minimal",
+        "lastModified": 1743326022,
+        "narHash": "sha256-SyR9m+4aPyWTyfoIqtwdzYnO36vk4hym64tBPj6EzMY=",
+        "owner": "GrahamDennis",
+        "repo": "mavlink2cue",
+        "rev": "6516e27ec619019656242310d00d2a91be3d64f4",
+        "type": "github"
+      },
+      "original": {
+        "dir": ".minimal",
+        "owner": "GrahamDennis",
+        "repo": "mavlink2cue",
+        "type": "github"
+      }
+    },
     "nixago": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -233,6 +250,7 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
+        "mavlink2cue": "mavlink2cue",
         "nixago": "nixago",
         "nixpkgs": "nixpkgs",
         "systems": "systems"
