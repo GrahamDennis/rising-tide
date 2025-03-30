@@ -97,11 +97,11 @@
     "mavlink2cue": {
       "locked": {
         "dir": ".minimal",
-        "lastModified": 1743326022,
-        "narHash": "sha256-SyR9m+4aPyWTyfoIqtwdzYnO36vk4hym64tBPj6EzMY=",
+        "lastModified": 1743328574,
+        "narHash": "sha256-TXcEfJ6yNJYbLG6q4jHEhw8eRPCf13un8sy/tT42VLM=",
         "owner": "GrahamDennis",
         "repo": "mavlink2cue",
-        "rev": "6516e27ec619019656242310d00d2a91be3d64f4",
+        "rev": "ee699aeee9af2d1ca51a7f6cc5abe0031bfceca4",
         "type": "github"
       },
       "original": {
