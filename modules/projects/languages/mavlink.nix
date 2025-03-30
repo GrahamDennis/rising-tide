@@ -1,12 +1,14 @@
 # rising-tide flake context
 {
   lib,
+  inputs,
   ...
 }:
 # project context
 {
   config,
   toolsPkgs,
+  system,
   ...
 }:
 let
@@ -47,6 +49,10 @@ in
         cpp = lib.mkOption {
           type = types.str;
           default = "${config.packageName}-cpp";
+        };
+        cueSchema = lib.mkOption {
+          type = types.str;
+          default = "${config.packageName}-cue-schema";
         };
       };
     };
@@ -186,6 +192,19 @@ in
                 nativeBuildInputs = build-system;
               };
           };
+        };
+      ${cfg.subprojectNames.cueSchema} =
+        { config, ... }:
+        {
+          callPackageFunction =
+            { pkgs }:
+            pkgs.runCommand config.name
+              {
+                nativeBuildInputs = [ inputs.mavlink2cue.packages.${system}.mavlink2cue ];
+              }
+              ''
+                mavlink2cue ${cfg.src}/${cfg.dialectName}.xml > $out
+              '';
         };
     };
   };
