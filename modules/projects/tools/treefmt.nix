@@ -44,7 +44,7 @@ in
         {
           "check:treefmt" = {
             desc = "Reformat with treefmt";
-            cmds = [ (callTreefmt "") ];
+            cmds = [ (callTreefmt "{{if .CI}} --no-cache {{end}}") ];
           };
           "tool:treefmt" = {
             desc = "Run treefmt. Additional CLI arguments after `--` are forwarded to treefmt";
