@@ -10,7 +10,7 @@ dotenvHook() {
   # To override PATH the env precedence go-task experiment must be enabled.
   # See https://taskfile.dev/experiments/env-precedence
   echo "TASK_X_ENV_PRECEDENCE=1" >>"$DOTENV_TEMP_FILE"
-  mv "$DOTENV_TEMP_FILE" .env
+  grep -vF 'nix-shell' "$DOTENV_TEMP_FILE" >.env
 }
 
 postShellHooks+=(dotenvHook)

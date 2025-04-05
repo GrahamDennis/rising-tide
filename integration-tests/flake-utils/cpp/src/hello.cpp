@@ -1,3 +1,3 @@
 #include <fmt/core.h>
 
-int main() { fmt::print("Hello, World!\n"); }
+auto main() -> int { fmt::print("Hello, World!\n"); }

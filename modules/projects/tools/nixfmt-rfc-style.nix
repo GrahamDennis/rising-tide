@@ -28,6 +28,8 @@ in
           formatter.nixfmt-rfc-style = {
             command = nixfmtExe;
             includes = [ "*.nix" ];
+            # Run after other nix checks
+            priority = 10;
           };
         };
       };

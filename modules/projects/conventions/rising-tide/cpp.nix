@@ -57,9 +57,11 @@ in
               "performance-*"
               "modernize-*"
               "readability-*"
+              # This check runs expensive analysis for each variable.
+              "-misc-const-correctness"
             ];
             HeaderFilterRegex = ".*";
-            WarningsAsErrors = [
+            WarningsAsErrors = builtins.concatStringsSep "," [
               "bugprone-*"
               "performance-*"
             ];
@@ -89,6 +91,10 @@ in
               # keep-sorted end
             };
           };
+          clangd.config = {
+            Diagnostics.UnusedIncludes = "Strict";
+            Diagnostics.MissingIncludes = "Strict";
+          };
           cmake-format.config = {
             format.line_width = 120;
           };
@@ -109,6 +115,7 @@ in
           # keep-sorted start
           clang-format.enable = true;
           clang-tidy.enable = true;
+          clangd-tidy.enable = true;
           clangd.enable = true;
           cmake-format.enable = true;
           cmake.enable = true;

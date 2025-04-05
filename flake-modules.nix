@@ -50,6 +50,7 @@ in
           all-checks = pkgs.linkFarm "all-checks" (
             risingTideLib.flattenAttrsRecursiveCond (v: !(lib.isDerivation v)) config.legacyPackages.checks
           );
+          clangd-tidy = pkgs.python3Packages.callPackage ./packages/clangd-tidy.nix { };
         };
 
         inherit (project) devShells;

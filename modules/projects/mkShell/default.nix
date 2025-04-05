@@ -25,7 +25,7 @@ in
     };
     stdenv = lib.mkOption {
       type = types.package;
-      default = toolsPkgs.stdenv;
+      default = toolsPkgs.stdenvNoCC;
     };
     inputsFrom = lib.mkOption {
       type = types.listOf types.package;
@@ -80,18 +80,19 @@ in
     };
   };
   config = {
-    mkShell = lib.mkMerge [
-      {
-        shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
-          builtins.filter enabledIn config.subprojectsList
-        );
-        inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
-          builtins.filter enabledIn config.subprojectsList
-        );
-        nativeBuildInputs = builtins.concatMap (projectConfig: projectConfig.mkShell.nativeBuildInputs) (
-          builtins.filter enabledIn config.subprojectsList
-        );
-      }
-    ];
+    mkShell = {
+      shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
+        builtins.filter enabledIn config.subprojectsList
+      );
+      inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
+        builtins.filter enabledIn config.subprojectsList
+      );
+      nativeBuildInputs = builtins.concatMap (projectConfig: projectConfig.mkShell.nativeBuildInputs) (
+        builtins.filter enabledIn config.subprojectsList
+      );
+      stdenv = lib.mkMerge (
+        lib.unique (builtins.map (inputPackage: inputPackage.stdenv) config.mkShell.inputsFrom)
+      );
+    };
   };
 }

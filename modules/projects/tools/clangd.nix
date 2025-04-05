@@ -4,6 +4,7 @@
 {
   config,
   toolsPkgs,
+  pkgs,
   ...
 }:
 let
@@ -16,7 +17,8 @@ in
   options = {
     tools.clangd = {
       enable = lib.mkEnableOption "Enable clangd integration";
-      package = lib.mkPackageOption toolsPkgs "clang-tools" { pkgsText = "toolsPkgs"; };
+      # Default to using clang-tools from the package set used by the package itself
+      package = lib.mkPackageOption pkgs "clang-tools" { };
       config = lib.mkOption {
         description = ''
           The clangd YAML file to generate.
