@@ -118,6 +118,9 @@ in
                 checkInputs = with pkgs; [ gtest ];
 
                 separateDebugInfo = true;
+
+                # An endian import doesn't work on macOS
+                meta.broken = stdenv.hostPlatform.isDarwin;
               };
           };
         };

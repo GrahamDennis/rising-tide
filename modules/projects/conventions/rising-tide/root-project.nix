@@ -21,7 +21,10 @@ in
       {
         conventions.risingTide.common.enable = true;
         packages._all-project-packages = toolsPkgs.linkFarm "all-project-packages" (
-          builtins.removeAttrs config.packages [ "_all-project-packages" ]
+          lib.pipe config.packages [
+            (lib.flip builtins.removeAttrs [ "_all-project-packages" ])
+            (lib.filterAttrs (_name: package: !((lib.isDerivation package) && package.meta.broken)))
+          ]
         );
         tasks.build.dependsOn = [ "nix-build:_all-project-packages" ];
         tasks.ci = {
@@ -57,7 +60,7 @@ in
                 commands = {
                   check = {
                     # Only run treefmt because that should be fast
-                    run = "${lib.getExe' config.tools.go-task.package "task"} check:treefmt";
+                    run = "${lib.getExe' config.tools.go-task.package "task"} pre-commit";
                     stage_fixed = true;
                   };
                 };

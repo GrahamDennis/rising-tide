@@ -29,6 +29,7 @@ in
     "build"
     "ci"
     "check"
+    "pre-commit"
     "test"
   ] risingTideLib.project.mkLifecycleTaskOption;
   config = lib.mkMerge [
@@ -66,6 +67,17 @@ in
             desc = "Run CI workflow";
             deps = ifNotEmpty cfg.ci.dependsOn;
             cmds = ifNotEmpty (tasksToCmds cfg.ci.serialTasks);
+          };
+        };
+      };
+    })
+    (lib.mkIf cfg.pre-commit.enable {
+      tools.go-task = {
+        taskfile.tasks = {
+          pre-commit = {
+            desc = "Run all pre-commit checks";
+            deps = ifNotEmpty cfg.pre-commit.dependsOn;
+            cmds = ifNotEmpty (tasksToCmds cfg.pre-commit.serialTasks);
           };
         };
       };
