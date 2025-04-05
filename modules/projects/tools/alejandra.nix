@@ -27,6 +27,8 @@ in
           formatter.alejandra = {
             command = alejandraExe;
             includes = [ "*.nix" ];
+            # Run after other nix checks
+            priority = 10;
           };
         };
       };

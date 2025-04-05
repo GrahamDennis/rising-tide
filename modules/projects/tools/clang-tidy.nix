@@ -71,6 +71,13 @@ in
             # build/compile_commands.json is required for clang-tidy
             preconditions = [ "test -f build/compile_commands.json" ];
           };
+          "check:clang-tidy" = {
+            # cmake:configure will create build/compile_commands.json
+            deps = [ "cmake:configure" ];
+            # build/compile_commands.json is required for clang-tidy
+            preconditions = [ "test -f build/compile_commands.json" ];
+
+          };
           "tool:clang-tidy" = {
             desc = "Run clang-tidy. Additional CLI arguments after `--` are forwarded to clang-tidy";
             cmds = [ "${clangTidyExe} {{.CLI_ARGS}}" ];
