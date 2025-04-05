@@ -32,6 +32,7 @@ in
               "build"
               "--clangd-executable"
               (lib.getExe' config.tools.clangd.package "clangd")
+              "--fail-on-severity=error"
             ];
             includes = [
               "*.c"
