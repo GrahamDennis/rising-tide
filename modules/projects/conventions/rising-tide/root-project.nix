@@ -23,7 +23,7 @@ in
         packages._all-project-packages = toolsPkgs.linkFarm "all-project-packages" (
           lib.pipe config.packages [
             (lib.flip builtins.removeAttrs [ "_all-project-packages" ])
-            (lib.filterAttrs (_name: package: !package.meta.broken))
+            (lib.filterAttrs (_name: package: !((lib.isDerivation package) && package.meta.broken)))
           ]
         );
         tasks.build.dependsOn = [ "nix-build:_all-project-packages" ];
