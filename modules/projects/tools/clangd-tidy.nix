@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (lib) types;
   cfg = config.tools.clangd-tidy;
   clangdTidyExe = lib.getExe' cfg.package "clangd-tidy";
 in
@@ -16,6 +17,15 @@ in
       enable = lib.mkEnableOption "Enable clangd-tidy integration";
       package = lib.mkPackageOption (self.packages.${toolsPkgs.system}) "clangd-tidy" {
         pkgsText = "risingTide.packages";
+      };
+      failOnSeverity = lib.mkOption {
+        type = types.enum [
+          "error"
+          "warn"
+          "info"
+          "hint"
+        ];
+        default = "error";
       };
     };
   };
@@ -32,7 +42,7 @@ in
               "build"
               "--clangd-executable"
               (lib.getExe' config.tools.clangd.package "clangd")
-              "--fail-on-severity=error"
+              "--fail-on-severity=${cfg.failOnSeverity}"
             ];
             includes = [
               "*.c"
