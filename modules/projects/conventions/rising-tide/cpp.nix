@@ -112,13 +112,16 @@ in
           toolsPkgs.gdb
         ];
         tools = {
-          # keep-sorted start
+          # keep-sorted start block=yes
           clang-format.enable = true;
           clang-tidy.enable = true;
           clangd-tidy.enable = true;
           clangd.enable = true;
           cmake-format.enable = true;
           cmake.enable = true;
+          treefmt.defaultEnabledFormatters = {
+            clang-tidy = false;
+          };
           vscode.enable = true;
           vscode.launch = {
             version = "0.2.0";

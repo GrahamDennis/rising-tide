@@ -35,7 +35,7 @@ in
       treefmt = {
         enable = true;
         config = {
-          formatter.clang-tidy = lib.mkForce {
+          formatter.clangd-tidy = {
             command = clangdTidyExe;
             options = [
               "-p"

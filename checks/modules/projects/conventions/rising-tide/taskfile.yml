@@ -20,6 +20,14 @@ tasks:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml {{if .CI}} --no-cache {{end}} --tree-root . --on-unmatched debug
     desc: Reformat with treefmt
+  check:treefmt:*:
+    cmds:
+      - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml --formatters {{.FORMATTER}} {{if .CI}} --no-cache {{end}} --tree-root . --on-unmatched debug
+    desc: Reformat with treefmt formatter {{.FORMATTER}}
+    label: check:treefmt:{{.FORMATTER}}
+    prefix: check:treefmt:{{.FORMATTER}}
+    vars:
+      FORMATTER: '{{index .MATCH 0}}'
   ci:
     cmds:
       - task: ci:check-derivation-unchanged
@@ -54,6 +62,10 @@ tasks:
     prefix: nix-build:{{.PACKAGE}}
     vars:
       PACKAGE: '{{index .MATCH 0}}'
+  pre-commit:
+    deps:
+      - check:treefmt:deadnix,keep-sorted,mdformat,nixfmt-rfc-style,ripsecrets,shellcheck,shfmt,taplo
+    desc: Run all pre-commit checks
   test:
     desc: Run all tests
     internal: true

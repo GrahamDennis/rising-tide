@@ -57,7 +57,7 @@ in
                 commands = {
                   check = {
                     # Only run treefmt because that should be fast
-                    run = "${lib.getExe' config.tools.go-task.package "task"} check:treefmt";
+                    run = "${lib.getExe' config.tools.go-task.package "task"} pre-commit";
                     stage_fixed = true;
                   };
                 };
