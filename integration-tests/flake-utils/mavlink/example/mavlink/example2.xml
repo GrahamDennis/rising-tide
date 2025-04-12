@@ -2,6 +2,23 @@
 <mavlink>
   <include>example.xml</include>
   <dialect>2</dialect>
+  <enums>
+    <enum name="LANDING_TARGET_TYPE">
+      <description>Type of landing target</description>
+      <entry value="0" name="LANDING_TARGET_TYPE_LIGHT_BEACON">
+        <description>Landing target signaled by light beacon (ex: IR-LOCK)</description>
+      </entry>
+      <entry value="1" name="LANDING_TARGET_TYPE_RADIO_BEACON">
+        <description>Landing target signaled by radio beacon (ex: ILS, NDB)</description>
+      </entry>
+      <entry value="2" name="LANDING_TARGET_TYPE_VISION_FIDUCIAL">
+        <description>Landing target represented by a fiducial marker (ex: ARTag)</description>
+      </entry>
+      <entry value="3" name="LANDING_TARGET_TYPE_VISION_OTHER">
+        <description>Landing target represented by a pre-defined visual shape/feature (ex: X-marker, H-marker, square)</description>
+      </entry>
+    </enum>
+  </enums>
   <messages>
     <message id="177" name="RALLY_FETCH_POINT2">
       <description>Request a current rally point from MAV. MAV should respond with a RALLY_POINT message. MAV should not respond if the request is invalid.</description>

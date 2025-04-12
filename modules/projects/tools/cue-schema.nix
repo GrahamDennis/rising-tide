@@ -27,6 +27,14 @@ in
         description = "The flake attribute path that contains the generated CUE schema";
         type = lib.types.str;
       };
+      overrides = lib.mkOption {
+        type = types.nullOr types.pathInStore;
+        default = null;
+        description = ''
+          A path to file containing a `cue` file with the schema overrides.
+          These will be merged with the merge-base's CUE schema.
+        '';
+      };
     };
   };
 
@@ -69,6 +77,7 @@ in
                 fi
                 ${cueSchemaExe} breaking \
                   --old build/cue-schema-breaking/merge-base.cue \
+                  ${lib.optionalString (cfg.overrides != null) "--old ${cfg.overrides}"} \
                   --new build/cue-schema-breaking/current.cue
               ''
             ];
