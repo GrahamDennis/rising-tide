@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1743325396,
-        "narHash": "sha256-UlGkXLWyzHECKKs6RybGZp7QUcxIpkWH1mAzw+FkR+c=",
+        "lastModified": 1744446982,
+        "narHash": "sha256-92V5BoO7a/W6G4/YemA4NvqaEWh/Ur/08MOD7QMmPH4=",
         "owner": "GrahamDennis",
         "repo": "cue-schema",
-        "rev": "815d99637145d625025df4d12d9b148754ebeb8e",
+        "rev": "e66688843953700924eca69531128be9eb90cfce",
         "type": "github"
       },
       "original": {
