@@ -229,6 +229,25 @@ See the [Protobuf integration test](./integration-tests/flake-utils/proto) for a
 
 </details>
 
+<details>
+
+<summary>MAVLink API <code>project.nix</code> example</summary>
+
+```nix
+{
+  name = "my-mavlink-dialect";
+  languages.mavlink = {
+    enable = true;
+    src = ./mavlink;
+    # Identify the root XML file for the MAVLink dialect.
+    # This corresponds to the file `./mavlink/my-mavlink-dialect.xml`
+    dialectName = "my-mavlink-dialect"; 
+  };
+}
+```
+
+</details>
+
 ## Design overview
 
 ### Projects
