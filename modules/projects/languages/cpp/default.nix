@@ -56,7 +56,7 @@ in
             enableInDevelopShell = lib.mkEnableOption "Enable ASAN in the develop shell";
             cflags = lib.mkOption {
               type = types.str;
-              default = "-fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g";
+              default = "-fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-recover=address -g";
             };
             options = lib.mkOption {
               type = types.listOf types.str;
