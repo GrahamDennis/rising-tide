@@ -26,6 +26,8 @@ in
           formatter.keep-sorted = {
             command = keepSortedExe;
             includes = [ "*" ];
+            # Ensure linters that don't format run first
+            priority = -10;
           };
         };
       };

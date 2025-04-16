@@ -34,6 +34,8 @@ in
             includes = [
               "*.nix"
             ];
+            # Ensure linters that don't format run first
+            priority = -10;
           };
         };
       };
