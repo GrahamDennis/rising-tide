@@ -59,6 +59,8 @@ in
                 "*.py"
                 "*.pyi"
               ];
+              # Ensure linters that don't format run first
+              priority = -10;
             };
             formatter.ruff-format = lib.mkIf cfg.format.enable {
               command = ruffExe;
