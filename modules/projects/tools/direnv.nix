@@ -51,7 +51,7 @@ in
       vscode = {
         settings = {
           "direnv.path.executable" = lib.getExe cfg.package;
-          "direnv.watchForChanges" = false;
+          "direnv.watchForChanges" = true;
         };
 
         recommendedExtensions."mkhl.direnv".enable = true;
