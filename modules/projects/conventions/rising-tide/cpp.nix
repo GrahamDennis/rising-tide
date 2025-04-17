@@ -93,7 +93,6 @@ in
           };
           clangd.config = {
             Diagnostics.UnusedIncludes = "Strict";
-            Diagnostics.MissingIncludes = "Strict";
           };
           cmake-format.config = {
             format.line_width = 120;
