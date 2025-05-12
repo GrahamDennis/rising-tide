@@ -1,7 +1,10 @@
 dotenv:
   - .env
 version: "3"
-output: prefixed
+output:
+  group:
+    begin: ::group::{{.ALIAS}}
+    end: '::endgroup::'
 run: when_changed
 tasks:
   build:
