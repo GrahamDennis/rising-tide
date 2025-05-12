@@ -16,7 +16,10 @@ in
       tools.go-task = {
         enable = true;
         taskfile = {
-          output = "prefixed";
+          output.group = {
+            begin = "::group::{{.ALIAS}}";
+            end = "::endgroup::";
+          };
           tasks = {
             "check".cmds = [ { task = "check:treefmt"; } ];
             "check:treefmt" = { };

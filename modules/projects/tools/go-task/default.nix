@@ -67,11 +67,16 @@ in
         } ./go-task-setup-hook.sh)
       ];
       tools = {
-        # The default output format of interleaved does not do line-buffering. As a result,
-        # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
-        # terminal codes confusing the terminal.
         go-task.taskfile = {
-          output = lib.mkDefault "prefixed";
+          # The default output format of interleaved does not do line-buffering. As a result,
+          # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
+          # terminal codes confusing the terminal.
+          output = lib.mkDefault {
+            group = {
+              begin = "::group::{{.ALIAS}}";
+              end = "::endgroup::";
+            };
+          };
           includes = lib.mkMerge (
             lib.mapAttrsToList (name: subprojectConfig: {
               ${name} = {

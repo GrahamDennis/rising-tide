@@ -12,6 +12,6 @@
 
 version: "3"
 
-output?: string
+output?: string | {...}
 
 tasks: [string]: #Task
