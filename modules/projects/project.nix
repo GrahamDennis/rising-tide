@@ -143,7 +143,7 @@ let
           type = types.listOf types.attrs;
           default = lib.mkMerge [
             config.subprojectsList
-            (lib.mkIf config.enable)
+            (lib.mkIf config.enable config)
           ];
           defaultText = lib.literalMD "a list containing this project's configuration and subproject configurations recursively.";
         };
