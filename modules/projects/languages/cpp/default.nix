@@ -209,7 +209,7 @@ in
         };
       };
     })
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allEnabledProjectsList)) {
       # To use CLion with nix, create a new toolchain where the environment file is
       # ./.idea/scripts/env.sh and CMake executable path is ./.idea/scripts/cmake
       # then use this toolchain in the CLion project.

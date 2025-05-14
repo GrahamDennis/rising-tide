@@ -83,7 +83,7 @@ in
       };
     })
 
-    (lib.mkIf (!cfg.enable && (builtins.any isEnabledIn config.subprojectsList)) {
+    (lib.mkIf (!cfg.enable && (builtins.any isEnabledIn config.enabledSubprojectsList)) {
       tools.vscode.settings = {
         "cmake.ignoreCMakeListsMissing" = true;
       };

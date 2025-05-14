@@ -130,7 +130,7 @@ in
         };
       };
     })
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allEnabledProjectsList)) {
       tools = {
         gitignore = {
           enable = true;
@@ -139,7 +139,9 @@ in
           '';
         };
         mypy.perModuleOverrides = lib.mkMerge (
-          builtins.map (projectConfig: (getCfg projectConfig).perModuleOverrides) config.subprojectsList
+          builtins.map (
+            projectConfig: (getCfg projectConfig).perModuleOverrides
+          ) config.enabledSubprojectsList
         );
       };
     })

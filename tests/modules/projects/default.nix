@@ -32,7 +32,7 @@ in
         name = "my-awesome-project";
         relativePaths.fromRoot = "./.";
         relativePaths.toRoot = ".";
-        subprojectsList = [ ];
+        enabledSubprojectsList = [ ];
       };
   "test project with path to parent" =
     expectRenderedConfig

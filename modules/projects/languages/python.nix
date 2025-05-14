@@ -136,7 +136,7 @@ in
           # The @projectDirName@ variable will get rewritten when the file is written.
           sdkName = "Python ${pythonVersion} (@projectDirName@)";
         in
-        lib.mkIf (builtins.any pythonEnabledIn config.allProjectsList) {
+        lib.mkIf (builtins.any pythonEnabledIn config.allEnabledProjectsList) {
           projectSettings = {
             "misc.xml" = {
               components.Black.options = { inherit sdkName; };
@@ -167,7 +167,7 @@ in
               contentEntries = [
                 {
                   url = "file://$MODULE_DIR$";
-                  sourceFolders = lib.pipe config.allProjectsList [
+                  sourceFolders = lib.pipe config.allEnabledProjectsList [
                     (builtins.filter pythonEnabledIn)
                     (builtins.concatMap (
                       projectConfig:

@@ -124,7 +124,7 @@ in
         ];
       };
     })
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.subprojectsList)) {
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.enabledSubprojectsList)) {
       tools.gitignore = {
         enable = true;
         rules = ''
@@ -139,7 +139,7 @@ in
           (builtins.map (subproject: {
             path = "../${subproject.relativePaths.fromRoot}";
             name = subproject.name;
-          }) (builtins.filter enabledIn config.subprojectsList))
+          }) (builtins.filter enabledIn config.enabledSubprojectsList))
           (lib.mkIf cfg.enable [
             {
               path = "..";
