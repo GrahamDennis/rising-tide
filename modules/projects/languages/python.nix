@@ -109,7 +109,7 @@ in
     })
     (lib.mkIf (cfg.enable && (lib.isDerivation cfg.package) && cfg.package.meta.broken) {
       # Disable broken packages
-      mkShell.enable = lib.mkForce false;
+      enable = lib.mkForce false;
     })
     (lib.mkIf cfg.enable {
       mkShell.enable = true;
@@ -118,10 +118,7 @@ in
     # Inherit parent python overlays
     {
       languages.python.pythonOverlay = lib.mkMerge (
-        lib.pipe config.subprojects [
-          builtins.attrValues
-          (builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay))
-        ]
+        (builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay)) config.subprojectsList
       );
     }
     (lib.mkIf config.isRootProject {

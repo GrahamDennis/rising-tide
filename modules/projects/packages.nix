@@ -17,11 +17,6 @@ in
     default = { };
   };
   config = {
-    packages = lib.mkMerge (
-      lib.pipe config.subprojects [
-        builtins.attrValues
-        (builtins.map (subproject: subproject.packages))
-      ]
-    );
+    packages = lib.mkMerge (builtins.map (subproject: subproject.packages) config.subprojectsList);
   };
 }

@@ -37,6 +37,11 @@ let
         ++ projectModules;
 
       options = {
+        enable = lib.mkOption {
+          type = types.bool;
+          description = "Whether the subproject is enabled";
+          default = true;
+        };
         name = lib.mkOption {
           description = "The name of the project";
           type = types.str;
@@ -125,16 +130,21 @@ let
         subprojectsList = lib.mkOption {
           readOnly = true;
           type = types.listOf types.attrs;
-          default = builtins.concatMap (subprojectConfig: subprojectConfig.allProjectsList) (
-            builtins.attrValues config.subprojects
-          );
+          default = lib.pipe config.subprojects [
+            builtins.attrValues
+            (builtins.filter (subprojectConfig: subprojectConfig.enable))
+            (builtins.concatMap (subprojectConfig: subprojectConfig.allProjectsList))
+          ];
           defaultText = lib.literalMD "a list containing all subproject configurations recursively.";
         };
 
         allProjectsList = lib.mkOption {
           readOnly = true;
           type = types.listOf types.attrs;
-          default = config.subprojectsList ++ [ config ];
+          default = lib.mkMerge [
+            config.subprojectsList
+            (lib.mkIf config.enable)
+          ];
           defaultText = lib.literalMD "a list containing this project's configuration and subproject configurations recursively.";
         };
 
