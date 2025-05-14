@@ -94,7 +94,7 @@ in
       };
     })
 
-    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allProjectsList)) {
+    (lib.mkIf (config.isRootProject && (builtins.any enabledIn config.allEnabledProjectsList)) {
       tools.gitignore = {
         enable = true;
         rules = ''

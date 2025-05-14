@@ -107,6 +107,10 @@ in
       languages.python.package = lib.getAttrFromPath cfg.fullyQualifiedPackagePath cfg.pythonPackages;
       packages.${config.packageName} = cfg.package;
     })
+    (lib.mkIf (cfg.enable && (lib.isDerivation cfg.package) && cfg.package.meta.broken) {
+      # Disable broken packages
+      enable = lib.mkForce false;
+    })
     (lib.mkIf cfg.enable {
       mkShell.enable = true;
       mkShell.inputsFrom = [ cfg.package ];
@@ -132,7 +136,7 @@ in
           # The @projectDirName@ variable will get rewritten when the file is written.
           sdkName = "Python ${pythonVersion} (@projectDirName@)";
         in
-        lib.mkIf (builtins.any pythonEnabledIn config.allProjectsList) {
+        lib.mkIf (builtins.any pythonEnabledIn config.allEnabledProjectsList) {
           projectSettings = {
             "misc.xml" = {
               components.Black.options = { inherit sdkName; };
@@ -163,7 +167,7 @@ in
               contentEntries = [
                 {
                   url = "file://$MODULE_DIR$";
-                  sourceFolders = lib.pipe config.allProjectsList [
+                  sourceFolders = lib.pipe config.allEnabledProjectsList [
                     (builtins.filter pythonEnabledIn)
                     (builtins.concatMap (
                       projectConfig:

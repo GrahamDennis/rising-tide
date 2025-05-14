@@ -15,7 +15,7 @@ let
   inherit (lib) types;
   getCfg = projectConfig: projectConfig.tools.go-task;
   cfg = getCfg config;
-  enabledIn = projectConfig: (getCfg projectConfig).enable;
+  enabledIn = projectConfig: projectConfig.enable && (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.yaml { };
 in
 {

@@ -12,7 +12,7 @@ in
       name = "example-project";
       relativePaths.fromRoot = "./.";
       subprojects = { };
-      subprojectsList = [ ];
+      enabledSubprojectsList = [ ];
       tools.go-task = {
         enable = true;
         taskfile = {

@@ -22,7 +22,7 @@ in
     }
     {
       devShells = builtins.listToAttrs (
-        lib.pipe config.subprojectsList [
+        lib.pipe config.enabledSubprojectsList [
           (builtins.filter (subproject: subproject.mkShell.enable))
           # FIXME: Using the path here is wrong. It should be a logical path from subproject names.
           # For example if all subprojects live in projects/, then devShells shouldn't contain `projects/`

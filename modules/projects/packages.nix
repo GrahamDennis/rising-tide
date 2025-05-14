@@ -20,6 +20,7 @@ in
     packages = lib.mkMerge (
       lib.pipe config.subprojects [
         builtins.attrValues
+        (builtins.filter (subproject: subproject.enable))
         (builtins.map (subproject: subproject.packages))
       ]
     );

@@ -82,13 +82,13 @@ in
   config = {
     mkShell = {
       shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
-        builtins.filter enabledIn config.subprojectsList
+        builtins.filter enabledIn config.enabledSubprojectsList
       );
       inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
-        builtins.filter enabledIn config.subprojectsList
+        builtins.filter enabledIn config.enabledSubprojectsList
       );
       nativeBuildInputs = builtins.concatMap (projectConfig: projectConfig.mkShell.nativeBuildInputs) (
-        builtins.filter enabledIn config.subprojectsList
+        builtins.filter enabledIn config.enabledSubprojectsList
       );
       stdenv = lib.mkMerge (
         lib.unique (builtins.map (inputPackage: inputPackage.stdenv) config.mkShell.inputsFrom)

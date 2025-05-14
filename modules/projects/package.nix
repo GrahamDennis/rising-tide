@@ -30,5 +30,8 @@ in
     package = lib.getAttrFromPath config.fullyQualifiedPackagePath pkgs;
     packages.${config.packageName} = config.package;
     mkShell.inputsFrom = [ config.package ];
+    enable = lib.mkIf ((lib.isDerivation config.package) && config.package.meta.broken) (
+      lib.mkForce false
+    );
   };
 }
