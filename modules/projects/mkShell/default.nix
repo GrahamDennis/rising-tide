@@ -53,8 +53,10 @@ in
               [ "@bashCompletionPackage@" ]
               [ (builtins.toString toolsPkgs.bash-completion) ]
               (builtins.readFile ./mk-shell-hook.sh);
+          notBrokenInputsFrom = builtins.filter (package: !package.meta.broken) cfg.inputsFrom;
           projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
-            inherit (cfg) name inputsFrom nativeBuildInputs;
+            inherit (cfg) name nativeBuildInputs;
+            inputsFrom = notBrokenInputsFrom;
             shellHook = builtins.concatStringsSep "\n" [
               cfg.shellHook
               coda
@@ -84,10 +86,9 @@ in
       shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
         builtins.filter enabledIn config.subprojectsList
       );
-      inputsFrom = lib.pipe config.projectsList [
+      inputsFrom = lib.pipe config.subprojectsList [
         (builtins.filter enabledIn)
         (builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom))
-        (builtins.filter (package: !package.meta.broken))
       ];
       nativeBuildInputs = builtins.concatMap (projectConfig: projectConfig.mkShell.nativeBuildInputs) (
         builtins.filter enabledIn config.subprojectsList
