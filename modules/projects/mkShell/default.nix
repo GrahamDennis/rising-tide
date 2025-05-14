@@ -84,9 +84,11 @@ in
       shellHook = lib.concatMapStringsSep "\n" (projectConfig: projectConfig.mkShell.shellHook) (
         builtins.filter enabledIn config.subprojectsList
       );
-      inputsFrom = builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom) (
-        builtins.filter enabledIn config.subprojectsList
-      );
+      inputsFrom = lib.pipe config.projectsList [
+        (builtins.filter enabledIn)
+        (builtins.concatMap (projectConfig: projectConfig.mkShell.inputsFrom))
+        (builtins.filter (package: !package.meta.broken))
+      ];
       nativeBuildInputs = builtins.concatMap (projectConfig: projectConfig.mkShell.nativeBuildInputs) (
         builtins.filter enabledIn config.subprojectsList
       );
