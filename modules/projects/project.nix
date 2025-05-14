@@ -141,10 +141,7 @@ let
         allProjectsList = lib.mkOption {
           readOnly = true;
           type = types.listOf types.attrs;
-          default = lib.mkMerge [
-            config.subprojectsList
-            (lib.mkIf config.enable config)
-          ];
+          default = config.subprojectsList ++ (lib.optional config.enable config);
           defaultText = lib.literalMD "a list containing this project's configuration and subproject configurations recursively.";
         };
 
