@@ -53,10 +53,8 @@ in
               [ "@bashCompletionPackage@" ]
               [ (builtins.toString toolsPkgs.bash-completion) ]
               (builtins.readFile ./mk-shell-hook.sh);
-          notBrokenInputsFrom = builtins.filter (package: !package.meta.broken) cfg.inputsFrom;
           projectShell = toolsPkgs.mkShell.override { stdenv = cfg.stdenv; } {
-            inherit (cfg) name nativeBuildInputs;
-            inputsFrom = notBrokenInputsFrom;
+            inherit (cfg) name inputsFrom nativeBuildInputs;
             shellHook = builtins.concatStringsSep "\n" [
               cfg.shellHook
               coda

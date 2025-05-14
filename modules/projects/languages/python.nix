@@ -107,6 +107,10 @@ in
       languages.python.package = lib.getAttrFromPath cfg.fullyQualifiedPackagePath cfg.pythonPackages;
       packages.${config.packageName} = cfg.package;
     })
+    (lib.mkIf (cfg.enable && cfg.package.meta.broken) {
+      # Disable broken packages
+      mkShell.enable = lib.mkForce false;
+    })
     (lib.mkIf cfg.enable {
       mkShell.enable = true;
       mkShell.inputsFrom = [ cfg.package ];
