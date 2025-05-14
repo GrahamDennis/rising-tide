@@ -18,6 +18,8 @@
   };
   config = {
     # Merge all child project overlays
-    overlay = lib.mkMerge (lib.map (subprojectConfig: subprojectConfig.overlay) config.subprojectsList);
+    overlay = lib.mkMerge (
+      lib.mapAttrsToList (_name: subprojectConfig: subprojectConfig.overlay) config.subprojects
+    );
   };
 }

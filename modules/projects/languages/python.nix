@@ -118,7 +118,10 @@ in
     # Inherit parent python overlays
     {
       languages.python.pythonOverlay = lib.mkMerge (
-        (builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay)) config.subprojectsList
+        lib.pipe config.subprojects [
+          builtins.attrValues
+          (builtins.map (subprojectConfig: (getCfg subprojectConfig).pythonOverlay))
+        ]
       );
     }
     (lib.mkIf config.isRootProject {
