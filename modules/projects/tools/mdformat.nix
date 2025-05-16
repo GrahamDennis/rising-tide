@@ -23,7 +23,7 @@ in
             mdformat-gfm
             mdformat-frontmatter
             mdformat-footnote
-            mdformat-gfm-alerts
+            # mdformat-gfm-alerts
           ]
         );
       };

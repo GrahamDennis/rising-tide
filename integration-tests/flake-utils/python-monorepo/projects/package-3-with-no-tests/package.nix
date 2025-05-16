@@ -1,11 +1,11 @@
 # python packages context
-{ pythonPackages }:
-pythonPackages.buildPythonPackage {
+{ python }:
+python.pkgs.buildPythonPackage {
   name = "package-3";
   pyproject = true;
   src = ./.;
 
-  dependencies = with pythonPackages; [ package-1 ];
+  dependencies = with python.pkgs; [ package-1 ];
 
-  build-system = with pythonPackages; [ hatchling ];
+  build-system = with python.pkgs; [ hatchling ];
 }

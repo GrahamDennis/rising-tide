@@ -23,5 +23,5 @@ setup() {
 @test "can execute tool:treefmt task" {
   run task tool:treefmt -- --help
   assert_success
-  assert_output --partial "One CLI to format your repo"
+  assert_output --partial "The formatter multiplexer"
 }

@@ -175,8 +175,8 @@ in
         {
           languages.python = {
             callPackageFunction =
-              { pythonPackages }:
-              pythonPackages.buildPythonPackage rec {
+              { python }:
+              python.pkgs.buildPythonPackage rec {
                 inherit (config) name;
                 pyproject = true;
                 src = subprojects.generatedSources.python.package;
@@ -184,13 +184,13 @@ in
                 # Validate that the generated python is importable
                 pythonImportsCheck = [ pythonModuleName ];
 
-                dependencies = with pythonPackages; [
+                dependencies = with python.pkgs; [
                   pymavlink
                 ];
                 # Legacy attribute
                 propagatedBuildInputs = dependencies;
 
-                build-system = [ pythonPackages.hatchling ];
+                build-system = [ python.pkgs.hatchling ];
                 # Legacy attribute
                 nativeBuildInputs = build-system;
               };
