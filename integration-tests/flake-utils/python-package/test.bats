@@ -119,7 +119,7 @@ teardown() {
 
 @test "check:treefmt task successfully reformats long lines" {
   restore_src_in_teardown
-  cat << EOF >> src/python_package/__init__.py
+  cat <<EOF >>src/python_package/__init__.py
 if True and True and True and True and True and True and True and True and True and True and True and True and True and True and True and True and True and True:
     pass
 
@@ -128,4 +128,3 @@ EOF
   run task check:treefmt
   assert_success
 }
-
