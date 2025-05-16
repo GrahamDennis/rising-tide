@@ -49,11 +49,11 @@ in
         treefmt = {
           enable = true;
           config = {
-            formatter.ruff-lint = lib.mkIf cfg.lint.enable {
+            formatter.ruff-lint-fix-only = lib.mkIf cfg.lint.enable {
               command = ruffExe;
               options = [
                 "check"
-                "--fix"
+                "--fix-only"
               ];
               includes = [
                 "*.py"
@@ -61,6 +61,18 @@ in
               ];
               # Ensure linters that don't format run first
               priority = -10;
+            };
+            formatter.ruff-lint = lib.mkIf cfg.lint.enable {
+              command = ruffExe;
+              options = [
+                "check"
+              ];
+              includes = [
+                "*.py"
+                "*.pyi"
+              ];
+              # Ensure read-only linters run last
+              priority = 10;
             };
             formatter.ruff-format = lib.mkIf cfg.format.enable {
               command = ruffExe;
