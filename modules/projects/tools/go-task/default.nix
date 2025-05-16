@@ -97,7 +97,7 @@ in
                 in
                 {
                   begin = "${setColour}[BEGIN] {{.ALIAS}}${resetColour}";
-                  end = "${setColour}[END] {{.ALIAS}}${resetColour}";
+                  end = "${setColour}[END]   {{.ALIAS}}${resetColour}";
                 };
             };
             includes = lib.mkMerge (
