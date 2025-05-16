@@ -64,7 +64,12 @@ in
                     "mkdir -p $FLAKE_ROOT/test_results/pytest"
                     # Suppress Ctrl-C to pytest because when run in parallel and a test fails, pytest creates sprurious errors from
                     # the cancelled tests. This is a workaround to prevent that.
-                    "nohup ${(callPytest "--junit-xml=$FLAKE_ROOT/test_results/pytest/${config.name}.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")}"
+                    ''
+                      trap "echo ignoring keyboard interrupt" INT
+                      ${
+                        (callPytest "--junit-xml=$FLAKE_ROOT/test_results/pytest/${config.name}.xml ${builtins.concatStringsSep " " config.languages.python.testRoots}")
+                      }
+                    ''
                   ];
                 };
                 "tool:pytest" = {
