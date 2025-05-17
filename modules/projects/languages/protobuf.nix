@@ -348,8 +348,8 @@ in
                   [ "_pb2_grpc" "." ]
                 ) relativeProtoPaths;
               in
-              { pythonPackages }:
-              pythonPackages.buildPythonPackage rec {
+              { python }:
+              python.pkgs.buildPythonPackage rec {
                 inherit (config) name;
                 pyproject = true;
                 src = subprojects.generatedSources.python.package;
@@ -358,16 +358,16 @@ in
                 pythonImportsCheck = protobufPythonModules ++ (lib.optionals cfg.grpc.enable grpcPythonModules);
 
                 dependencies =
-                  (with pythonPackages; [
+                  (with python.pkgs; [
                     protobuf
                     types-protobuf
                   ])
-                  ++ (lib.optionals cfg.grpc.enable (with pythonPackages; [ grpcio ]))
-                  ++ (cfg.python.extraDependencies pythonPackages);
+                  ++ (lib.optionals cfg.grpc.enable (with python.pkgs; [ grpcio ]))
+                  ++ (cfg.python.extraDependencies python.pkgs);
                 # Legacy attribute
                 propagatedBuildInputs = dependencies;
 
-                build-system = [ pythonPackages.hatchling ];
+                build-system = [ python.pkgs.hatchling ];
                 # Legacy attribute
                 nativeBuildInputs = build-system;
               };

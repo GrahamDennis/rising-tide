@@ -1,12 +1,12 @@
-{ pythonPackages }:
-pythonPackages.buildPythonPackage rec {
+{ python }:
+python.pkgs.buildPythonPackage rec {
   name = "package-1";
   pyproject = true;
   src = ./.;
 
   # FIXME: These should end up in the dev shell automatically
   optional-dependencies = {
-    dev = with pythonPackages; [
+    dev = with python.pkgs; [
       pytest
       pytest-cov
     ];
@@ -14,5 +14,5 @@ pythonPackages.buildPythonPackage rec {
 
   nativeCheckInputs = optional-dependencies.dev;
 
-  build-system = with pythonPackages; [ hatchling ];
+  build-system = with python.pkgs; [ hatchling ];
 }

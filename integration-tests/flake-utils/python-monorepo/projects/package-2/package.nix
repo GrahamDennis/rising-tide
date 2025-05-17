@@ -1,11 +1,11 @@
 # python packages context
-{ pythonPackages }:
-pythonPackages.buildPythonPackage rec {
+{ python }:
+python.pkgs.buildPythonPackage rec {
   name = "package-2";
   pyproject = true;
   src = ./.;
 
-  dependencies = with pythonPackages; [
+  dependencies = with python.pkgs; [
     package-1
     requests
     types-requests
@@ -13,7 +13,7 @@ pythonPackages.buildPythonPackage rec {
 
   # FIXME: These should end up in the dev shell automatically
   optional-dependencies = {
-    dev = with pythonPackages; [
+    dev = with python.pkgs; [
       pytest
       pytest-cov
     ];
@@ -21,5 +21,5 @@ pythonPackages.buildPythonPackage rec {
 
   nativeCheckInputs = optional-dependencies.dev;
 
-  build-system = with pythonPackages; [ hatchling ];
+  build-system = with python.pkgs; [ hatchling ];
 }

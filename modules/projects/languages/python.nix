@@ -25,7 +25,7 @@ in
           The function to call to build the python package. This is expected to be called like:
 
           ```
-          pythonPackages.callPackage callPackageFunction {}
+          python.pkgs.callPackage callPackageFunction {}
           ```
         '';
         type = types.nullOr risingTideLib.types.callPackageFunction;

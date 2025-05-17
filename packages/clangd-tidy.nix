@@ -1,12 +1,12 @@
 # python packages context
 {
-  pythonPackages,
+  python,
   pkgs,
 }:
 let
   version = "1.0.0";
 in
-pythonPackages.buildPythonPackage {
+python.pkgs.buildPythonPackage {
   pname = "clangd-tidy";
   inherit version;
   pyproject = true;
@@ -18,6 +18,6 @@ pythonPackages.buildPythonPackage {
     hash = "sha256-h6pzMScIODXpA/pF57Sv6SK42Dma0KcqZw1xATTLboY=";
   };
 
-  dependencies = with pythonPackages; [ tqdm ];
-  build-system = with pythonPackages; [ setuptools-scm ];
+  dependencies = with python.pkgs; [ tqdm ];
+  build-system = with python.pkgs; [ setuptools-scm ];
 }

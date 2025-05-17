@@ -1,6 +1,6 @@
 # python packages context
-{ lib, pythonPackages }:
-pythonPackages.buildPythonPackage {
+{ lib, python }:
+python.pkgs.buildPythonPackage {
   name = "python-package";
   pyproject = true;
 
@@ -14,12 +14,12 @@ pythonPackages.buildPythonPackage {
     ];
   };
 
-  dependencies = with pythonPackages; [
+  dependencies = with python.pkgs; [
     requests
     pytest
   ];
-  build-system = with pythonPackages; [ hatchling ];
+  build-system = with python.pkgs; [ hatchling ];
 
-  nativeCheckInputs = with pythonPackages; [ pytestCheckHook ];
+  nativeCheckInputs = with python.pkgs; [ pytestCheckHook ];
   pytestFlagsArray = [ "tests" ];
 }
