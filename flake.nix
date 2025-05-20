@@ -10,7 +10,7 @@
     nixago.inputs.nixpkgs.follows = "nixpkgs";
 
     mavlink2cue.url = "github:GrahamDennis/mavlink2cue?dir=.minimal";
-    cue-schema.url = "github:GrahamDennis/cue-schema";
+    cue-schema.url = "github:GrahamDennis/cue-schema?dir=.minimal";
   };
 
   outputs =
