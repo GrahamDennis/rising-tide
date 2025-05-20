@@ -3,11 +3,11 @@
     "cue-schema": {
       "locked": {
         "dir": ".minimal",
-        "lastModified": 1747741657,
-        "narHash": "sha256-/N1zU4RQPwiaz+vKbrRnYYLu4oYPnaeKXrZXuNwI3FQ=",
+        "lastModified": 1747779660,
+        "narHash": "sha256-HBW69FSXoKm0VdHKQYxstoUbB9843/l5utWLwc9s90g=",
         "owner": "GrahamDennis",
         "repo": "cue-schema",
-        "rev": "9c2c7e23f6ab6340b0a8d8b73760f999c888b34d",
+        "rev": "b72c56ade2296da0f4f3670a6f72b85101d1a345",
         "type": "github"
       },
       "original": {
