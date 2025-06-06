@@ -3,6 +3,8 @@
 uvShellHook() {
   echo "Executing uvShellHook"
 
+  # Encourage uv to find the version of python supplied by nix
+  export UV_NO_MANAGED_PYTHON=1
   if [ ! -d .venv ]; then
     uv venv
   fi
