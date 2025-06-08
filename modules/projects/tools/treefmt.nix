@@ -69,7 +69,7 @@ in
             cmds = [ (callTreefmt "{{if .CI}} --no-cache {{end}}") ];
           };
           "check:treefmt:*" = {
-            desc = "Reformat with treefmt formatter {{.FORMATTER}}";
+            desc = "Reformat with a specific treefmt formatter (e.g. `check:treefmt:shellcheck`)";
             vars.FORMATTER = "{{index .MATCH 0}}";
             label = "check:treefmt:{{.FORMATTER}}";
             prefix = "check:treefmt:{{.FORMATTER}}";
