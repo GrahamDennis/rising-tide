@@ -7,6 +7,17 @@ lib.genAttrs (import inputs.systems) (
     pkgs = inputs.nixpkgs.legacyPackages.${system};
   in
   {
+    stripStorePaths =
+      src:
+      pkgs.runCommand "strip-store-paths" { } ''
+        # Replace store paths with a fixed string such that
+        # /nix/store/....-name-1.2.3/... -> /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/...
+        # /nix/store/....-foo.xyz -> /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-foo.xyz
+        sed -E \
+          -e 's|/nix/store/[0-9a-z]{32}-[-.+_?=0-9a-zA-Z]+/|/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/|g' \
+          -e 's|/nix/store/[0-9a-z]{32}-|/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-|g' \
+          ${src} > $out
+      '';
     formats = {
       xml =
         _parameters:
