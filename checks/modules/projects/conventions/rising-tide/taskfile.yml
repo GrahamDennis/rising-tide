@@ -1,11 +1,11 @@
 dotenv:
   - .env
-version: "3"
-output:
-  group:
-    begin: "{{$colours := splitList \",\" ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}[BEGIN] {{.ALIAS}}\e[0m"
-    end: "{{$colours := splitList \",\" ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}[END]   {{.ALIAS}}\e[0m"
+includes:
+  _output:
+    internal: true
+    taskfile: '{{if .CI}}/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-taskfile.group.yaml{{else}}/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-taskfile.prefixed.yaml{{end}}'
 run: when_changed
+version: "3"
 tasks:
   build:
     deps:
@@ -114,5 +114,3 @@ tasks:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml {{.CLI_ARGS}} --tree-root . --on-unmatched debug
     desc: Run treefmt. Additional CLI arguments after `--` are forwarded to treefmt
-vars:
-  _GROUP_COLOURS: "\e[1;33m,\e[1;34m,\e[1;35m,\e[1;32m,\e[1;36m,\e[1;93m,\e[1;94m,\e[1;95m,\e[1;92m,\e[1;96m"
