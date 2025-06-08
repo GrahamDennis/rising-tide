@@ -22,7 +22,6 @@ let
     mkShell = {
       nativeBuildInputs = with pkgs; [
         batsWithLibraries
-        nodejs
         nix-eval-jobs
         nix-fast-build
       ];
@@ -72,22 +71,6 @@ let
             cmds = [
               # Control the environment for test execution as much as possible
               "nix develop -i -k HOME -k PATH -k CI --show-trace --command ${batsExe} ./test.bats"
-            ];
-          };
-          "docs:generate" = {
-            cmds = [
-              "rm -rf docs/rising-tide/docs/_generated; mkdir -p docs/rising-tide/docs/_generated"
-              "nix build -o docs/rising-tide/docs/_generated/modules.flake.project.md .#project-module-docs"
-              "nix build -o docs/rising-tide/docs/_generated/lib/ .#lib-docs"
-            ];
-          };
-          "docs:build" = {
-            deps = [ "docs:generate" ];
-            desc = "Build documentation";
-            dir = "docs/rising-tide";
-            cmds = [
-              "npm install"
-              "npm run build"
             ];
           };
         };
