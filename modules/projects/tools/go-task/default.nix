@@ -70,29 +70,29 @@ in
         go-task.taskfile =
           let
             colourEscape = "";
-          in
-          {
-            # The default output format of interleaved does not do line-buffering. As a result,
-            # interleaved terminal codes (e.g. colours) can get mixed up with the output of other
-            # terminal codes confusing the terminal.
-            vars = {
-              _GROUP_COLOURS = builtins.concatStringsSep "," [
+            groupedOutputConfig = {
+              version = "3";
+              vars._GROUP_COLOURS = [
+                # Don't use red as it looks like an error
+                # "${colourEscape}[1;31m" # bold red
+                "${colourEscape}[1;32m" # bold green
                 "${colourEscape}[1;33m" # bold yellow
                 "${colourEscape}[1;34m" # bold blue
                 "${colourEscape}[1;35m" # bold magenta
-                "${colourEscape}[1;32m" # bold green
                 "${colourEscape}[1;36m" # bold cyan
+                "${colourEscape}[1;37m" # bold white
+                # Don't use red as it looks like an error
+                # "${colourEscape}[1;91m" # bold high-intensity red
+                "${colourEscape}[1;92m" # bold high-intensity green
                 "${colourEscape}[1;93m" # bold high-intensity yellow
                 "${colourEscape}[1;94m" # bold high-intensity blue
                 "${colourEscape}[1;95m" # bold high-intensity magenta
-                "${colourEscape}[1;92m" # bold high-intensity green
                 "${colourEscape}[1;96m" # bold high-intensity cyan
+                "${colourEscape}[1;97m" # bold high-intensity white
               ];
-            };
-            output = lib.mkDefault {
-              group =
+              output.group =
                 let
-                  setColour = ''{{$colours := splitList "," ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}'';
+                  setColour = ''{{ index ._GROUP_COLOURS (mod (adler32sum .ALIAS) (len ._GROUP_COLOURS)) }}'';
                   resetColour = "${colourEscape}[0m";
                 in
                 {
@@ -100,13 +100,29 @@ in
                   end = "${setColour}[END]   {{.ALIAS}}${resetColour}";
                 };
             };
+            prefixedOutputConfig = {
+              version = "3";
+              output = "prefixed";
+            };
+            groupOutputTaskfile = settingsFormat.generate "taskfile.group.yaml" groupedOutputConfig;
+            prefixedOutputTaskfile = settingsFormat.generate "taskfile.prefixed.yaml" prefixedOutputConfig;
+          in
+          {
             includes = lib.mkMerge (
-              lib.mapAttrsToList (name: subprojectConfig: {
+              (lib.mapAttrsToList (name: subprojectConfig: {
                 ${name} = {
                   taskfile = subprojectConfig.relativePaths.fromParentProject;
                   dir = subprojectConfig.relativePaths.fromParentProject;
                 };
-              }) enabledSubprojects
+              }) enabledSubprojects)
+              ++ [
+                {
+                  _output = {
+                    internal = true;
+                    taskfile = "{{if .CI}}${groupOutputTaskfile}{{else}}${prefixedOutputTaskfile}{{end}}";
+                  };
+                }
+              ]
             );
             tasks = lib.mkMerge (
               (lib.mapAttrsToList (
