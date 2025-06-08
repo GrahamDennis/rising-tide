@@ -13,8 +13,9 @@
     cpp.extraDependencies = pkgs: [
       {
         package = pkgs.example-cpp;
-        protobufLibraryNames = [ "example-cpp-proto" ];
-        grpcLibraryNames = [ "example-cpp-grpc" ];
+        packageName = "example-cpp";
+        protobufLibraryNames = [ "example-cpp::proto" ];
+        grpcLibraryNames = [ "example-cpp::grpc" ];
       }
     ];
     python.extraDependencies = pythonPackages: [ pythonPackages.example-py ];
