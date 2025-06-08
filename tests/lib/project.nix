@@ -16,10 +16,6 @@ in
       tools.go-task = {
         enable = true;
         taskfile = {
-          output.group = {
-            begin = "{{$colours := splitList \",\" ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}[BEGIN] {{.ALIAS}}[0m";
-            end = "{{$colours := splitList \",\" ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}[END]   {{.ALIAS}}[0m";
-          };
           tasks = {
             "check".cmds = [ { task = "check:treefmt"; } ];
             "check:treefmt" = { };

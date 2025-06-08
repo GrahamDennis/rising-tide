@@ -3,8 +3,8 @@ dotenv:
 version: "3"
 output:
   group:
-    begin: "{{$colours := splitList \",\" ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}[BEGIN] {{.ALIAS}}\e[0m"
-    end: "{{$colours := splitList \",\" ._GROUP_COLOURS }}{{ index $colours (mod (adler32sum .ALIAS) (len $colours)) }}[END]   {{.ALIAS}}\e[0m"
+    begin: "{{ index ._GROUP_COLOURS (mod (adler32sum .ALIAS) (len ._GROUP_COLOURS)) }}[BEGIN] {{.ALIAS}}\e[0m"
+    end: "{{ index ._GROUP_COLOURS (mod (adler32sum .ALIAS) (len ._GROUP_COLOURS)) }}[END]   {{.ALIAS}}\e[0m"
 run: when_changed
 tasks:
   build:
