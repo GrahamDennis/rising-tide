@@ -61,6 +61,10 @@ in
           dependencySubmodule = types.submodule {
             options = {
               package = lib.mkOption { type = types.package; };
+              packageName = lib.mkOption {
+                type = types.nullOr types.str;
+                default = null;
+              };
               protobufLibraryNames = lib.mkOption {
                 type = types.listOf types.str;
                 default = [ ];
@@ -185,9 +189,20 @@ in
                 set(PROTO_SRC ${pathsInSrcDirectory srcFiles})
 
                 find_package(protobuf CONFIG REQUIRED)
+                ${lib.pipe extraDependencies [
+                  (builtins.filter (dependency: dependency.packageName != null))
+                  (lib.concatMapStringsSep "\n" (dependency: ''
+                    find_package(${dependency.packageName} CONFIG REQUIRED)
+                  ''))
+                ]}
                 add_library(${subprojects.cpp.packageName} SHARED ${toolsPkgs.emptyFile})
                 set_target_properties(${subprojects.cpp.packageName} PROPERTIES LINKER_LANGUAGE CXX)
-                install(TARGETS ${subprojects.cpp.packageName} LIBRARY DESTINATION "lib/")
+                set_target_properties(${subprojects.cpp.packageName} PROPERTIES EXPORT_NAME default)
+                install(
+                  TARGETS ${subprojects.cpp.packageName}
+                  EXPORT ${subprojects.cpp.packageName}-config
+                  LIBRARY DESTINATION "lib/"
+                )
 
                 add_library(${subprojects.cpp.packageName}-proto SHARED ''${PROTO_HEADER} ''${PROTO_SRC})
                 target_link_libraries(${subprojects.cpp.packageName}-proto
@@ -197,8 +212,17 @@ in
                       builtins.concatMap (dependency: dependency.protobufLibraryNames) extraDependencies
                     )}
                 )
-                target_include_directories(${subprojects.cpp.packageName}-proto PUBLIC src/)
-                install(TARGETS ${subprojects.cpp.packageName}-proto LIBRARY DESTINATION "lib/")
+                target_include_directories(
+                  ${subprojects.cpp.packageName}-proto
+                  PRIVATE src
+                  INTERFACE $<INSTALL_INTERFACE:include>
+                )
+                set_target_properties(${subprojects.cpp.packageName}-proto PROPERTIES EXPORT_NAME proto)
+                install(
+                  TARGETS ${subprojects.cpp.packageName}-proto
+                  EXPORT ${subprojects.cpp.packageName}-config
+                  LIBRARY DESTINATION "lib/"
+                )
 
                 target_link_libraries(${subprojects.cpp.packageName} PUBLIC ${subprojects.cpp.packageName}-proto)
 
@@ -217,19 +241,54 @@ in
                         builtins.concatMap (dependency: dependency.grpcLibraryNames) extraDependencies
                       )}
                   )
-                  install(TARGETS ${subprojects.cpp.packageName}-grpc LIBRARY DESTINATION "lib/")
+                  target_include_directories(
+                    ${subprojects.cpp.packageName}-grpc
+                    PRIVATE src
+                    INTERFACE $<INSTALL_INTERFACE:include>
+                  )
+                  set_target_properties(${subprojects.cpp.packageName}-grpc PROPERTIES EXPORT_NAME grpc)
+                  install(
+                    TARGETS ${subprojects.cpp.packageName}-grpc
+                    EXPORT ${subprojects.cpp.packageName}-config
+                    LIBRARY DESTINATION "lib/"
+                  )
 
                   target_link_libraries(${subprojects.cpp.packageName} PUBLIC ${subprojects.cpp.packageName}-grpc)
                 ''}
 
-                install(DIRECTORY ./src/ DESTINATION "include/" FILES_MATCHING PATTERN "*.pb.h")
+                install(
+                  EXPORT ${subprojects.cpp.packageName}-config
+                  DESTINATION lib/cmake/${subprojects.cpp.packageName}
+                  NAMESPACE ${subprojects.cpp.packageName}::
+                )
+                install(FILES ./${subprojects.cpp.packageName}-config-dependencies.cmake DESTINATION lib/cmake/${subprojects.cpp.packageName}/)
+                install(DIRECTORY ./src/ DESTINATION "include" FILES_MATCHING PATTERN "*.pb.h")
               '';
 
-              passAsFile = [ "cmakeLists" ];
+              cmakeFindDependencies = ''
+                block()
+                  find_dependency(Protobuf)
+                  ${lib.pipe extraDependencies [
+                    (builtins.filter (dependency: dependency.packageName != null))
+                    (lib.concatMapStringsSep "\n" (dependency: ''
+                      find_dependency(${dependency.packageName})
+                    ''))
+                  ]}
+                ${lib.optionalString cfg.grpc.enable ''
+                  find_dependency(gRPC)
+                ''}
+                endblock()
+              '';
+
+              passAsFile = [
+                "cmakeLists"
+                "cmakeFindDependencies"
+              ];
 
               installPhase = ''
                 mkdir -p $out/src
                 cp "$cmakeListsPath" $out/CMakeLists.txt
+                cp "$cmakeFindDependenciesPath" $out/${subprojects.cpp.packageName}-config-dependencies.cmake
                 ${protoc} \
                   --cpp_out=$out/src \
                   ${lib.optionalString cfg.grpc.enable "--plugin=protoc-gen-grpc_cpp=${pkgs.grpc}/bin/grpc_cpp_plugin --grpc_cpp_out=$out/src"}

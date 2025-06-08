@@ -13,7 +13,8 @@
     cpp.extraDependencies = pkgs: [
       {
         package = pkgs.example-extended-cpp;
-        protobufLibraryNames = [ "example-extended-cpp-proto" ];
+        packageName = "example-extended-cpp";
+        protobufLibraryNames = [ "example-extended-cpp::proto" ];
       }
     ];
     python.extraDependencies = pythonPackages: [ pythonPackages.example-extended-py-with-custom-name ];

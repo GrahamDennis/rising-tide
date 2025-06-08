@@ -37,7 +37,8 @@ in
             "leak:python3"
             # keep-sorted end
           ];
-          tsan.enable = true;
+          # TSAN integration isn't currently correct as all dependencies should be built with TSAN
+          tsan.enable = false;
         };
         tools = {
           # keep-sorted start block=yes
