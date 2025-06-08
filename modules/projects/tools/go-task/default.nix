@@ -2,6 +2,7 @@
 {
   lib,
   inputs,
+  self,
   ...
 }:
 # project context
@@ -22,7 +23,11 @@ in
   options = {
     tools.go-task = {
       enable = lib.mkEnableOption "Enable go-task integration";
-      package = lib.mkPackageOption toolsPkgs "go-task" { pkgsText = "toolsPkgs"; };
+      # Temporarily using a patched version of go-task to improve error reporting in tasks
+      # package = lib.mkPackageOption toolsPkgs "go-task" { pkgsText = "toolsPkgs"; };
+      package = lib.mkPackageOption (self.packages.${toolsPkgs.system}) "go-task-patched" {
+        pkgsText = "risingTide.packages";
+      };
       taskfile = lib.mkOption {
         description = ''
           The go-task taskfile to generate. Refer to the [go-task documentation](https://taskfile.dev/reference/schema).
