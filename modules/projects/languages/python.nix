@@ -153,15 +153,15 @@ in
                   children = [
                     {
                       name = "module";
-                      attrs.fileurl = "file://$PROJECT_DIR$/.idea/${config.name}.iml";
-                      attrs.filepath = "$PROJECT_DIR$/.idea/${config.name}.iml";
+                      attrs.fileurl = "file://$PROJECT_DIR$/.idea/${config.name}-python.iml";
+                      attrs.filepath = "$PROJECT_DIR$/.idea/${config.name}-python.iml";
                     }
                   ];
                 }
               ];
             };
           };
-          moduleSettings."${config.name}.iml" = {
+          moduleSettings."${config.name}-python.iml" = {
             type = "PYTHON_MODULE";
             root = {
               contentEntries = [
