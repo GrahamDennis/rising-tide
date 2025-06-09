@@ -1,4 +1,3 @@
-{ lib, ... }:
 {
   name = "cpp-package";
   namespacePath = [
@@ -10,7 +9,6 @@
     enable = true;
     callPackageFunction = import ./package.nix;
     coverage.enable = true;
-    sanitizers.tsan.enable = lib.mkForce true;
   };
   tools.experimental.llvm-cov = {
     enable = true;
