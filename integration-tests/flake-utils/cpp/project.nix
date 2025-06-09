@@ -1,4 +1,3 @@
-{ lib, ... }:
 {
   name = "cpp-package";
   namespacePath = [
