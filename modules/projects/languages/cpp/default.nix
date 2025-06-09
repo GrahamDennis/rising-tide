@@ -16,6 +16,40 @@ let
   getCfg = projectConfig: projectConfig.languages.cpp;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
+  overridesModule = (
+    { config, ... }:
+    {
+      options = {
+        byName = lib.mkOption {
+          type = types.attrsOf (types.nullOr (types.functionTo types.attrs));
+          default = { };
+        };
+        apply = lib.mkOption {
+          internal = true;
+          readOnly = true;
+          type = types.functionTo types.package;
+          default =
+            let
+              fns = lib.pipe config.byName [
+                builtins.attrValues
+                (builtins.filter (fn: fn != null))
+                (builtins.map (fn: drv: drv // (fn drv)))
+              ];
+            in
+            drv:
+            let
+              overriddenDerivation = lib.overrideDerivation drv (prev: lib.pipe prev fns);
+            in
+            lib.getOutput drv.outputName overriddenDerivation;
+        };
+      };
+      config = {
+        byName.applyRecursive = drv: {
+          buildInputs = builtins.map (input: (builtins.trace (config.apply input) (config.apply input))) (drv.buildInputs or [ ]);
+        };
+      };
+    }
+  );
 in
 {
   options = {
@@ -78,6 +112,16 @@ in
                 text = lib.concatLines asanCfg.suppressions;
               };
             };
+            overrides = lib.mkOption {
+              type = types.submodule overridesModule;
+              default = {
+                byName.asan = drv: {
+                  name = drv.name + "-with-asan";
+                  dontStrip = true;
+                  nativeBuildInputs = (drv.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.asan.setupHook ];
+                };
+              };
+            };
             setupHook = lib.mkOption {
               type = types.package;
               default = pkgs.makeSetupHook {
@@ -111,6 +155,10 @@ in
                 text = lib.concatLines lsanCfg.suppressions;
               };
             };
+            overrides = lib.mkOption {
+              type = types.submodule overridesModule;
+              default = { };
+            };
           };
           tsan = {
             enable = lib.mkEnableOption "Enable package variant with TSAN enabled";
@@ -139,6 +187,16 @@ in
                 text = lib.concatLines tsanCfg.suppressions;
               };
             };
+            overrides = lib.mkOption {
+              type = types.submodule overridesModule;
+              default = {
+                byName.tsan = drv: {
+                  name = drv.name + "-with-tsan";
+                  dontStrip = true;
+                  nativeBuildInputs = (drv.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.tsan.setupHook ];
+                };
+              };
+            };
             setupHook = lib.mkOption {
               type = types.package;
               default = pkgs.makeSetupHook {
@@ -165,20 +223,8 @@ in
           origArgs:
           let
             result = f origArgs;
-            enableAsan =
-              drv:
-              lib.overrideDerivation drv (prev: {
-                name = prev.name + "-with-asan";
-                dontStrip = true;
-                nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.asan.setupHook ];
-              });
-            enableTsan =
-              drv:
-              lib.overrideDerivation drv (prev: {
-                name = prev.name + "-with-tsan";
-                dontStrip = true;
-                nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.tsan.setupHook ];
-              });
+            enableAsan = cfg.sanitizers.asan.overrides.apply;
+            enableTsan = cfg.sanitizers.tsan.overrides.apply;
             resultWithExtraPassthru = result.overrideAttrs (prev: {
               passthru = (prev.passthru or { }) // {
                 ${if cfg.sanitizers.asan.enable then "withAsan" else null} = enableAsan resultWithExtraPassthru;

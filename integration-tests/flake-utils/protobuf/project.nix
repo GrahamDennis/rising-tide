@@ -1,3 +1,4 @@
+{ lib, pkgs, ... }:
 {
   name = "protobuf-root";
   subprojects = {
@@ -14,4 +15,5 @@
     example-grpc-cpp = import ./example-grpc-cpp/project.nix;
   };
   tools.uv.enable = true;
+  mkShell.stdenv = lib.mkForce pkgs.clangStdenv;
 }
