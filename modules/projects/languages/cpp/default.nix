@@ -226,15 +226,15 @@ in
                 children = [
                   {
                     name = "module";
-                    attrs.fileurl = "file://$PROJECT_DIR$/.idea/${config.name}.iml";
-                    attrs.filepath = "$PROJECT_DIR$/.idea/${config.name}.iml";
+                    attrs.fileurl = "file://$PROJECT_DIR$/.idea/${config.name}-cpp.iml";
+                    attrs.filepath = "$PROJECT_DIR$/.idea/${config.name}-cpp.iml";
                   }
                 ];
               }
             ];
           };
         };
-        moduleSettings."${config.name}.iml" = {
+        moduleSettings."${config.name}-cpp.iml" = {
           type = "CPP_MODULE";
           attrs.classpath = "CMake";
         };

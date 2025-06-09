@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module filepath="$PROJECT_DIR$/.idea/mavlink-root.iml" fileurl="file://$PROJECT_DIR$/.idea/mavlink-root.iml"/>
+      <module filepath="$PROJECT_DIR$/.idea/mavlink-root-python.iml" fileurl="file://$PROJECT_DIR$/.idea/mavlink-root-python.iml"/>
     </modules>
   </component>
 </project>
