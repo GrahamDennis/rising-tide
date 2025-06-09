@@ -16,6 +16,9 @@ let
   getCfg = projectConfig: projectConfig.languages.cpp;
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
+  matchOutput =
+    oldDrv: newDrv:
+    if oldDrv.outputSpecified ? false then lib.getOutput oldDrv.outputName newDrv else newDrv;
 in
 {
   options = {
@@ -165,18 +168,28 @@ in
           origArgs:
           let
             result = f origArgs;
-            enableAsan = drv: let overriddenDerivation = lib.overrideDerivation drv (prev: {
-              name = prev.name + "-with-asan";
-              dontStrip = true;
-              nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.asan.setupHook ];
-              buildInputs = builtins.map (input: (enableAsan input)) (prev.buildInputs or [ ]);
-            }); in lib.getOutput drv.outputName overriddenDerivation;
-            enableTsan = drv: let overriddenDerivation = lib.overrideDerivation drv (prev: {
-              name = prev.name + "-with-tsan";
-              dontStrip = true;
-              nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.tsan.setupHook ];
-              buildInputs = builtins.map (input: (enableTsan input)) (prev.buildInputs or [ ]);
-            }); in lib.getOutput drv.outputName overriddenDerivation;
+            enableAsan =
+              drv:
+              let
+                overriddenDerivation = lib.overrideDerivation drv (prev: {
+                  name = prev.name + "-with-asan";
+                  dontStrip = true;
+                  nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.asan.setupHook ];
+                  buildInputs = builtins.map (input: (enableAsan input)) (prev.buildInputs or [ ]);
+                });
+              in
+              matchOutput drv overriddenDerivation;
+            enableTsan =
+              drv:
+              let
+                overriddenDerivation = lib.overrideDerivation drv (prev: {
+                  name = prev.name + "-with-tsan";
+                  dontStrip = true;
+                  nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ cfg.sanitizers.tsan.setupHook ];
+                  buildInputs = builtins.map (input: (enableTsan input)) (prev.buildInputs or [ ]);
+                });
+              in
+              matchOutput drv overriddenDerivation;
             resultWithExtraPassthru = result.overrideAttrs (prev: {
               passthru = (prev.passthru or { }) // {
                 ${if cfg.sanitizers.asan.enable then "withAsan" else null} = enableAsan resultWithExtraPassthru;
