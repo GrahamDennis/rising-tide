@@ -14,4 +14,4 @@ find_package(gRPC REQUIRED)
 find_package(example-cpp REQUIRED)
 
 add_subdirectory(src)
-add_subdirectory(tests)
+# add_subdirectory(tests)

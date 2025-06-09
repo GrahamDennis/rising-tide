@@ -16,6 +16,7 @@
  *
  */
 
+#include <example/v1/greeter.pb.h>
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
@@ -29,22 +30,22 @@
 #include "absl/log/initialize.h"
 #include "absl/strings/str_format.h"
 
-#include "example/v1/hello.grpc.pb.h"
+#include "example/v1/greeter.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
-using helloworld::Greeter;
-using helloworld::HelloReply;
-using helloworld::HelloRequest;
+using example::v1::GreeterService;
+using example::v1::SayHelloRequest;
+using example::v1::SayHelloResponse;
 
 ABSL_FLAG(uint16_t, port, 50051, "Server port for the service");
 
 // Logic and data behind the server's behavior.
-class GreeterServiceImpl final : public Greeter::Service {
-  Status SayHello(ServerContext* context, const HelloRequest* request,
-                  HelloReply* reply) override {
+class GreeterServiceImpl final : public GreeterService::Service {
+  Status SayHello(ServerContext* context, const SayHelloRequest* request,
+                  SayHelloResponse* reply) override {
     std::string prefix("Hello ");
     reply->set_message(prefix + request->name());
     return Status::OK;

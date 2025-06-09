@@ -3,5 +3,9 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (protobuf)"/>
   </component>
+  <component name="CMakePythonSetting">
+    <option name="pythonIntegrationState" value="YES"/>
+  </component>
+  <component PROJECT_DIR="$PROJECT_DIR$" name="CMakeWorkspace"/>
   <component name="ProjectRootManager" project-jdk-name="Python 3.12 (protobuf)" project-jdk-type="Python SDK" version="2"/>
 </project>

@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module filepath="$PROJECT_DIR$/.idea/protobuf-root.iml" fileurl="file://$PROJECT_DIR$/.idea/protobuf-root.iml"/>
+      <module filepath="$PROJECT_DIR$/.idea/protobuf-root-python.iml" fileurl="file://$PROJECT_DIR$/.idea/protobuf-root-python.iml"/>
+    </modules>
+    <modules>
+      <module filepath="$PROJECT_DIR$/.idea/protobuf-root-cpp.iml" fileurl="file://$PROJECT_DIR$/.idea/protobuf-root-cpp.iml"/>
     </modules>
   </component>
 </project>

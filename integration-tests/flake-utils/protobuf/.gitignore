@@ -25,4 +25,5 @@ cmake-build-*
 
 /.direnv
 
+/.idea/toolchains.xml
 # rising-tide-managed: end
