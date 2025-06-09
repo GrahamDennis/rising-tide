@@ -128,6 +128,7 @@ in
           cmake.enable = true;
           treefmt.defaultEnabledFormatters = {
             clang-tidy = false;
+            clangd-tidy = false;
           };
           vscode.enable = true;
           vscode.launch = {

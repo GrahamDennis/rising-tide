@@ -1,0 +1,25 @@
+version: "3"
+output:
+  group:
+    begin: '::group::{{.TASK}}'
+    end: '::endgroup::'
+
+tasks:
+  default:
+    deps:
+      - fail
+      - slow
+  fail:
+    cmds:
+      - echo "This task will fail"
+      - exit 1
+    desc: This task is expected to fail
+  slow:
+    cmds:
+      - |
+          bash -c "
+            trap \"\" INT;
+            echo 'This task will take a while';
+            sleep 5;
+          "
+    desc: This task is expected to take a while

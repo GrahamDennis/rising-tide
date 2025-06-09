@@ -26,7 +26,7 @@ tasks:
   check:treefmt:*:
     cmds:
       - /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/bin/treefmt --config-file /nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-treefmt.toml --formatters {{.FORMATTER}} {{if .CI}} --no-cache {{end}} --tree-root . --on-unmatched debug
-    desc: Reformat with treefmt formatter {{.FORMATTER}}
+    desc: Reformat with a specific treefmt formatter (e.g. `check:treefmt:shellcheck`)
     label: check:treefmt:{{.FORMATTER}}
     prefix: check:treefmt:{{.FORMATTER}}
     vars:
