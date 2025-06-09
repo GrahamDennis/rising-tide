@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module filepath="$PROJECT_DIR$/.idea/python-monorepo-root.iml" fileurl="file://$PROJECT_DIR$/.idea/python-monorepo-root.iml"/>
+      <module filepath="$PROJECT_DIR$/.idea/python-monorepo-root-python.iml" fileurl="file://$PROJECT_DIR$/.idea/python-monorepo-root-python.iml"/>
     </modules>
   </component>
 </project>
