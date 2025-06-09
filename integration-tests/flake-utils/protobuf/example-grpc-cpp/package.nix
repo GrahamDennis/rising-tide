@@ -5,7 +5,7 @@
   lib,
 }:
 clangStdenv.mkDerivation {
-  name = "cpp-package";
+  name = "example-grpc-cpp";
 
   # Minimise rebuilds due to changes to files that don't impact the build
   src = lib.fileset.toSource {
@@ -13,7 +13,7 @@ clangStdenv.mkDerivation {
     fileset = lib.fileset.unions [
       ./CMakeLists.txt
       ./src
-      ./tests
+      # ./tests
     ];
   };
 
@@ -21,7 +21,7 @@ clangStdenv.mkDerivation {
     cmake
     ninja
   ];
-  buildInputs = with pkgs; [ fmt ];
+  buildInputs = with pkgs; [ example-cpp abseil-cpp grpc protobuf ];
 
   doCheck = true;
   checkInputs = with pkgs; [ gtest ];

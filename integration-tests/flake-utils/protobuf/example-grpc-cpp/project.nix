@@ -1,7 +1,6 @@
 {
-  languages.python = {
+  languages.cpp = {
     enable = true;
-    testRoots = [ ];
     callPackageFunction = import ./package.nix;
   };
 }

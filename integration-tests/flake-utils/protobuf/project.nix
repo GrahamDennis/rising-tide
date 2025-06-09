@@ -11,6 +11,7 @@
     };
     example-grandchild = import ./example-grandchild/project.nix;
     python-package-1 = import ./python-package-1/project.nix;
+    example-grpc-cpp = import ./example-grpc-cpp/project.nix;
   };
   tools.uv.enable = true;
 }
