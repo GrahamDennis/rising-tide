@@ -18,7 +18,7 @@ let
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   matchOutput =
     oldDrv: newDrv:
-    if oldDrv.outputSpecified ? false then lib.getOutput oldDrv.outputName newDrv else newDrv;
+    if oldDrv.outputSpecified or false then lib.getOutput oldDrv.outputName newDrv else newDrv;
 in
 {
   options = {
