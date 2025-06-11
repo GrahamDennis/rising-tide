@@ -1,0 +1,14 @@
+
+# rising-tide-managed: start
+# CMake build directory
+/build/
+
+# rising-tide-managed: end
+
+# nixago: ignore-linked-files
+/.clang-format
+/.clang-tidy
+/.clangd
+/taskfile.yml
+/.vscode/extensions.json
+/.vscode/settings.json
