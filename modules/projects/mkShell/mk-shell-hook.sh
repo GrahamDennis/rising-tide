@@ -33,6 +33,11 @@ function configShellHook() {
     export FLAKE_ROOT
   fi
 
+  if [ -n "$IN_NIX_SHELL" ]; then
+    echo "Error: You are already in a Nix shell."
+    exit 1
+  fi
+
   uniqueArray preShellHooks
   runHook preShellHook
 
