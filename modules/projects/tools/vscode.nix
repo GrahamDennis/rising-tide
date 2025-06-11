@@ -12,6 +12,16 @@ let
   cfg = getCfg config;
   enabledIn = projectConfig: (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.json { };
+  taskFileCfg = config.tools.go-task;
+  toVsCodeTask = task: _: {
+    label = task;
+    type = "shell";
+    command = "task " + task;
+    problemMatcher = [ ];
+  };
+  taskFileToTask =
+    taskFileCfg:
+    if taskFileCfg.enable then lib.mapAttrsToList toVsCodeTask taskFileCfg.taskfile.tasks else { };
 in
 {
   options = {
@@ -67,6 +77,18 @@ in
         '';
         type = settingsFormat.type;
         default = { };
+      };
+      tasks = lib.mkOption {
+        description = ''
+          Contents of the VSCode `tasks.json` file to generate.
+        '';
+        type = settingsFormat.type;
+        default = taskFileToTask taskFileCfg;
+      };
+      taskFile = lib.mkOption {
+        description = "The VSCode tasks file to use";
+        type = types.pathInStore;
+        default = settingsFormat.generate "tasks.json" cfg.tasks;
       };
       settingsFile = lib.mkOption {
         description = "The VSCode settings file to use";
