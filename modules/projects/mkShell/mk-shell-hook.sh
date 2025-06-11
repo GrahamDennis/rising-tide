@@ -33,10 +33,14 @@ function configShellHook() {
     export FLAKE_ROOT
   fi
 
-  if [ -n "$IN_NIX_SHELL" ]; then
+  if [ -n "$IN_RISING_TIDE_SHELL" ]; then
     echo "Error: You are already in a Nix shell."
     exit 1
   fi
+  # Configure env variable to prevent double entering shells. 
+  # We cannot use IN_NIX_SHELL because that variable gets set before
+  # any shell hooks and it fails on initial shell entry. 
+  export IN_RISING_TIDE_SHELL=1
 
   uniqueArray preShellHooks
   runHook preShellHook
