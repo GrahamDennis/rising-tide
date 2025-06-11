@@ -68,6 +68,18 @@ in
         type = settingsFormat.type;
         default = { };
       };
+      tasks = lib.mkOption {
+        description = ''
+          Contents of the VSCode `tasks.json` file to generate.
+        '';
+        type = settingsFormat.type;
+        default = { };
+      };
+      taskFile = lib.mkOption {
+        description = "The VSCode tasks file to use";
+        type = types.pathInStore;
+        default = settingsFormat.generate "tasks.json" cfg.tasks;
+      };
       settingsFile = lib.mkOption {
         description = "The VSCode settings file to use";
         type = types.pathInStore;
@@ -118,6 +130,13 @@ in
             {
               data = cfg.launchFile;
               output = ".vscode/launch.json";
+              hook.mode = "copy";
+            }
+          ])
+          (lib.mkIf (cfg.tasks != { }) [
+            {
+              data = cfg.taskFile;
+              output = ".vscode/tasks.json";
               hook.mode = "copy";
             }
           ])
