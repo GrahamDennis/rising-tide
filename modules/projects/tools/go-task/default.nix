@@ -28,7 +28,7 @@ let
     command = "task " + task;
     problemMatcher = [ ];
   };
-  taskFileToVsCodeTask = _taskFileCfg: lib.mapAttrsToList toVsCodeTask cfg.taskfile.tasks;
+  taskFileToVsCodeTask = taskFileCfg: lib.mapAttrsToList toVsCodeTask taskFileCfg;
 in
 {
   options = {

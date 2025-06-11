@@ -136,7 +136,7 @@ in
           (lib.mkIf (cfg.tasks != { }) [
             {
               data = cfg.taskFile;
-              outputs = ".vscode/tasks.json";
+              output = ".vscode/tasks.json";
               hook.mode = "copy";
             }
           ])
