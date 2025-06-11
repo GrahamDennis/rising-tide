@@ -14,10 +14,21 @@
 }:
 let
   inherit (lib) types;
+
+  # Core
   getCfg = projectConfig: projectConfig.tools.go-task;
   cfg = getCfg config;
   enabledIn = projectConfig: projectConfig.enable && (getCfg projectConfig).enable;
   settingsFormat = toolsPkgs.formats.yaml { };
+
+  # VSCode Supplement
+  toVsCodeTask = task: _: {
+    label = task;
+    type = "shell";
+    command = "task " + task;
+    problemMatcher = [ ];
+  };
+  taskFileToVsCodeTask = _taskFileCfg: lib.mapAttrsToList toVsCodeTask cfg.taskfile.tasks;
 in
 {
   options = {
@@ -155,8 +166,12 @@ in
             output = "taskfile.yml";
           }
         ];
-        vscode.recommendedExtensions = lib.mkIf config.isRootProject {
-          "task.vscode-task".enable = true;
+
+        vscode = {
+          recommendedExtensions = lib.mkIf config.isRootProject {
+            "task.vscode-task".enable = true;
+          };
+          tasks = taskFileToVsCodeTask cfg.taskfile.tasks;
         };
       };
     };
