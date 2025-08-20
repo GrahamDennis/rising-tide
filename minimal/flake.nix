@@ -5,7 +5,7 @@
     { self }:
     let
       flakeOutputs = builtins.getFlake (
-        builtins.unsafeDiscardStringContext (builtins.trace "Using minimal flake from ${self.sourceInfo}" "path:${self.sourceInfo}?narHash=${self.narHash}")
+        builtins.unsafeDiscardStringContext (builtins.seq "${self.sourceInfo}" "path:${self.sourceInfo}?narHash=${self.narHash}")
       );
     in
     {
